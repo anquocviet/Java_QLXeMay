@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JTabbedPane;
 
 public class Appication implements ActionListener, MouseListener, KeyListener {
 
@@ -54,103 +55,6 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
-		
-		JPanel panelNav = new JPanel();
-		panel.add(panelNav, BorderLayout.NORTH);
-		panel.add(new GUI_QLBanHang(), 0);			// Auto load GUI_BanHang when open app
-		
-		JButton btnBanXe = new JButton("Bán xe");
-		btnBanXe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLBanHang(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnBanXe);
-		
-		JButton btnNhapXe = new JButton("Nhập xe");
-		btnNhapXe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLNhapHang(), 0);
-				panel.validate();
-				panel.repaint();
-				
-			}
-		});
-		panelNav.add(btnNhapXe);
-		
-		JButton btnBaoHanh = new JButton("Bảo hành");
-		btnBaoHanh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLBaoHanh(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnBaoHanh);
-		
-		JButton btnQLXe = new JButton("QL Xe");
-		btnQLXe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLXe(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnQLXe);
-		
-		JButton btnQLLoaiXe = new JButton("QL Loại xe");
-		btnQLLoaiXe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLLoaiXe(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnQLLoaiXe);
-		
-		JButton btnNhanVien = new JButton("Nhân viên");
-		btnNhanVien.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLNhanVien(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnNhanVien);
-		
-		JButton btnKhachHang = new JButton("Khách hàng");
-		btnKhachHang.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLKhachHang(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnKhachHang);
-		
-		JButton btnNCC = new JButton("Nhà cung cấp");
-		btnNCC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				panel.remove(0);
-				panel.add(new GUI_QLNhaCungCap(), 0);
-				panel.validate();
-				panel.repaint();
-			}
-		});
-		panelNav.add(btnNCC);
-		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
@@ -164,6 +68,17 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 			}
 		});
 		mnFIile.add(mntmExit);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.addTab("Trang chủ", new GUI_TrangChu());
+		tabbedPane.addTab("Bảo hành", new GUI_QLBaoHanh());
+		tabbedPane.addTab("Nhập xe", new GUI_QLNhapXe());
+		tabbedPane.addTab("QL xe", new GUI_QLXe());
+		tabbedPane.addTab("QL loại xe", new GUI_QLLoaiXe());
+		tabbedPane.addTab("Nhân viên", new GUI_QLNhanVien());
+		tabbedPane.addTab("Khách hàng", new GUI_QLKhachHang());
+		tabbedPane.addTab("Nhà cung cấp", new GUI_QLNhaCungCap());
 	}
 
 	@Override

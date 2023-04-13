@@ -3,14 +3,14 @@ package gui;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-public class GUI_QLBanHang extends JPanel {
+public class GUI_TrangChu extends JPanel {
 
 	/**
 	 * Create the panel.
 	 */
-	public GUI_QLBanHang() {
+	public GUI_TrangChu() {
 		
-		JLabel lblNewLabel = new JLabel("Quản lý bán hàng");
+		JLabel lblNewLabel = new JLabel("Home");
 		add(lblNewLabel);
 
 	}
