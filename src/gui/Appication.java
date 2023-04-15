@@ -51,7 +51,7 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setResizable(false);
-		frame.setSize(900, 500);
+		frame.setSize(1200, 600);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
