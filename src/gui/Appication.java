@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -51,7 +52,7 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setResizable(false);
-		frame.setSize(900, 500);
+		frame.setSize(1200, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
