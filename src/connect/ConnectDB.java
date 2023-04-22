@@ -8,14 +8,14 @@ public class ConnectDB {
 	private static Connection con = null;
 	private static ConnectDB instance = new ConnectDB();
 	
-	public ConnectDB getInstance() {
+	public static ConnectDB getInstance() {
 		return instance;
 	}
 	
 	public void connect() {
 		String url = "jdbc:sqlserver://localhost:1433;databasename=QuanLyBanXeMay";
 		String username = "sa";
-//		String password = "anquocviet_203";
+		String password = "anquocviet_203";
 		try {
 			con = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {

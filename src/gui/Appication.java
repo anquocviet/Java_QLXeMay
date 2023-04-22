@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 
+import connect.ConnectDB;
+
 public class Appication implements ActionListener, MouseListener, KeyListener {
 
 	private JFrame frame;
@@ -44,6 +46,8 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 	 */
 	public Appication() {
 		initialize();
+		
+		ConnectDB.getInstance().connect();
 	}
 
 	/**
