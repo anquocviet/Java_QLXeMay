@@ -47,7 +47,7 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 	public Appication() {
 		initialize();
 		
-		ConnectDB.getInstance().connect();
+//		ConnectDB.getInstance().connect();
 	}
 
 	/**
