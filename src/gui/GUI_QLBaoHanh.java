@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
@@ -10,12 +12,26 @@ import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import dao.KhachHang_DAO;
+import dao.NhanVien_DAO;
+import entity.KhachHang;
+import entity.NhanVien;
+import entity.NhanVienKiThuat;
+
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.time.LocalDate;
 import java.awt.FlowLayout;
 import java.awt.Font;
 
@@ -28,7 +44,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
-public class GUI_QLBaoHanh extends JPanel {
+public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListener, KeyListener {
 	private JTable table;
 	private DefaultTableModel tableModelLinhKien;
 	private JTextField txtDiaChi;
@@ -40,11 +56,14 @@ public class GUI_QLBaoHanh extends JPanel {
 	private JTextField txtChucVu;
 	private JTextField txtTenXe;
 	private JTextField txtSoMay;
-	private JTextField textField_9;
-	private JTextField textField_12;
-	private JTextField textField_11;
-	private JTextField textField_10;
-	private JButton btnNewButton;
+	private JTextField txtThue;
+	private JTextField txtTongTienLK;
+	private JTextField txtTienCong;
+	private JTextField txtTienPhaiTra;
+	private JButton btnInHoaDon;
+	private KhachHang_DAO kh_dao;
+	private JTextField txtSdtNV;
+	private NhanVien_DAO nv_dao;
 
 	/**
 	 * Create the panel.
@@ -57,75 +76,57 @@ public class GUI_QLBaoHanh extends JPanel {
 		JPanel panelTitle = new JPanel();
 		add(panelTitle, BorderLayout.NORTH);
 		GridBagLayout gbl_panelTitle = new GridBagLayout();
-		gbl_panelTitle.columnWidths = new int[] { 94, 300, 502, 0, 0 };
-		gbl_panelTitle.rowHeights = new int[] { 30, 25, 20, 0 };
+		gbl_panelTitle.columnWidths = new int[] { 94, 300, 420, 0, 0 };
+		gbl_panelTitle.rowHeights = new int[] { 30, 25, 0 };
 		gbl_panelTitle.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
-		gbl_panelTitle.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelTitle.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		panelTitle.setLayout(gbl_panelTitle);
 
-		JLabel lblPhiuBoHnh = new JLabel("PHIẾU BẢO HÀNH");
-		lblPhiuBoHnh.setForeground(UIManager.getColor("InternalFrame.borderShadow"));
-		lblPhiuBoHnh.setFont(new Font("Lucida Grande", Font.BOLD, 20));
-		GridBagConstraints gbc_lblPhiuBoHnh = new GridBagConstraints();
-		gbc_lblPhiuBoHnh.gridwidth = 4;
-		gbc_lblPhiuBoHnh.insets = new Insets(0, 0, 5, 0);
-		gbc_lblPhiuBoHnh.fill = GridBagConstraints.VERTICAL;
-		gbc_lblPhiuBoHnh.gridx = 0;
-		gbc_lblPhiuBoHnh.gridy = 0;
-		panelTitle.add(lblPhiuBoHnh, gbc_lblPhiuBoHnh);
+		JLabel lblPhieuBH = new JLabel("PHIẾU BẢO HÀNH");
+		lblPhieuBH.setForeground(UIManager.getColor("InternalFrame.borderShadow"));
+		lblPhieuBH.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+		GridBagConstraints gbc_lblPhieuBH = new GridBagConstraints();
+		gbc_lblPhieuBH.gridwidth = 4;
+		gbc_lblPhieuBH.insets = new Insets(0, 0, 5, 0);
+		gbc_lblPhieuBH.fill = GridBagConstraints.VERTICAL;
+		gbc_lblPhieuBH.gridx = 0;
+		gbc_lblPhieuBH.gridy = 0;
+		panelTitle.add(lblPhieuBH, gbc_lblPhieuBH);
 
-		JLabel lblNewLabel = new JLabel("Mã hóa đơn:");
-		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 1;
-		panelTitle.add(lblNewLabel, gbc_lblNewLabel);
+		JLabel lblTitleMaHD = new JLabel("Mã hóa đơn:");
+		lblTitleMaHD.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		GridBagConstraints gbc_lblTitleMaHD = new GridBagConstraints();
+		gbc_lblTitleMaHD.anchor = GridBagConstraints.WEST;
+		gbc_lblTitleMaHD.insets = new Insets(0, 0, 0, 5);
+		gbc_lblTitleMaHD.gridx = 0;
+		gbc_lblTitleMaHD.gridy = 1;
+		panelTitle.add(lblTitleMaHD, gbc_lblTitleMaHD);
 
-		JLabel lblNewLabel_1 = new JLabel("001");
-		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblNewLabel_1.setForeground(UIManager.getColor("InternalFrame.borderShadow"));
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.gridx = 1;
-		gbc_lblNewLabel_1.gridy = 1;
-		panelTitle.add(lblNewLabel_1, gbc_lblNewLabel_1);
-
-		JLabel lblNewLabel_4 = new JLabel("Giờ (nhận/giao xe):");
-		lblNewLabel_4.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_4.gridx = 2;
-		gbc_lblNewLabel_4.gridy = 1;
-		panelTitle.add(lblNewLabel_4, gbc_lblNewLabel_4);
-
-		JLabel lblNewLabel_7 = new JLabel("9h/10h");
-		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
-		gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_7.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_7.gridx = 3;
-		gbc_lblNewLabel_7.gridy = 1;
-		panelTitle.add(lblNewLabel_7, gbc_lblNewLabel_7);
-
-		JLabel lblNewLabel_2 = new JLabel("Ngày lập:");
-		lblNewLabel_2.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 2;
-		panelTitle.add(lblNewLabel_2, gbc_lblNewLabel_2);
-
-		JLabel lblNewLabel_3 = new JLabel("01/01/2023");
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_3.gridx = 1;
-		gbc_lblNewLabel_3.gridy = 2;
-		panelTitle.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		JLabel lblMaHD = new JLabel("001");
+		lblMaHD.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		lblMaHD.setForeground(UIManager.getColor("InternalFrame.borderShadow"));
+		GridBagConstraints gbc_lblMaHD = new GridBagConstraints();
+		gbc_lblMaHD.anchor = GridBagConstraints.WEST;
+		gbc_lblMaHD.insets = new Insets(0, 0, 0, 5);
+		gbc_lblMaHD.gridx = 1;
+		gbc_lblMaHD.gridy = 1;
+		panelTitle.add(lblMaHD, gbc_lblMaHD);
+		
+				JLabel lblTitleNgayLap = new JLabel("Ngày lập:");
+				lblTitleNgayLap.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+				GridBagConstraints gbc_lblTitleNgayLap = new GridBagConstraints();
+				gbc_lblTitleNgayLap.anchor = GridBagConstraints.EAST;
+				gbc_lblTitleNgayLap.insets = new Insets(0, 0, 0, 5);
+				gbc_lblTitleNgayLap.gridx = 2;
+				gbc_lblTitleNgayLap.gridy = 1;
+				panelTitle.add(lblTitleNgayLap, gbc_lblTitleNgayLap);
+		
+				JLabel lblNgayLap = new JLabel("01/01/2023");
+				GridBagConstraints gbc_lblNgayLap = new GridBagConstraints();
+				gbc_lblNgayLap.anchor = GridBagConstraints.WEST;
+				gbc_lblNgayLap.gridx = 3;
+				gbc_lblNgayLap.gridy = 1;
+				panelTitle.add(lblNgayLap, gbc_lblNgayLap);
 
 		JPanel panelChiTietBH = new JPanel();
 		add(panelChiTietBH, BorderLayout.CENTER);
@@ -189,6 +190,7 @@ public class GUI_QLBaoHanh extends JPanel {
 		panelThongTinNV.add(lblChucVu, gbc_lblChucVu);
 
 		txtChucVu = new JTextField();
+		txtChucVu.setEditable(false);
 		txtChucVu.setColumns(10);
 		GridBagConstraints gbc_txtChucVu = new GridBagConstraints();
 		gbc_txtChucVu.fill = GridBagConstraints.HORIZONTAL;
@@ -196,6 +198,23 @@ public class GUI_QLBaoHanh extends JPanel {
 		gbc_txtChucVu.gridx = 1;
 		gbc_txtChucVu.gridy = 1;
 		panelThongTinNV.add(txtChucVu, gbc_txtChucVu);
+		
+		JLabel lblSdtNV = new JLabel("Số điện thoại");
+		GridBagConstraints gbc_lblSdtNV = new GridBagConstraints();
+		gbc_lblSdtNV.anchor = GridBagConstraints.EAST;
+		gbc_lblSdtNV.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSdtNV.gridx = 2;
+		gbc_lblSdtNV.gridy = 1;
+		panelThongTinNV.add(lblSdtNV, gbc_lblSdtNV);
+		
+		txtSdtNV = new JTextField();
+		txtSdtNV.setEditable(false);
+		GridBagConstraints gbc_txtSdtNV = new GridBagConstraints();
+		gbc_txtSdtNV.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtSdtNV.gridx = 3;
+		gbc_txtSdtNV.gridy = 1;
+		panelThongTinNV.add(txtSdtNV, gbc_txtSdtNV);
+		txtSdtNV.setColumns(10);
 
 		JPanel panelThongTinKH = new JPanel();
 		panelThongTinKH.setBorder(new TitledBorder(null, "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.LEADING,
@@ -354,91 +373,212 @@ public class GUI_QLBaoHanh extends JPanel {
 		gbl_panelTinhTien.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelTinhTien.setLayout(gbl_panelTinhTien);
 
-		JLabel lblNewLabel_5_1 = new JLabel("Tổng tiền công");
-		lblNewLabel_5_1.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblNewLabel_5_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_lblNewLabel_5_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_5_1.fill = GridBagConstraints.VERTICAL;
-		gbc_lblNewLabel_5_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5_1.gridx = 0;
-		gbc_lblNewLabel_5_1.gridy = 0;
-		panelTinhTien.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
+		JLabel lblTienCong = new JLabel("Tổng tiền công");
+		lblTienCong.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		lblTienCong.setHorizontalAlignment(SwingConstants.RIGHT);
+		GridBagConstraints gbc_lblTienCong = new GridBagConstraints();
+		gbc_lblTienCong.anchor = GridBagConstraints.EAST;
+		gbc_lblTienCong.fill = GridBagConstraints.VERTICAL;
+		gbc_lblTienCong.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTienCong.gridx = 0;
+		gbc_lblTienCong.gridy = 0;
+		panelTinhTien.add(lblTienCong, gbc_lblTienCong);
 
-		textField_11 = new JTextField();
-		GridBagConstraints gbc_textField_11 = new GridBagConstraints();
-		gbc_textField_11.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_11.fill = GridBagConstraints.BOTH;
-		gbc_textField_11.gridx = 1;
-		gbc_textField_11.gridy = 0;
-		panelTinhTien.add(textField_11, gbc_textField_11);
-		textField_11.setColumns(10);
+		txtTienCong = new JTextField();
+		GridBagConstraints gbc_txtTienCong = new GridBagConstraints();
+		gbc_txtTienCong.insets = new Insets(0, 0, 5, 0);
+		gbc_txtTienCong.fill = GridBagConstraints.BOTH;
+		gbc_txtTienCong.gridx = 1;
+		gbc_txtTienCong.gridy = 0;
+		panelTinhTien.add(txtTienCong, gbc_txtTienCong);
+		txtTienCong.setColumns(10);
 
-		JLabel lblNewLabel_5 = new JLabel("Tổng tiền linh kiện");
-		lblNewLabel_5.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblNewLabel_5.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.gridx = 0;
-		gbc_lblNewLabel_5.gridy = 1;
-		panelTinhTien.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		JLabel lblTongTienLK = new JLabel("Tổng tiền linh kiện");
+		lblTongTienLK.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		lblTongTienLK.setHorizontalAlignment(SwingConstants.RIGHT);
+		GridBagConstraints gbc_lblTongTienLK = new GridBagConstraints();
+		gbc_lblTongTienLK.fill = GridBagConstraints.BOTH;
+		gbc_lblTongTienLK.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTongTienLK.gridx = 0;
+		gbc_lblTongTienLK.gridy = 1;
+		panelTinhTien.add(lblTongTienLK, gbc_lblTongTienLK);
 
-		textField_12 = new JTextField();
-		GridBagConstraints gbc_textField_12 = new GridBagConstraints();
-		gbc_textField_12.fill = GridBagConstraints.BOTH;
-		gbc_textField_12.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_12.gridx = 1;
-		gbc_textField_12.gridy = 1;
-		panelTinhTien.add(textField_12, gbc_textField_12);
-		textField_12.setColumns(10);
+		txtTongTienLK = new JTextField();
+		GridBagConstraints gbc_txtTongTienLK = new GridBagConstraints();
+		gbc_txtTongTienLK.fill = GridBagConstraints.BOTH;
+		gbc_txtTongTienLK.insets = new Insets(0, 0, 5, 0);
+		gbc_txtTongTienLK.gridx = 1;
+		gbc_txtTongTienLK.gridy = 1;
+		panelTinhTien.add(txtTongTienLK, gbc_txtTongTienLK);
+		txtTongTienLK.setColumns(10);
 
-		JLabel lblNewLabel_8 = new JLabel("Thuế GTGT");
-		lblNewLabel_8.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblNewLabel_8.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_lblNewLabel_8 = new GridBagConstraints();
-		gbc_lblNewLabel_8.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel_8.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_8.gridx = 0;
-		gbc_lblNewLabel_8.gridy = 2;
-		panelTinhTien.add(lblNewLabel_8, gbc_lblNewLabel_8);
+		JLabel lblThue = new JLabel("Thuế GTGT");
+		lblThue.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		lblThue.setHorizontalAlignment(SwingConstants.RIGHT);
+		GridBagConstraints gbc_lblThue = new GridBagConstraints();
+		gbc_lblThue.fill = GridBagConstraints.BOTH;
+		gbc_lblThue.insets = new Insets(0, 0, 5, 5);
+		gbc_lblThue.gridx = 0;
+		gbc_lblThue.gridy = 2;
+		panelTinhTien.add(lblThue, gbc_lblThue);
 
-		textField_9 = new JTextField();
-		GridBagConstraints gbc_textField_9 = new GridBagConstraints();
-		gbc_textField_9.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_9.fill = GridBagConstraints.BOTH;
-		gbc_textField_9.gridx = 1;
-		gbc_textField_9.gridy = 2;
-		panelTinhTien.add(textField_9, gbc_textField_9);
-		textField_9.setColumns(10);
+		txtThue = new JTextField();
+		GridBagConstraints gbc_txtThue = new GridBagConstraints();
+		gbc_txtThue.insets = new Insets(0, 0, 5, 0);
+		gbc_txtThue.fill = GridBagConstraints.BOTH;
+		gbc_txtThue.gridx = 1;
+		gbc_txtThue.gridy = 2;
+		panelTinhTien.add(txtThue, gbc_txtThue);
+		txtThue.setColumns(10);
 
-		JLabel lblNewLabel_6 = new JLabel("Tổng tiền phải trả");
-		lblNewLabel_6.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblNewLabel_6.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
-		gbc_lblNewLabel_6.fill = GridBagConstraints.BOTH;
-		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_6.gridx = 0;
-		gbc_lblNewLabel_6.gridy = 3;
-		panelTinhTien.add(lblNewLabel_6, gbc_lblNewLabel_6);
+		JLabel lblTienPhaiTra = new JLabel("Tổng tiền phải trả");
+		lblTienPhaiTra.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		lblTienPhaiTra.setHorizontalAlignment(SwingConstants.RIGHT);
+		GridBagConstraints gbc_lblTienPhaiTra = new GridBagConstraints();
+		gbc_lblTienPhaiTra.fill = GridBagConstraints.BOTH;
+		gbc_lblTienPhaiTra.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTienPhaiTra.gridx = 0;
+		gbc_lblTienPhaiTra.gridy = 3;
+		panelTinhTien.add(lblTienPhaiTra, gbc_lblTienPhaiTra);
 
-		textField_10 = new JTextField();
-		GridBagConstraints gbc_textField_10 = new GridBagConstraints();
-		gbc_textField_10.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_10.fill = GridBagConstraints.BOTH;
-		gbc_textField_10.gridx = 1;
-		gbc_textField_10.gridy = 3;
-		panelTinhTien.add(textField_10, gbc_textField_10);
-		textField_10.setColumns(10);
+		txtTienPhaiTra = new JTextField();
+		GridBagConstraints gbc_txtTienPhaiTra = new GridBagConstraints();
+		gbc_txtTienPhaiTra.insets = new Insets(0, 0, 5, 0);
+		gbc_txtTienPhaiTra.fill = GridBagConstraints.BOTH;
+		gbc_txtTienPhaiTra.gridx = 1;
+		gbc_txtTienPhaiTra.gridy = 3;
+		panelTinhTien.add(txtTienPhaiTra, gbc_txtTienPhaiTra);
+		txtTienPhaiTra.setColumns(10);
 
-		btnNewButton = new JButton("In hóa đơn");
-		btnNewButton.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
-		btnNewButton.setIcon(new ImageIcon(imagePrinter));
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 4;
-		panelTinhTien.add(btnNewButton, gbc_btnNewButton);
+		btnInHoaDon = new JButton("In hóa đơn");
+		btnInHoaDon.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		btnInHoaDon.setIcon(new ImageIcon(imagePrinter));
+		GridBagConstraints gbc_btnInHoaDon = new GridBagConstraints();
+		gbc_btnInHoaDon.gridx = 1;
+		gbc_btnInHoaDon.gridy = 4;
+		panelTinhTien.add(btnInHoaDon, gbc_btnInHoaDon);
+		
+		kh_dao = new KhachHang_DAO();
+		nv_dao = new NhanVien_DAO();
+		
+		txtMaKH.addKeyListener(this);
+		txtMaNV.addKeyListener(this);
+	}
+	
+	public void clearInfoKhachHang() {
+		txtTenKH.setText("");
+		txtSDT.setText("");
+		txtDiaChi.setText("");
+	}
+	
+	
+	public void clearInfoNhanVien() {
+		txtMaNV.setText("");
+		txtTenNV.setText("");
+		txtChucVu.setText("");
+	}
+	
+	
+	public void loadKhachHang(String maKH) {
+		if (maKH.equals("")) {
+			clearInfoKhachHang();
+			return;
+		}
+		KhachHang kh = kh_dao.getKhachHangTheoMaKH(txtMaKH.getText());
+		if (kh != null) {
+			String tenKH = kh.getCccd().getHo() + " " + kh.getCccd().getHoDem() + " " + kh.getCccd().getTen();
+			txtTenKH.setText(tenKH);
+			txtSDT.setText(kh.getSoDienThoai());
+			txtDiaChi.setText(kh.getCccd().getThuongTru());
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Không tìm thấy khách hàng trong hệ thống! Hãy kiểm tra lại mã Khách hàng",
+					"Lỗi", JOptionPane.ERROR_MESSAGE);
+			txtMaKH.requestFocus();
+			txtMaKH.selectAll();
+		}
+	}
+	
+	
+	public void loadNhanVien(String maNV) {
+		if (maNV.equals("")) {
+			clearInfoNhanVien();
+			return;
+		}
+		NhanVien nv = nv_dao.getNhanVienKyThuatTheoMaNV(txtMaNV.getText().trim());
+		if (nv != null) {
+			String tenNV = nv.getCccd().getHo() + " " + nv.getCccd().getHoDem() + " " + nv.getCccd().getTen();
+			txtTenNV.setText(tenNV);
+			txtChucVu.setText(nv.getChucVu());
+			txtSdtNV.setText(nv.getSoDienThoai());
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên trong hệ thống! Hãy kiểm tra lại mã Khách hàng",
+					"Lỗi", JOptionPane.ERROR_MESSAGE);
+			txtMaNV.requestFocus();
+			txtMaNV.selectAll();
+		}
+		
+	}
 
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		Object o = e.getSource();
+		if (o.equals(txtMaKH)) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER)
+				loadKhachHang(txtMaKH.getText().trim());
+		}
+		if (o.equals(txtMaNV)) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER)
+				loadNhanVien(txtMaNV.getText().trim());
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
