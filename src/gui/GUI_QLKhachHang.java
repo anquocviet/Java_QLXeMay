@@ -1,4 +1,4 @@
-package view;
+package gui;
 
 import java.awt.EventQueue;
 
@@ -21,7 +21,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class GUI_QLKhachHang extends JFrame {
+public class GUI_QLKhachHang extends JPanel {
 
 	private JPanel contentPane;
 	private JTextField txtMaKH;
@@ -34,45 +34,26 @@ public class GUI_QLKhachHang extends JFrame {
 	private JTextField txtSoDienThoai;
 	private JTextField txtTimKiem;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI_QLKhachHang frame = new GUI_QLKhachHang();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public GUI_QLKhachHang() {
 		setFont(new Font("Franklin Gothic Medium", Font.PLAIN, 12));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1535, 500);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
 		
 		JLabel lbQLKH = new JLabel("Quản lý khách hàng");
 		lbQLKH.setHorizontalAlignment(SwingConstants.CENTER);
 		lbQLKH.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		lbQLKH.setBounds(453, 11, 540, 38);
-		contentPane.add(lbQLKH);
+		add(lbQLKH);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		panel.setBounds(10, 49, 420, 360);
-		contentPane.add(panel);
+		add(panel);
 		panel.setLayout(null);
 		
 		JLabel lbMaKH = new JLabel("Mã khách hàng");
@@ -160,7 +141,7 @@ public class GUI_QLKhachHang extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(440, 54, 920, 349);
-		contentPane.add(panel_1);
+		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -200,12 +181,12 @@ public class GUI_QLKhachHang extends JFrame {
 		JLabel lbTimKiem = new JLabel("Nhập mã khách hàng hoặc số CCCD cần tìm");
 		lbTimKiem.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lbTimKiem.setBounds(498, 423, 328, 30);
-		contentPane.add(lbTimKiem);
+		add(lbTimKiem);
 		
 		txtTimKiem = new JTextField();
 		txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtTimKiem.setBounds(796, 428, 159, 20);
-		contentPane.add(txtTimKiem);
+		add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
 		JButton btnTim = new JButton("Tìm");
@@ -215,22 +196,22 @@ public class GUI_QLKhachHang extends JFrame {
 			}
 		});
 		btnTim.setBounds(969, 427, 77, 23);
-		contentPane.add(btnTim);
+		add(btnTim);
 		
 		JButton btnThem = new JButton("Thêm");
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnThem.setBounds(14, 427, 74, 23);
-		contentPane.add(btnThem);
+		add(btnThem);
 		
 		JButton btnXoa = new JButton("Xóa");
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnXoa.setBounds(99, 426, 67, 23);
-		contentPane.add(btnXoa);
+		add(btnXoa);
 		
 		JButton btnSua = new JButton("Sửa");
 		btnSua.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnSua.setBounds(179, 425, 70, 23);
-		contentPane.add(btnSua);
+		add(btnSua);
 		
 		JButton btnLuu = new JButton("Lưu");
 		btnLuu.addActionListener(new ActionListener() {
@@ -239,16 +220,16 @@ public class GUI_QLKhachHang extends JFrame {
 		});
 		btnLuu.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnLuu.setBounds(263, 425, 70, 23);
-		contentPane.add(btnLuu);
+		add(btnLuu);
 		
 		JButton btnThoat = new JButton("Thoát");
 		btnThoat.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnThoat.setBounds(349, 424, 76, 23);
-		contentPane.add(btnThoat);
+		add(btnThoat);
 		
 		JButton txtSapXepTheoHoTen = new JButton("Sắp xếp theo họ tên");
 		txtSapXepTheoHoTen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		txtSapXepTheoHoTen.setBounds(1066, 427, 187, 23);
-		contentPane.add(txtSapXepTheoHoTen);
+		add(txtSapXepTheoHoTen);
 	}
 }

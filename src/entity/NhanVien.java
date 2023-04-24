@@ -43,7 +43,7 @@ public  abstract class NhanVien   {
 		return email;
 	}
 	public void setEmail(String email) throws Exception {
-		if (email.trim().equals("") && !(email.matches("/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/")))
+		if (email.trim().equals("") && !(email.matches("/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/")))
 			throw new Exception("Email không được để trống và phải đúng theo cú pháp");
 		else
 		this.email = email;
