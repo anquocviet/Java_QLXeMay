@@ -1,37 +1,40 @@
 package entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class NhanVienKiThuat extends NhanVien {
 	private int bacTho;
-	private int SoNamKN;
-	private String ChucVu;
+	private int soNamKN;
+
 	public int getBacTho() {
 		return bacTho;
 	}
+
 	public void setBacTho(int bacTho) {
 		this.bacTho = bacTho;
 	}
+
 	public int getSoNamKN() {
-		return SoNamKN;
+		return soNamKN;
 	}
+
 	public void setSoNamKN(int soNamKN) {
-		SoNamKN = soNamKN;
+		this.soNamKN = soNamKN;
 	}
-	public String getChucVu() {
-		return ChucVu;
+
+	public NhanVienKiThuat(String maNhanVien, CanCuocCongDan cccd, LocalDate ngayVaoLamViec, String soDienThoai,
+			String email, String chucVu, double luong, int bacTho, int soNamKN) throws Exception {
+		super(maNhanVien, cccd, ngayVaoLamViec, soDienThoai, email, chucVu, luong);
+		setBacTho(bacTho);
+		setSoNamKN(soNamKN);
 	}
-	public void setChucVu(String chucVu) throws Exception{
-		if (chucVu.trim().equals("")) throw new Exception("Chức vụ không được để trống");
-		else
-		ChucVu = chucVu;	
+
+	public NhanVienKiThuat() {
+		super();
 	}
-	public NhanVienKiThuat(String maNhanVien, CanCuocCongDan cccd, Date ngayVaoLamViec, String soDienThoai,
-			String email, double luong, int bacTho, int soNamKN, String chucVu) {
-		super(maNhanVien, cccd, ngayVaoLamViec, soDienThoai, email, luong);
-		this.bacTho = bacTho;
-		SoNamKN = soNamKN;
-		ChucVu = chucVu;
+
+	public NhanVienKiThuat(String maNhanVien) throws Exception {
+		super(maNhanVien);
 	}
-	
+
 }

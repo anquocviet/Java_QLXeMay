@@ -32,6 +32,11 @@ public class CanCuocCongDan {
 		setHo(ho);
 		setTen(ten);
 	}
+	
+	
+	public CanCuocCongDan(String maCCCD) throws Exception {
+		setMaCCCD(maCCCD);
+	}
 
 	public String getMaCCCD() {
 		return maCCCD;

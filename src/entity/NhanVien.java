@@ -1,79 +1,108 @@
 package entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
-public  abstract class NhanVien   {
-	private String MaNhanVien;
-	private CanCuocCongDan cccd;
-	private Date NgayVaoLamViec;
-	private String SoDienThoai;
-	private String email;
-	private double Luong;
+public abstract class NhanVien {
+	protected String maNhanVien;
+	protected CanCuocCongDan cccd;
+	protected LocalDate ngayVaoLamViec;
+	protected String soDienThoai;
+	protected String email;
+	protected String chucVu;
+	protected double luong;
+
 	public String getMaNhanVien() {
-		return MaNhanVien;
+		return maNhanVien;
 	}
+
 	public void setMaNhanVien(String maNhanVien) throws Exception {
 		if (maNhanVien.trim().equals(""))
 			throw new Exception("Mã nhân viên không được để trống");
-		else 
-		MaNhanVien = maNhanVien;
+		else
+			this.maNhanVien = maNhanVien;
 	}
+
 	public CanCuocCongDan getCccd() {
 		return cccd;
 	}
+
 	public void setCccd(CanCuocCongDan cccd) {
 		this.cccd = cccd;
 	}
-	public Date getNgayVaoLamViec() {
-		return NgayVaoLamViec;
+
+	public LocalDate getNgayVaoLamViec() {
+		return ngayVaoLamViec;
 	}
-	public void setNgayVaoLamViec(Date ngayVaoLamViec) {
-		NgayVaoLamViec = ngayVaoLamViec;
+
+	public void setNgayVaoLamViec(LocalDate ngayVaoLamViec) {
+		this.ngayVaoLamViec = ngayVaoLamViec;
 	}
+
 	public String getSoDienThoai() {
-		return SoDienThoai;
+		return soDienThoai;
 	}
-	public void setSoDienThoai(String soDienThoai) throws Exception  {
+
+	public void setSoDienThoai(String soDienThoai) throws Exception {
 		if (soDienThoai.trim().equals("") && !(soDienThoai.matches("/[0-9]{10}/")))
 			throw new Exception("Số điện thoại không được để trống và phải đủ 10 số");
 		else
-		SoDienThoai = soDienThoai;
+			this.soDienThoai = soDienThoai;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) throws Exception {
 		if (email.trim().equals("") && !(email.matches("/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/")))
 			throw new Exception("Email không được để trống và phải đúng theo cú pháp");
 		else
-		this.email = email;
+			this.email = email;
 	}
-	public double getLuong() {
-		return Luong;
+
+	public String getChucVu() {
+		return chucVu;
 	}
-	public void setLuong(double luong) throws Exception {
-		if (luong < 0 ) throw new Exception ("Lương không được nhỏ hơn 0");
+
+	public void setChucVu(String chucVu) throws Exception {
+		if (chucVu.trim().equals(""))
+			throw new Exception("Chức vụ không được để trống");
 		else
-		Luong = luong;
+			this.chucVu = chucVu;
 	}
-	public NhanVien(String maNhanVien, CanCuocCongDan cccd, Date ngayVaoLamViec, String soDienThoai, String email,
-			double luong) {
+
+	public double getLuong() {
+		return luong;
+	}
+
+	public void setLuong(double luong) throws Exception {
+		if (luong < 0)
+			throw new Exception("Lương không được nhỏ hơn 0");
+		else
+			this.luong = luong;
+	}
+
+	public double Luong() {
+		return luong;
+	}
+
+	public NhanVien() {
+	}
+
+	public NhanVien(String maNhanVien, CanCuocCongDan cccd, LocalDate ngayVaoLamViec, String soDienThoai, String email,
+			String chucVu, double luong) throws Exception {
 		super();
-		MaNhanVien = maNhanVien;
-		this.cccd = cccd;
-		NgayVaoLamViec = ngayVaoLamViec;
-		SoDienThoai = soDienThoai;
-		this.email = email;
-		Luong = luong;
+		setMaNhanVien(maNhanVien);
+		setCccd(cccd);
+		setNgayVaoLamViec(ngayVaoLamViec);
+		setSoDienThoai(soDienThoai);
+		setEmail(email);
+		setChucVu(chucVu);
+		setLuong(luong);
 	}
-	public NhanVien(String maNhanVien) {
-		super();
-		MaNhanVien = maNhanVien;
+
+	public NhanVien(String maNhanVien) throws Exception {
+		setMaNhanVien(maNhanVien);
 	}
-	public double Luong()
-	{
-		return Luong;
-	}
-	
-	
+
 }
