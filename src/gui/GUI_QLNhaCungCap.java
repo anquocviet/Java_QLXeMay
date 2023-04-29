@@ -32,6 +32,7 @@ import java.awt.SystemColor;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 
 public class GUI_QLNhaCungCap extends JPanel {
 	private JTextField textField;
@@ -149,28 +150,73 @@ public class GUI_QLNhaCungCap extends JPanel {
 		
 		JPanel panel_2 = new JPanel();
 		splitPane.setRightComponent(panel_2);
-		panel_2.setLayout(null);
+		panel_2.setLayout(new GridLayout(3, 3, 20, 5));
+		
+		JLabel lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setEnabled(false);
+		panel_2.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("");
+		lblNewLabel_4_1.setEnabled(false);
+		panel_2.add(lblNewLabel_4_1);
+		
+		JLabel lblNewLabel_4_2 = new JLabel("");
+		lblNewLabel_4_2.setEnabled(false);
+		panel_2.add(lblNewLabel_4_2);
+		
+		JLabel lblNewLabel_4_6 = new JLabel("");
+		lblNewLabel_4_6.setEnabled(false);
+		panel_2.add(lblNewLabel_4_6);
+		
+		JLabel lblNewLabel_4_8 = new JLabel("");
+		lblNewLabel_4_8.setEnabled(false);
+		panel_2.add(lblNewLabel_4_8);
+		
+		JLabel lblNewLabel_4_10 = new JLabel("");
+		lblNewLabel_4_10.setEnabled(false);
+		panel_2.add(lblNewLabel_4_10);
 		
 		JButton btnNewButton_1 = new JButton("Thêm mới");
-		btnNewButton_1.setBounds(70, 10, 170, 56);
 		btnNewButton_1.setForeground(Color.WHITE);
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_1.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton_1);
 		
 		JButton btnNewButton = new JButton("Chỉnh sửa");
-		btnNewButton.setBounds(300, 10, 170, 56);
 		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton);
 		
 		JButton btnNewButton_2 = new JButton("Xóa");
-		btnNewButton_2.setBounds(530, 10, 170, 56);
 		btnNewButton_2.setForeground(Color.WHITE);
 		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_2.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton_2);
+		
+		JLabel lblNewLabel_4_11 = new JLabel("");
+		lblNewLabel_4_11.setEnabled(false);
+		panel_2.add(lblNewLabel_4_11);
+		
+		JLabel lblNewLabel_4_9 = new JLabel("");
+		lblNewLabel_4_9.setEnabled(false);
+		panel_2.add(lblNewLabel_4_9);
+		
+		JLabel lblNewLabel_4_7 = new JLabel("");
+		lblNewLabel_4_7.setEnabled(false);
+		panel_2.add(lblNewLabel_4_7);
+		
+		JLabel lblNewLabel_4_4 = new JLabel("");
+		lblNewLabel_4_4.setEnabled(false);
+		panel_2.add(lblNewLabel_4_4);
+		
+		JLabel lblNewLabel_4_5 = new JLabel("");
+		lblNewLabel_4_5.setEnabled(false);
+		panel_2.add(lblNewLabel_4_5);
+		
+		JLabel lblNewLabel_4_3 = new JLabel("");
+		lblNewLabel_4_3.setEnabled(false);
+		panel_2.add(lblNewLabel_4_3);
 
 	}
 }

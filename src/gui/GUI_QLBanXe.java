@@ -10,6 +10,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JRadioButton;
 import java.awt.Choice;
 import javax.swing.JComboBox;
@@ -27,23 +32,32 @@ import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.JScrollPane;
 
-public class GUI_QLBanXe extends JPanel {
+public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener{
 	private JTextField textField;
 	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
-	private JTextField textField_9;
 	private JTable table;
 	private JTable table_1;
 	private JTextField textField_10;
 	private JTextField textField_11;
 	private JTable table_2;
 	private JTextField textField_12;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	private JTextField textField_5;
+	private JTextField textField_9;
+	private JTextField textField_13;
+	private JTextField textField_14;
+	private JTextField textField_15;
+	private JTextField textField_16;
+	private JTextField textField_17;
+	private JTextField textField_18;
+	private JButton btnChonKhach;
+	private JButton btnLuu;
+	private JButton btnThem;
 
 	/**
 	 * Create the panel.
@@ -60,7 +74,7 @@ public class GUI_QLBanXe extends JPanel {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(64, 128, 128)));
-		panel.setBounds(0, 70, 600, 260);
+		panel.setBounds(0, 70, 600, 130);
 		add(panel);
 		panel.setLayout(null);
 		
@@ -69,7 +83,7 @@ public class GUI_QLBanXe extends JPanel {
 		panel.add(lblNewLabel_1);
 		
 		textField = new JTextField();
-		textField.setBounds(110, 20, 150, 20);
+		textField.setBounds(120, 21, 150, 20);
 		panel.add(textField);
 		textField.setColumns(10);
 		
@@ -79,126 +93,63 @@ public class GUI_QLBanXe extends JPanel {
 		
 		textField_1 = new JTextField();
 		textField_1.setColumns(10);
-		textField_1.setBounds(110, 50, 150, 20);
+		textField_1.setBounds(120, 51, 150, 20);
 		panel.add(textField_1);
 		
-		JLabel lblNewLabel_3 = new JLabel("Số điện thoại :");
-		lblNewLabel_3.setBounds(10, 80, 90, 20);
-		panel.add(lblNewLabel_3);
-		
-		textField_2 = new JTextField();
-		textField_2.setBounds(110, 80, 150, 20);
-		panel.add(textField_2);
-		textField_2.setColumns(10);
-		
-		JLabel lblNewLabel_4 = new JLabel("Thường trú :");
-		lblNewLabel_4.setBounds(300, 20, 90, 20);
-		panel.add(lblNewLabel_4);
-		
-		textField_3 = new JTextField();
-		textField_3.setBounds(374, 20, 212, 20);
-		panel.add(textField_3);
-		textField_3.setColumns(10);
-		
-		JLabel lblNewLabel_5 = new JLabel("Tạm trú :");
-		lblNewLabel_5.setBounds(300, 50, 90, 20);
-		panel.add(lblNewLabel_5);
-		
-		textField_4 = new JTextField();
-		textField_4.setBounds(374, 50, 212, 20);
-		panel.add(textField_4);
-		textField_4.setColumns(10);
-		
-		JLabel lblNewLabel_6 = new JLabel("Ngày sinh :");
-		lblNewLabel_6.setBounds(300, 80, 90, 20);
-		panel.add(lblNewLabel_6);
-		
-		textField_5 = new JTextField();
-		textField_5.setBounds(374, 80, 90, 20);
-		panel.add(textField_5);
-		textField_5.setColumns(10);
-		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Nam");
-		rdbtnNewRadioButton.setBounds(480, 80, 50, 20);
-		panel.add(rdbtnNewRadioButton);
-		
-		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Nữ");
-		rdbtnNewRadioButton_1.setBounds(536, 80, 50, 20);
-		panel.add(rdbtnNewRadioButton_1);
-		
-		JPanel panel_6 = new JPanel();
-		panel_6.setBorder(new LineBorder(new Color(64, 128, 128)));
-		panel_6.setBounds(10, 110, 576, 30);
-		panel.add(panel_6);
-		panel_6.setLayout(null);
-		
-		JButton btnNewButton_1 = new JButton("Thêm mới khách hàng");
-		btnNewButton_1.setBackground(new Color(64, 128, 128));
-		btnNewButton_1.setBounds(10, 5, 178, 20);
-		panel_6.add(btnNewButton_1);
-		
-		JButton btnNewButton_2 = new JButton("Chọn khách");
-		btnNewButton_2.setBackground(new Color(64, 128, 128));
-		btnNewButton_2.setBounds(447, 5, 122, 20);
-		panel_6.add(btnNewButton_2);
-		
-		JLabel lblNewLabel_17 = new JLabel("CCCD :");
-		lblNewLabel_17.setBounds(286, 5, 45, 20);
-		panel_6.add(lblNewLabel_17);
-		
-		textField_9 = new JTextField();
-		textField_9.setBounds(341, 6, 96, 20);
-		panel_6.add(textField_9);
-		textField_9.setColumns(10);
-		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 150, 576, 100);
+		scrollPane.setBounds(332, 22, 237, 90);
 		panel.add(scrollPane);
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
 			},
 			new String[] {
-				"T\u00EAn kh\u00E1ch h\u00E0ng", "CCCD", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Th\u01B0\u1EDDng tr\u00FA", "T\u1EA1m tr\u00FA", "Gi\u1EDBi t\u00EDnh"
+				"T\u00EAn kh\u00E1ch h\u00E0ng", "CCCD"
 			}
 		));
 		scrollPane.setViewportView(table);
 		table.setToolTipText("");
 		
+		JButton btnChonKhach = new JButton("Chọn khách");
+		btnChonKhach.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnChonKhach.setBackground(new Color(64, 128, 128));
+		btnChonKhach.setBounds(60, 80, 171, 32);
+		panel.add(btnChonKhach);
+		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "\u0110\u01A1n h\u00E0ng", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(64, 128, 128)));
-		panel_1.setBounds(0, 352, 600, 260);
+		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "H\u00F3a \u0111\u01A1n", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(64, 128, 128)));
+		panel_1.setBounds(0, 210, 600, 402);
 		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel_9 = new JLabel("Mã hóa đơn :");
-		lblNewLabel_9.setBounds(30, 30, 100, 20);
+		lblNewLabel_9.setBounds(10, 60, 100, 20);
 		panel_1.add(lblNewLabel_9);
 		
 		textField_10 = new JTextField();
 		textField_10.setForeground(new Color(192, 192, 192));
 		textField_10.setEnabled(false);
-		textField_10.setBounds(140, 31, 205, 20);
+		textField_10.setBounds(160, 60, 135, 20);
 		panel_1.add(textField_10);
 		textField_10.setColumns(10);
 		
 		JLabel lblNewLabel_18 = new JLabel("Tên khách hàng :");
-		lblNewLabel_18.setBounds(30, 60, 100, 20);
+		lblNewLabel_18.setBounds(10, 90, 100, 20);
 		panel_1.add(lblNewLabel_18);
 		
 		textField_11 = new JTextField();
 		textField_11.setEnabled(false);
-		textField_11.setBounds(140, 60, 205, 20);
+		textField_11.setBounds(160, 90, 135, 20);
 		panel_1.add(textField_11);
 		textField_11.setColumns(10);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 90, 580, 93);
+		scrollPane_2.setBounds(10, 210, 580, 102);
 		panel_1.add(scrollPane_2);
 		
 		table_2 = new JTable();
@@ -216,21 +167,139 @@ public class GUI_QLBanXe extends JPanel {
 		
 		JLabel lblNewLabel_19 = new JLabel("Thành tiền :");
 		lblNewLabel_19.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_19.setBounds(30, 207, 106, 31);
+		lblNewLabel_19.setBounds(30, 324, 106, 30);
 		panel_1.add(lblNewLabel_19);
 		
 		textField_12 = new JTextField();
 		textField_12.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		textField_12.setEnabled(false);
-		textField_12.setBounds(140, 215, 180, 20);
+		textField_12.setBounds(146, 330, 149, 20);
 		panel_1.add(textField_12);
 		textField_12.setColumns(10);
 		
-		JButton btnNewButton_3 = new JButton("Thanh toán");
-		btnNewButton_3.setBackground(new Color(64, 128, 128));
-		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnNewButton_3.setBounds(360, 203, 205, 42);
-		panel_1.add(btnNewButton_3);
+		JButton btnLuu = new JButton("Lưu hóa đơn");
+		btnLuu.setBackground(new Color(64, 128, 128));
+		btnLuu.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnLuu.setBounds(371, 358, 177, 34);
+		panel_1.add(btnLuu);
+		
+		JLabel lblNewLabel_20 = new JLabel("Chọn cách thức thanh toán :");
+		lblNewLabel_20.setBounds(10, 30, 285, 20);
+		panel_1.add(lblNewLabel_20);
+		
+		JComboBox comboBox_4 = new JComboBox();
+		comboBox_4.setModel(new DefaultComboBoxModel(new String[] {"Trả hết", "Trả góp"}));
+		comboBox_4.setBounds(192, 30, 103, 20);
+		panel_1.add(comboBox_4);
+		
+		JLabel lblNewLabel_3 = new JLabel("Nhân viên lập hợp đồng :");
+		lblNewLabel_3.setBounds(10, 120, 149, 20);
+		panel_1.add(lblNewLabel_3);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(160, 120, 135, 20);
+		panel_1.add(textField_2);
+		textField_2.setColumns(10);
+		
+		JLabel lblNewLabel_4 = new JLabel("Ngày lập hợp đồng :");
+		lblNewLabel_4.setBounds(10, 150, 115, 20);
+		panel_1.add(lblNewLabel_4);
+		
+		textField_3 = new JTextField();
+		textField_3.setBounds(160, 150, 135, 20);
+		panel_1.add(textField_3);
+		textField_3.setColumns(10);
+		
+		JLabel lblNewLabel_5 = new JLabel("Thời gian bảo hành :");
+		lblNewLabel_5.setBounds(10, 180, 115, 20);
+		panel_1.add(lblNewLabel_5);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(160, 180, 135, 20);
+		panel_1.add(textField_4);
+		textField_4.setColumns(10);
+		
+		JLabel lblNewLabel_6 = new JLabel("Đã nhận :");
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_6.setBounds(316, 324, 100, 30);
+		panel_1.add(lblNewLabel_6);
+		
+		textField_5 = new JTextField();
+		textField_5.setBounds(420, 330, 149, 20);
+		panel_1.add(textField_5);
+		textField_5.setColumns(10);
+		
+		JLabel lblNewLabel_17 = new JLabel("Còn nợ :");
+		lblNewLabel_17.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_17.setBounds(30, 360, 106, 30);
+		panel_1.add(lblNewLabel_17);
+		
+		textField_9 = new JTextField();
+		textField_9.setEnabled(false);
+		textField_9.setBounds(146, 368, 149, 20);
+		panel_1.add(textField_9);
+		textField_9.setColumns(10);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setLayout(null);
+		panel_6.setForeground(new Color(64, 128, 128));
+		panel_6.setBorder(new TitledBorder(null, "Tr\u1EA3 g\u00F3p", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 128, 128)));
+		panel_6.setBounds(319, 10, 250, 194);
+		panel_1.add(panel_6);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Mã trả góp:");
+		lblNewLabel_1_1.setBounds(10, 14, 90, 20);
+		panel_6.add(lblNewLabel_1_1);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("Tên người trả :");
+		lblNewLabel_2_1.setBounds(10, 44, 90, 20);
+		panel_6.add(lblNewLabel_2_1);
+		
+		textField_13 = new JTextField();
+		textField_13.setColumns(10);
+		textField_13.setBounds(131, 14, 110, 20);
+		panel_6.add(textField_13);
+		
+		textField_14 = new JTextField();
+		textField_14.setColumns(10);
+		textField_14.setBounds(131, 44, 110, 20);
+		panel_6.add(textField_14);
+		
+		JLabel lblNewLabel_3_1 = new JLabel("Nhân viên nhận :");
+		lblNewLabel_3_1.setBounds(10, 74, 133, 20);
+		panel_6.add(lblNewLabel_3_1);
+		
+		textField_15 = new JTextField();
+		textField_15.setColumns(10);
+		textField_15.setBounds(131, 74, 110, 20);
+		panel_6.add(textField_15);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("Ngày trả :");
+		lblNewLabel_4_1.setBounds(10, 104, 110, 20);
+		panel_6.add(lblNewLabel_4_1);
+		
+		textField_16 = new JTextField();
+		textField_16.setColumns(10);
+		textField_16.setBounds(131, 134, 110, 20);
+		panel_6.add(textField_16);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("Số lần trả :");
+		lblNewLabel_5_1.setBounds(10, 134, 110, 20);
+		panel_6.add(lblNewLabel_5_1);
+		
+		textField_17 = new JTextField();
+		textField_17.setColumns(10);
+		textField_17.setBounds(131, 104, 110, 20);
+		panel_6.add(textField_17);
+		
+		JLabel lblNewLabel_21 = new JLabel("Số tiền trả góp :");
+		lblNewLabel_21.setBounds(10, 164, 102, 20);
+		panel_6.add(lblNewLabel_21);
+		
+		textField_18 = new JTextField();
+		textField_18.setBounds(131, 164, 110, 20);
+		panel_6.add(textField_18);
+		textField_18.setColumns(10);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin Xe", TitledBorder.CENTER, TitledBorder.BELOW_TOP, null, new Color(64, 128, 128)));
@@ -327,10 +396,10 @@ public class GUI_QLBanXe extends JPanel {
 		panel_4.add(textField_8);
 		textField_8.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Thêm vào giỏ hàng");
-		btnNewButton.setBackground(new Color(64, 128, 128));
-		btnNewButton.setBounds(393, 281, 154, 21);
-		panel_4.add(btnNewButton);
+		JButton btnThem = new JButton("Thêm vào giỏ hàng");
+		btnThem.setBackground(new Color(64, 128, 128));
+		btnThem.setBounds(393, 281, 154, 21);
+		panel_4.add(btnThem);
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBounds(264, 335, 293, 197);
@@ -349,6 +418,10 @@ public class GUI_QLBanXe extends JPanel {
 				{null, null, null, null},
 				{null, null, null, null},
 				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
 			},
 			new String[] {
 				"M\u00E3 lo\u1EA1i", "T\u00EAn xe", "S\u1ED1 khung", "Gi\u00E1"
@@ -357,5 +430,47 @@ public class GUI_QLBanXe extends JPanel {
 		scrollPane_1.setViewportView(table_1);
 		table_1.setBackground(Color.LIGHT_GRAY);
 
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if(o.equals(btnChonKhach)) {
+			
+		}if(o.equals(btnThem)) {
+			
+		}if(o.equals(btnLuu)) {
+		
+		}
 	}
 }
