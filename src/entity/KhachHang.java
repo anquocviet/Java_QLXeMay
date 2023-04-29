@@ -18,6 +18,10 @@ public class KhachHang {
 		setMaKhachHang(maKhachHang);
 		setCccd(cccd);
 	}
+	
+	public KhachHang(String maKH) throws Exception {
+		setMaKhachHang(maKH);
+	}
 
 	public String getMaKhachHang() {
 		return maKhachHang;

@@ -11,6 +11,9 @@ import connect.ConnectDB;
 import entity.CanCuocCongDan;
 
 public class CanCuocCongDan_DAO {
+	/**
+	 * @author AnQuocViet
+	 */
 	public ArrayList<CanCuocCongDan> getAllCCCD() {
 		ArrayList<CanCuocCongDan> dscc = new ArrayList<CanCuocCongDan>();
 		Connection con = ConnectDB.getInstance().getConnection();
@@ -45,7 +48,10 @@ public class CanCuocCongDan_DAO {
 		}
 		return dscc;
 	}
-	
+
+	/**
+	 * @author AnQuocViet
+	 */
 	public CanCuocCongDan getCCCD(String maCC) {
 		CanCuocCongDan cc = null;
 		Connection con = ConnectDB.getInstance().getConnection();
