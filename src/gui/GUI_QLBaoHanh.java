@@ -27,6 +27,7 @@ import java.awt.Image;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -45,6 +46,8 @@ import java.awt.Font;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
+import java.awt.Event;
+
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.UIManager;
@@ -481,6 +484,8 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 
 		txtMaKH.addKeyListener(this);
 		txtMaNV.addKeyListener(this);
+		table.addKeyListener(this);
+		cbSoKhung.addActionListener(this);
 
 		generateMaPhieuBH();
 		generateNgayLapHD();
@@ -537,17 +542,18 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 			txtMaKH.selectAll();
 		}
 	}
-	
+
 	private void loadXeCuaKhach(String maKH) {
-		if (maKH.equals("")) {
-			clearInfoKhachHang();
-			return;
-		}
+		cbSoKhung.removeAllItems();
 		xemay_dao.getDSXeMayCuaKhachHang(maKH).forEach(xe -> {
-//			cbSoKhung.addItem()
+			cbSoKhung.addItem(xe.getSoKhung());
 		});
-		
-		
+	}
+
+	private void loadTenXe() {
+		String soKhung = cbSoKhung.getSelectedItem().toString();
+		String tenXe = xemay_dao.getXeMayTheoSoKhung(soKhung).getTenXe();
+		txtTenXe.setText(tenXe);
 	}
 
 	public void generateMaPhieuBH() {
@@ -563,6 +569,25 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 	public void generateNgayLapHD() {
 		LocalDate ngayHT = LocalDate.now();
 		lblNgayLap.setText(ngayHT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	}
+
+	private void handleTable(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			tableModelLinhKien.addRow(new Object[] { table.getRowCount() + 1 });
+		} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+			int rowSelected = table.getSelectedRow();
+			if (JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa dòng này không ?", "Cảnh báo",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {				
+				tableModelLinhKien.removeRow(rowSelected);
+				for (int i = rowSelected; i < table.getRowCount(); i++) {
+					table.setValueAt(i + 1, i, 0);
+				}
+			}
+			if (table.getRowCount() == 0) {
+				tableModelLinhKien.addRow(new Object[] { 1 });
+			}
+			table.setRowSelectionInterval(0, 0);
+		}
 	}
 
 	@Override
@@ -582,6 +607,9 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 				loadKhachHang(txtMaKH.getText().trim());
 				loadXeCuaKhach(txtMaKH.getText().trim());
 			}
+		}
+		if (o.equals(table)) {
+			handleTable(e);
 		}
 	}
 
@@ -623,8 +651,10 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+		Object o = e.getSource();
+		if (o.equals(cbSoKhung) && cbSoKhung.getItemCount() != 0) {
+			loadTenXe();
+		}
 	}
 
 }
