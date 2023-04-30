@@ -17,13 +17,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import connect.ConnectDB;
 
 public class Appication implements ActionListener, MouseListener, KeyListener {
 
 	private JFrame frame;
+	
+	public JFrame getFrame() {
+		return frame;
+	}
 
 	/**
 	 * Launch the application.
@@ -32,8 +38,9 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					Appication window = new Appication();
-					window.frame.setVisible(true);
+					new LoginDialog(window.frame).setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -45,9 +52,8 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 	 * Create the application.
 	 */
 	public Appication() {
-		initialize();
-		
 		ConnectDB.getInstance().connect();
+		initialize();		
 	}
 
 	/**
@@ -73,10 +79,9 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 			}
 		});
 		mnFIile.add(mntmExit);
-		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-		tabbedPane.addTab("Trang chủ", new GUI_TrangChu());
+		
 		tabbedPane.addTab("Bán xe", new GUI_QLBanXe());
 		//tabbedPane.addTab("Bảo hành", new GUI_QLBaoHanh());
 		tabbedPane.addTab("Nhập xe", new GUI_QLNhapXe());

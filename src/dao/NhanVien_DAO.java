@@ -17,12 +17,18 @@ public class NhanVien_DAO {
 
 	private CanCuocCongDan_DAO cccd_dao;
 
+	/**
+	 * @author AnQuocViet
+	 */
 	public ArrayList<NhanVien> getAllNhanVien() {
 		ArrayList<NhanVien> dsnv = getAllNhanVienHanhChinh();
 		dsnv.addAll(getAllNhanVienKyThuat());
 		return dsnv;
 	}
 
+	/**
+	 * @author AnQuocViet
+	 */
 	public ArrayList<NhanVien> getAllNhanVienHanhChinh() {
 		ArrayList<NhanVien> dsnv = new ArrayList<NhanVien>();
 		Connection con = ConnectDB.getInstance().getConnection();
@@ -63,6 +69,9 @@ public class NhanVien_DAO {
 		return dsnv;
 	}
 
+	/**
+	 * @author AnQuocViet
+	 */
 	public ArrayList<NhanVien> getAllNhanVienKyThuat() {
 		ArrayList<NhanVien> dsnv = new ArrayList<NhanVien>();
 		Connection con = ConnectDB.getInstance().getConnection();
@@ -102,14 +111,22 @@ public class NhanVien_DAO {
 		return dsnv;
 	}
 
+	/**
+	 * @author AnQuocViet
+	 */
 	public NhanVien getNhanVienTheoMaNV(String ma) {
 		NhanVien nv = getNhanVienHanhChinhTheoMaNV(ma);
-		if (nv != null) return nv;
+		if (nv != null)
+			return nv;
 		nv = getNhanVienKyThuatTheoMaNV(ma);
-		if (nv != null) return nv;
+		if (nv != null)
+			return nv;
 		return null;
 	}
 
+	/**
+	 * @author AnQuocViet
+	 */
 	public NhanVien getNhanVienHanhChinhTheoMaNV(String ma) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
@@ -132,7 +149,8 @@ public class NhanVien_DAO {
 
 				cccd_dao = new CanCuocCongDan_DAO();
 				CanCuocCongDan c = cccd_dao.getCCCD(maCCCD);
-				return new NhanVienHanhChinh(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, trinhDoHocVan, thuocPhongBan);
+				return new NhanVienHanhChinh(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, trinhDoHocVan,
+						thuocPhongBan);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -147,7 +165,10 @@ public class NhanVien_DAO {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * @author AnQuocViet
+	 */
 	public NhanVien getNhanVienKyThuatTheoMaNV(String ma) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;

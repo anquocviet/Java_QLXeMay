@@ -58,6 +58,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	private JButton btnChonKhach;
 	private JButton btnLuu;
 	private JButton btnThem;
+	private JTextField textField_19;
 
 	/**
 	 * Create the panel.
@@ -149,7 +150,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		textField_11.setColumns(10);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 210, 580, 102);
+		scrollPane_2.setBounds(10, 236, 580, 76);
 		panel_1.add(scrollPane_2);
 		
 		table_2 = new JTable();
@@ -244,7 +245,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		panel_6.setLayout(null);
 		panel_6.setForeground(new Color(64, 128, 128));
 		panel_6.setBorder(new TitledBorder(null, "Tr\u1EA3 g\u00F3p", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 128, 128)));
-		panel_6.setBounds(319, 10, 250, 194);
+		panel_6.setBounds(319, 10, 250, 224);
 		panel_1.add(panel_6);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("Mã trả góp:");
@@ -300,6 +301,15 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		textField_18.setBounds(131, 164, 110, 20);
 		panel_6.add(textField_18);
 		textField_18.setColumns(10);
+		
+		JLabel lblNewLabel_22 = new JLabel("Lần trả thứ :");
+		lblNewLabel_22.setBounds(10, 194, 90, 20);
+		panel_6.add(lblNewLabel_22);
+		
+		textField_19 = new JTextField();
+		textField_19.setBounds(131, 194, 30, 20);
+		panel_6.add(textField_19);
+		textField_19.setColumns(10);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin Xe", TitledBorder.CENTER, TitledBorder.BELOW_TOP, null, new Color(64, 128, 128)));

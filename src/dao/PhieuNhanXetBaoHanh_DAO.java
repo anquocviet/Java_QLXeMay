@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -11,28 +12,33 @@ import connect.ConnectDB;
 import entity.CanCuocCongDan;
 import entity.KhachHang;
 import entity.NhanVien;
+import entity.NhanVienHanhChinh;
+import entity.NhanVienKiThuat;
+import entity.XeMay;
+import entity.PhieuNhanXetBaoHanh;
 
-public class KhachHang_DAO {
-	private CanCuocCongDan_DAO cccd_dao;
-
+public class PhieuNhanXetBaoHanh_DAO {
 	/**
 	 * @author AnQuocViet
 	 */
-	public ArrayList<KhachHang> getAllKhachHang() {
-		ArrayList<KhachHang> dskh = new ArrayList<KhachHang>();
+	public ArrayList<PhieuNhanXetBaoHanh> getAllPhieuNhanXetBaoHanh() {
+		ArrayList<PhieuNhanXetBaoHanh> dsp = new ArrayList<PhieuNhanXetBaoHanh>();
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
 		try {
 			stmt = con.createStatement();
-			String sql = "SELECT * FROM KhachHang";
+			String sql = "SELECT * FROM PhieuNhanXetBaoHanh";
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
+				String maPhieu = rs.getString("MaPhieu");
+				LocalDate ngayNhap = rs.getDate("NgayNhap").toLocalDate();
+				String maNV = rs.getString("MaNV");
 				String maKH = rs.getString("MaKH");
-				String maCCCD = rs.getString("MaCCCD");
-				String sdt = rs.getString("SoDienThoai");
-				CanCuocCongDan c = new CanCuocCongDan(maCCCD);
-				KhachHang kh = new KhachHang(maKH, sdt, c);
-				dskh.add(kh);
+				String soKhung = rs.getString("");
+				double tienCong = rs.getDouble("TienCong");
+				PhieuNhanXetBaoHanh p = new PhieuNhanXetBaoHanh(maPhieu, new NhanVienKiThuat(maNV), new KhachHang(maKH),
+						new XeMay(soKhung), ngayNhap);
+				dsp.add(p);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -42,33 +48,29 @@ public class KhachHang_DAO {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
+
 				e.printStackTrace();
 			}
 		}
-		return dskh;
+		return dsp;
 	}
 
 	/**
 	 * @author AnQuocViet
 	 */
-	public KhachHang getKhachHangTheoMaKH(String maKhachHang) {
-		KhachHang kh = null;
+	public int countPhieuBaoHanhInDate(LocalDate date) {
+		ArrayList<PhieuNhanXetBaoHanh> dsp = new ArrayList<PhieuNhanXetBaoHanh>();
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
+		int count = 0;
 		try {
 			stmt = con.createStatement();
-
-			String sql = "SELECT * FROM KhachHang WHERE MaKH = '" + maKhachHang + "'";
-
+			String dateFormat = date.toString();
+			String sql = String.format("SELECT * FROM PhieuNhanXetBaoHanh WHERE NgayLap = '%s'", dateFormat);
 			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				String maKH = rs.getString("MaKH");
-				String maCCCD = rs.getString("MaCCCD");
-				String sdt = rs.getString("SoDienThoai");
-				cccd_dao = new CanCuocCongDan_DAO();
-				CanCuocCongDan cc = cccd_dao.getCCCD(maCCCD);
-				kh = new KhachHang(maKH, sdt, cc);
-			}
+			while (rs.next())
+				count++;
+			return count;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -77,10 +79,10 @@ public class KhachHang_DAO {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
+
 				e.printStackTrace();
 			}
 		}
-		return kh;
+		return count;
 	}
-
 }
