@@ -2,7 +2,8 @@ CREATE DATABASE QuanLyBanXeMay
 GO
 USE QuanLyBanXeMay
 
-CREATE TABLE CuaHang (
+CREATE TABLE CuaHang
+(
     MaCuaHang VARCHAR(10) NOT NULL PRIMARY KEY,
     TenCuaHang NVARCHAR(30),
     DiaChi NVARCHAR(60)
@@ -14,7 +15,8 @@ CREATE TABLE CanCuocCongDan
     Ho NVARCHAR(30) NOT NULL,
     HoDem NVARCHAR(30),
     Ten NVARCHAR(30) NOT NULL,
-    GioiTinh BIT,       -- 0: Nữ, 1: Nam
+    GioiTinh BIT,
+    -- 0: Nữ, 1: Nam
     NgaySinh DATE,
     TamTru NVARCHAR(50),
     ThuongTru NVARCHAR(50)
@@ -35,6 +37,7 @@ CREATE TABLE NhanVien
     NgayVaoLamViec DATE,
     SoDienThoai VARCHAR(10),
     Email VARCHAR(30),
+    ChucVu NVARCHAR(30),
     MucLuong MONEY,
     CONSTRAINT FK_NV_CCCD FOREIGN KEY (MaCCCD) REFERENCES CanCuocCongDan(MaCCCD)
 )
@@ -42,16 +45,14 @@ CREATE TABLE NhanVien
 CREATE TABLE NhanVienHanhChinh
 (
     MaNV VARCHAR(10) PRIMARY KEY NOT NULL,
-    ChucVu NVARCHAR(30),
     TrinhDoHoc NVARCHAR(30),
     ThuocPhongBan NVARCHAR(30),
     CONSTRAINT FK_NVHC_NV FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
 )
 
-CREATE TABLE NhanVienKyThuat 
+CREATE TABLE NhanVienKyThuat
 (
     MaNV VARCHAR(10) PRIMARY KEY NOT NULL,
-    ChucVu NVARCHAR(30),
     BacTho INT,
     SoNamKN INT,
     CONSTRAINT FK_NVKT_NV FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
@@ -81,7 +82,6 @@ CREATE TABLE LoaiXe
     SoLo VARCHAR(10) NOT NULL,
     TenLoai NVARCHAR(30),
     TenHang NVARCHAR(30),
-    SoLuong INT,
     SoPhanKhoi INT,
     DongTietKiem BIT,
     CONSTRAINT FK_LX_LH FOREIGN KEY (SoLo) REFERENCES LoHang(SoLo)
@@ -96,9 +96,8 @@ CREATE TABLE XeMay
     TenXe NVARCHAR(30),
     NuocSX NVARCHAR(30),
     MauXe NVARCHAR(30),
-    SoLuong INT,
     Gia MONEY,
-    NamSX DATE,
+    NamSX INT,
     AnhMinhHoa NVARCHAR(30),
     CONSTRAINT FK_XM_LX FOREIGN KEY (MaLoai) REFERENCES LoaiXe(MaLoai),
     CONSTRAINT FK_XM_NCC FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)
@@ -113,6 +112,7 @@ CREATE TABLE HopDong
     ThoiGianBaoHanh DATE,
     PhuongThucThanhToan NVARCHAR(30),
     SoLanTraGop INT,
+    TongTien MONEY,
     CONSTRAINT FK_HD_KH FOREIGN KEY (MaKH) REFERENCES KhachHang(MaKH),
     CONSTRAINT FK_HD_NV FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
 )
@@ -122,7 +122,6 @@ CREATE TABLE CT_HopDong
     MaCT_HopDong INT IDENTITY NOT NULL,
     SoHopDong VARCHAR(10) NOT NULL,
     SoKhung VARCHAR(17) NOT NULL,
-    SoLuong INT,
     ThanhTien MONEY,
     PRIMARY KEY (MaCT_HopDong, SoHopDong),
     CONSTRAINT FK_CTHD_HD FOREIGN KEY (SoHopDong) REFERENCES HopDong(SoHopDong),
@@ -131,12 +130,13 @@ CREATE TABLE CT_HopDong
 
 CREATE TABLE CT_TraGop
 (
-    MaTraGop VARCHAR(10) PRIMARY KEY NOT NULL,
+    MaTraGop VARCHAR(10) NOT NULL,
     SoHopDong VARCHAR(10) NOT NULL,
     SoTienTraGop MONEY,
     NgayTraGop DATE,
     MaNguoiTra VARCHAR(12) NOT NULL,
     MaNguoiNhan VARCHAR(10) NOT NULL,
+    PRIMARY KEY (MaTraGop, SoHopDong),
     CONSTRAINT FK_CTTG_HD FOREIGN KEY (SoHopDong) REFERENCES HopDong(SoHopDong),
     CONSTRAINT FK_CTTG_KH FOREIGN KEY (MaNguoiNhan) REFERENCES NhanVien(MaNV),
     CONSTRAINT FK_CTTG_CCCD FOREIGN KEY (MaNguoiTra) REFERENCES CanCuocCongDan(MaCCCD)
@@ -177,7 +177,7 @@ CREATE TABLE CT_BaoHanh
 )
 
 INSERT INTO [dbo].[CuaHang]
-VALUES 
+VALUES
     ('Store01', N'Công Nghiệp Motor', '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, TpHCM')
 GO
 
@@ -214,38 +214,38 @@ VALUES
 GO
 
 INSERT INTO [dbo].[NhanVien]
-    ( MaNV, MaCCCD, NgayVaoLamViec, SoDienThoai, Email, MucLuong )
+    ( MaNV, MaCCCD, NgayVaoLamViec, SoDienThoai, Email, ChucVu, MucLuong )
 VALUES
-    ( 'NV01120321', '012102832782', '2021-03-12', '0871817463', 'yennhi@gmail.com', 4000000 ),
-    ( 'NV02120321', '071203948221', '2021-03-12', '0779812936', 'namhai@gmail.com', 12000000 ),
-    ( 'NV03120321', '096195928378', '2021-03-12', '0348971298', 'thuhang@gmail.com', 6000000 ),
-    ( 'NV01250321', '093088675125', '2021-03-25', '0997862386', 'anh992@gmail.com', 7500000 ),
-    ( 'NV01080821', '064090892739', '2021-08-08', '0657862166', 'phukhang981@gmail.com', 15000000 ),
-    ( 'NV01010322', '019197908232', '2022-03-01', '0329871928', 'hongnhu@hotmail.com', 14000000 ),
-    ( 'NV02010322', '017086152512', '2022-03-01', '0367788991', 'anhkhoa009@outlook.com', 11000000 ),
-    ( 'NV03010322', '015077008912', '2022-03-01', '0997127666', 'hoangthanh34@gmail.com', 9500000 ),
-    ( 'NV04010322', '020196251520', '2022-03-01', '0999967612', 'duonglinh96@yahoo.com', 6500000 ),
-    ( 'NV01040123', '031173747512', '2023-01-04', '0878812776', 'phannnhu981@gmail.com', 20000000 )
+    ( 'NV01120321', '012102832782', '2021-03-12', '0871817463', 'yennhi@gmail.com', N'Thực tập', 4000000 ),
+    ( 'NV02120321', '071203948221', '2021-03-12', '0779812936', 'namhai@gmail.com', N'Trưởng phòng', 12000000 ),
+    ( 'NV03120321', '096195928378', '2021-03-12', '0348971298', 'thuhang@gmail.com', N'Nhân viên', 6000000 ),
+    ( 'NV01250321', '093088675125', '2021-03-25', '0997862386', 'anh992@gmail.com', N'Nhân viên', 7500000 ),
+    ( 'NV01080821', '064090892739', '2021-08-08', '0657862166', 'phukhang981@gmail.com', N'Trưởng phòng', 15000000 ),
+    ( 'NV01010322', '019197908232', '2022-03-01', '0329871928', 'hongnhu@hotmail.com', N'Trưởng phòng KT', 14000000 ),
+    ( 'NV02010322', '017086152512', '2022-03-01', '0367788991', 'anhkhoa009@outlook.com', N'Phó phòng KT', 11000000 ),
+    ( 'NV03010322', '015077008912', '2022-03-01', '0997127666', 'hoangthanh34@gmail.com', N'Thợ máy', 9500000 ),
+    ( 'NV04010322', '020196251520', '2022-03-01', '0999967612', 'duonglinh96@yahoo.com', N'Thực tập', 6500000 ),
+    ( 'NV01040123', '031173747512', '2023-01-04', '0878812776', 'phannnhu981@gmail.com', N'Quản lý', 20000000 )
 GO
 
-INSERT INTO [dbo].[NhanVienHanhChinh] 
-    (MaNV, ChucVu, TrinhDoHoc, ThuocPhongBan)
-VALUES 
-    ( 'NV01120321',  N'Thực tập', N'Đại học', N'Kế toán'),
-    ( 'NV02120321', 'Trưởng phòng', N'Đại học', N'Kế toán'),
-    ( 'NV03120321', N'Nhân viên', N'Đại học', N'Tài chính'),
-    ( 'NV01250321', N'Nhân viên', N'Đại học', N'Tài chính'),
-    ( 'NV01080821', N'Trưởng phòng', N'Thạc sĩ', N'Tài chính')
+INSERT INTO [dbo].[NhanVienHanhChinh]
+    (MaNV, TrinhDoHoc, ThuocPhongBan)
+VALUES
+    ( 'NV01120321', N'Đại học', N'Kế toán'),
+    ( 'NV02120321', N'Đại học', N'Kế toán'),
+    ( 'NV03120321', N'Đại học', N'Tài chính'),
+    ( 'NV01250321', N'Đại học', N'Tài chính'),
+    ( 'NV01080821', N'Thạc sĩ', N'Tài chính')
 GO
 
-INSERT INTO [dbo].[NhanVienKyThuat] 
-    (MaNV, ChucVu, BacTho, SoNamKN)
-VALUES 
-    ( 'NV01010322', N'Trưởng phòng KT', 3, 3),
-    ( 'NV02010322', N'Phó phòng KT', 2, 3),
-    ( 'NV03010322', N'Thợ máy', 2, 2),
-    ( 'NV04010322', N'Thực tập', 1, 1),
-    ( 'NV01040123', N'Quản lý', 4, 3)
+INSERT INTO [dbo].[NhanVienKyThuat]
+    (MaNV, BacTho, SoNamKN)
+VALUES
+    ( 'NV01010322', 3, 3),
+    ( 'NV02010322', 2, 3),
+    ( 'NV03010322', 2, 2),
+    ( 'NV04010322', 1, 1),
+    ( 'NV01040123', 4, 3)
 GO
 
 INSERT INTO [dbo].[NhaCungCap]
@@ -268,43 +268,45 @@ INSERT INTO [dbo].[LoaiXe]
     ( MaLoai, SoLo, TenLoai, TenHang, SoPhanKhoi, DongTietKiem )
 VALUES
     ( 'LX001', 'LH01220122', N'Xe số', 'Yamaha', 110, 1),
-    ( 'LX002', 'LH01220122', N'Tay ga', 'Honda', 125,  1),
+    ( 'LX002', 'LH01220122', N'Tay ga', 'Honda', 125, 1),
     ( 'LX003', 'LH02220122', N'Côn tay', 'Honda', 150, 0 ),
     ( 'LX004', 'LH02220122', N'Mô tô', 'Honda', 500, 0 ),
     ( 'LX005', 'LH01250322', N'Xe điện', 'DatBike', 125, 1 )
 INSERT INTO [dbo].[XeMay]
-    ( SoKhung, SoMay, MaLoai, MaNCC, TenXe, NuocSX, MauXe, SoLuong, Gia, NamSX, AnhMinhHoa )
+    ( SoKhung, SoMay, MaLoai, MaNCC, TenXe, NuocSX, MauXe, Gia, NamSX, AnhMinhHoa )
 VALUES
-    ( '56C4-782636', '678CZ-778812', 'LX001', 'NCC002', N'Sirius FI 115cc', N'Việt Nam', 'Đen Cam', 20, 24000000, '2022-02-01', 'Sirius-FI-115.png' ),
-    ( '55B3-97817297', '9712N-971279126T', 'LX001', 'NCC002', N'Jupiter FI 115cc', N'Việt Nam', 'Xám', 18, 31000000, '2022-01-15', 'Jupiter-FI-115.png' ),
-    ( '581B-0812Y7122', '82711-HG9172', 'LX002', 'NCC002', N'SH Mode 125cc', N'Việt Nam', 'Bạc Đen', 24, 58000000, '2022-03-24', 'SH-Mode-125.png' ),
-    ( '89CB-9871276', '6129L-9172997712', 'LX002', 'NCC001', N'AirBlade 125cc', N'Thái Lan', 'Đỏ Đen', 20, 43000000, '2023-04-01', 'AirBlade-125.png' ),
-    ( '082U-12H1268712', '987E-1927ER12', 'LX003', 'NCC002', N'Winner X', N'Việt Nam', 'Đỏ Đen Trắng', 30, 50000000, '2022-02-01', 'Winner-X.png' ),
-    ( '621G-12N12797H', '9712Y-98127BN23', 'LX003', 'NCC002', N'CBR150R', N'Việt Nam', 'Đen Xám', 20, 74000000, '2022-03-01', 'CBR-150R.png' ),
-    ( '812K-9712T712FA', '08912-7766BV727', 'LX004', 'NCC002', N'CBR500R', N'Trung Quốc', 'Đỏ Đen', 12, 19300000, '2022-01-19', 'CBR500R.jpeg' ),
-    ( '98DN-JL97122', '9182H-129NBH612', 'LX004', 'NCC002', N'Rebel 500', N'Việt Nam', 'Đen', 13, 182000000, '2022-03-03', 'Rebel-500.jpeg' ),
-    ( '987KM-861268R', '098HA-912621LE', 'LX004', 'NCC003', N'CB500X', N'Trung Quốc', 'Đen Đỏ', 20, 195000000, '2022-04-01', 'CB500X.jpeg' ),
-    ( 'Y716-W1297972232', '9797129-JH7219', 'LX005', 'NCC002', N'Weaver++', N'Việt Nam', 'Đen Cam', 23, 66000000, '2022-02-25', 'Weaver++.png' )
+    ( '56C4-782636', '678CZ-778812', 'LX001', 'NCC002', N'Sirius FI 115cc', N'Việt Nam', N'Đen Cam', 24000000, 2022, 'Sirius-FI-115.png' ),
+    ( '55B3-97817297', '9712N-971279126T', 'LX001', 'NCC002', N'Jupiter FI 115cc', N'Việt Nam', N'Xám', 31000000, 2022, 'Jupiter-FI-115.png' ),
+    ( '581B-0812Y7122', '82711-HG9172', 'LX002', 'NCC002', N'SH Mode 125cc', N'Việt Nam', N'Bạc Đen', 58000000, 2022, 'SH-Mode-125.png' ),
+    ( '89CB-9871276', '6129L-9172997712', 'LX002', 'NCC001', N'AirBlade 125cc', N'Thái Lan', N'Đỏ Đen', 43000000, 2023, 'AirBlade-125.png' ),
+    ( '082U-12H1268712', '987E-1927ER12', 'LX003', 'NCC002', N'Winner X', N'Việt Nam', N'Đỏ Đen Trắng', 50000000, 2022, 'Winner-X.png' ),
+    ( '621G-12N12797H', '9712Y-98127BN23', 'LX003', 'NCC002', N'CBR150R', N'Việt Nam', N'Đen Xám', 74000000, 2022, 'CBR-150R.png' ),
+    ( '812K-9712T712FA', '08912-7766BV727', 'LX004', 'NCC002', N'CBR500R', N'Trung Quốc', N'Đỏ Đen', 19300000, 2022, 'CBR500R.jpeg' ),
+    ( '98DN-JL97122', '9182H-129NBH612', 'LX004', 'NCC002', N'Rebel 500', N'Việt Nam', N'Đen', 182000000, 2022, 'Rebel-500.jpeg' ),
+    ( '987KM-861268R', '098HA-912621LE', 'LX004', 'NCC003', N'CB500X', N'Trung Quốc', N'Đen Đỏ', 195000000, 2022, 'CB500X.jpeg' ),
+    ( 'Y716-W1297972232', '9797129-JH7219', 'LX005', 'NCC002', N'Weaver++', N'Việt Nam', N'Đen Cam', 66000000, 2022, 'Weaver++.png' )
 GO
 
 INSERT INTO [dbo].[HopDong]
-    ( SoHopDong, MaKH, MaNV, NgayLapHopDong, ThoiGianBaoHanh,PhuongThucThanhToan, SoLanTraGop )
+    ( SoHopDong, MaKH, MaNV, NgayLapHopDong, ThoiGianBaoHanh,PhuongThucThanhToan, SoLanTraGop, TongTien )
 VALUES
-    ( 'HD01230322', 'KH01230322', 'NV01120321', '2022-03-23', '2023-03-23', N'Tiền mặt', 1 ),
-    ( 'HD02230322', 'KH02230322', 'NV02120321', '2022-03-23', '2023-03-23', N'Tiền mặt', 2 ),
-    ( 'HD01290522', 'KH01290522', 'NV03120321', '2022-05-29', '2023-05-29', N'Ngân hàng', 1 ),
-    ( 'HD01010622', 'KH01010622', 'NV03120321', '2022-06-01', '2023-06-01', N'Ngân hàng', 3 ),
-    ( 'HD01150223', 'KH01150223', 'NV01250321', '2023-02-15', '2024-02-15', N'Tiền mặt', 1 )
+    -- Tong tien = Tong tien cac xe - Chiet khau (neu co) 
+    -- Neu Mua va thanh toan 1 lan: - 2%
+    -- Neu mua 3 chiec xe tro len va thanh toan 1 lan: - 5% 
+    ( 'HD01230322', 'KH01230322', 'NV01120321', '2022-03-23', '2023-03-23', N'Tiền mặt', 1, 27048000 ),
+    ( 'HD02230322', 'KH02230322', 'NV02120321', '2022-03-23', '2023-03-23', N'Tiền mặt', 2,  66700000),
+    ( 'HD01290522', 'KH01290522', 'NV03120321', '2022-05-29', '2023-05-29', N'Ngân hàng', 1, 152950000 )
 GO
 
 INSERT INTO [dbo].[CT_HopDong]
-    ( SoHopDong, SoKhung, SoLuong, ThanhTien )
+    ( SoHopDong, SoKhung, ThanhTien )
 VALUES
-    ( 'HD01230322', '56C4-782636', 2, 54240000 ),  -- Thanh tien = Gia xe + 10% VAT + 5% Lời +/- các phí khác
-    ( 'HD02230322', '581B-0812Y7122', 1, 67860000 ),
-    ( 'HD01290522', '082U-12H1268712', 3, 165000000),
-    ( 'HD01010622', '812K-9712T712FA', 1, 227740000 ),
-    ( 'HD01150223', 'Y716-W1297972232', 2, 149160000 )
+    -- Thanh tien = Gia xe + 10% VAT + 5% Lời
+    ( 'HD01230322', '56C4-782636', 27600000 ),
+    ( 'HD02230322', '581B-0812Y7122', 66700000 ),
+    ( 'HD01290522', '55B3-97817297', 35650000),
+    ( 'HD01290522', '89CB-9871276', 49450000),
+    ( 'HD01290522', 'Y716-W1297972232', 75900000)
 GO
 
 INSERT INTO [dbo].[CT_TraGop]
@@ -313,11 +315,7 @@ VALUES
     ( 'TG01230322', 'HD01230322', 54240000, '2022-03-23', '087180000999', 'NV01120321' ),
     ( 'TG02230322', 'HD02230322', 30000000, '2022-03-23', '031099758391', 'NV02120321' ),
     ( 'TG01010422', 'HD02230322', 37860000, '2022-04-01', '031099758391', 'NV02120321' ),
-    ( 'TG01290522', 'HD01290522', 165000000, '2022-05-29', '035200981263', 'NV03120321' ),
-    ( 'TG01010522', 'HD01010622', 50000000, '2022-06-01', '083189938126', 'NV03120321' ),
-    ( 'TG01150622', 'HD01010622', 100000000, '2022-06-15', '083190719279', 'NV01080821' ),
-    ( 'TG01150722', 'HD01010622', 77740000, '2022-07-15', '083189938126', 'NV01080821' ),
-    ( 'TG01150222', 'HD01150223', 149160000, '2023-02-15', '001091252513', 'NV01250321' )
+    ( 'TG01290522', 'HD01290522', 165000000, '2022-05-29', '035200981263', 'NV03120321' )
 GO
 
 INSERT INTO [dbo].[LinhKien]
@@ -334,14 +332,15 @@ INSERT INTO [dbo].[PhieuNhanXetBaoHanh]
     ( MaPhieu, NgayLap, MaNV, MaKH, SoKhung, TienCong )
 VALUES
     ( 'P001260922', '2022-09-26', 'NV03010322', 'KH01230322', '56C4-782636', 800000 ),
-    ( 'P002260922', '2022-09-26', 'NV02010322', 'KH01290522', '082U-12H1268712', 300000 ),
-    ( 'P001061122', '2022-11-06', 'NV04010322', 'KH01150223', 'Y716-W1297972232', 100000 )
+    ( 'P002260922', '2022-09-26', 'NV02010322', 'KH01290522', '89CB-9871276', 300000 ),
+    ( 'P001061122', '2022-11-06', 'NV04010322', 'KH01290522', 'Y716-W1297972232', 100000 )
 GO
 
 INSERT INTO [dbo].[CT_BaoHanh]
     ( MaPhieu, MaLinhKien, LyDo, LoiThuocSanPham, SoLuong, Gia, ThanhTien )
 VALUES
-    ( 'P001260922', 'LK0003', 'Hư Bugi', 0, 1, 54000, 54000 ),        -- Gia = Gia Linh Kien + 10% 
+    ( 'P001260922', 'LK0003', 'Hư Bugi', 0, 1, 54000, 54000 ),
+    -- Gia = Gia Linh Kien + 10% 
     ( 'P001260922', 'LK0004', 'Mòn má phanh', 0, 2, 161000, 322000 ),
     ( 'P002260922', 'LK0005', 'Mút lọc gió lỏng ốc', 1, 1, NULL, NULL ),
     ( 'P001061122', 'LK0005', 'Mút lọc gió lỏng ốc', 1, 1, NULL, NULL ),

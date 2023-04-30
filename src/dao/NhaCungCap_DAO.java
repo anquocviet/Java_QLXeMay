@@ -94,6 +94,52 @@ public class NhaCungCap_DAO {
 	    return rows > 0;
 	}
 	
-	
+	public boolean suaThongTinNhaCungCap(NhaCungCap ncc) {
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    PreparedStatement stmt = null;
+	    int rows = 0;
+	    try {
+	        stmt = con.prepareStatement("UPDATE NhaCungCap SET TenNCC = ?, DiaChi = ?, SoDienThoai = ? WHERE MaNCC = ?");
+	        stmt.setString(1, ncc.getTenNCC());
+	        stmt.setString(2, ncc.getDiaChi());
+	        stmt.setString(3, ncc.getSdt());
+	        stmt.setString(4, ncc.getMaNCC());
+	        rows = stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return rows > 0;
+	}
 
+	public boolean xoaNhaCungCap(String maNCC) {
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    PreparedStatement stmt = null;
+	    int rows = 0;
+	    try {
+	        stmt = con.prepareStatement("DELETE FROM NhaCungCap WHERE MaNCC = ?");
+	        stmt.setString(1, maNCC);
+	        rows = stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return rows > 0;
+	}
+
+	
 }
