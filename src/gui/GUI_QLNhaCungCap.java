@@ -9,6 +9,9 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import dao.NhaCungCap_DAO;
+
 import java.awt.List;
 import javax.swing.JRadioButton;
 import java.awt.Choice;
@@ -37,12 +40,13 @@ import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 
 public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseListener{
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_4;
-	private JTable table;
-	private JTextField textField_3;
+	private JTextField txtMaNCC;
+	private JTextField txtTenNCC;
+	private JTextField txtSDT;
+	private JTextField txtDiaChi;
+	private JTable tableNCC;
+	private JTextField txtSearch;
+	private NhaCungCap_DAO ncc_dao;
 
 	/**
 	 * Create the panel.
@@ -63,54 +67,54 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel_1 = new JLabel("Mã nhà cung cấp :");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(10, 30, 192, 40);
-		panel.add(lblNewLabel_1);
+		JLabel lblMaNCC = new JLabel("Mã nhà cung cấp :");
+		lblMaNCC.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblMaNCC.setBounds(10, 30, 192, 40);
+		panel.add(lblMaNCC);
 		
-		textField = new JTextField();
-		textField.setBounds(167, 38, 338, 30);
-		panel.add(textField);
-		textField.setColumns(10);
+		txtMaNCC = new JTextField();
+		txtMaNCC.setBounds(167, 38, 338, 30);
+		panel.add(txtMaNCC);
+		txtMaNCC.setColumns(10);
 		
-		JLabel lblNewLabel_2 = new JLabel("Tên nhà cung cấp :");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_2.setBounds(10, 80, 135, 40);
-		panel.add(lblNewLabel_2);
+		JLabel lblTenNCC = new JLabel("Tên nhà cung cấp :");
+		lblTenNCC.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblTenNCC.setBounds(10, 80, 135, 40);
+		panel.add(lblTenNCC);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(167, 88, 338, 30);
-		panel.add(textField_1);
+		txtTenNCC = new JTextField();
+		txtTenNCC.setColumns(10);
+		txtTenNCC.setBounds(167, 88, 338, 30);
+		panel.add(txtTenNCC);
 		
-		JLabel lblNewLabel_3 = new JLabel("Số điện thoại :");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_3.setBounds(605, 80, 124, 40);
-		panel.add(lblNewLabel_3);
+		JLabel lblSDT = new JLabel("Số điện thoại :");
+		lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSDT.setBounds(605, 80, 124, 40);
+		panel.add(lblSDT);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(739, 88, 192, 30);
-		panel.add(textField_2);
-		textField_2.setColumns(10);
+		txtSDT = new JTextField();
+		txtSDT.setBounds(739, 88, 192, 30);
+		panel.add(txtSDT);
+		txtSDT.setColumns(10);
 		
-		JLabel lblNewLabel_5 = new JLabel("Địa chỉ :");
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_5.setBounds(605, 30, 90, 40);
-		panel.add(lblNewLabel_5);
+		JLabel lblDiaChi = new JLabel("Địa chỉ :");
+		lblDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblDiaChi.setBounds(605, 30, 90, 40);
+		panel.add(lblDiaChi);
 		
-		textField_4 = new JTextField();
-		textField_4.setBounds(739, 38, 422, 30);
-		panel.add(textField_4);
-		textField_4.setColumns(10);
+		txtDiaChi = new JTextField();
+		txtDiaChi.setBounds(739, 38, 422, 30);
+		panel.add(txtDiaChi);
+		txtDiaChi.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 216, 1151, 292);
 		panel.add(scrollPane);
 		
-		table = new JTable();
-		table.setForeground(new Color(64, 128, 128));
-		table.setFont(new Font("Tahoma", Font.BOLD, 17));
-		table.setModel(new DefaultTableModel(
+		tableNCC = new JTable();
+		tableNCC.setForeground(new Color(64, 128, 128));
+		tableNCC.setFont(new Font("Tahoma", Font.BOLD, 17));
+		tableNCC.setModel(new DefaultTableModel(
 			new Object[][] {
 				{null, null, null, null},
 			},
@@ -118,115 +122,115 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 				"T\u00EAn nh\u00E0 cung c\u1EA5p", "M\u00E3 nh\u00E0 cung c\u1EA5p", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "\u0110\u1ECBa ch\u1EC9"
 			}
 		));
-		table.getColumnModel().getColumn(0).setPreferredWidth(100);
-		table.getColumnModel().getColumn(0).setMinWidth(100);
-		table.getColumnModel().getColumn(1).setPreferredWidth(100);
-		table.getColumnModel().getColumn(1).setMinWidth(100);
-		scrollPane.setViewportView(table);
-		table.setToolTipText("");
+		tableNCC.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tableNCC.getColumnModel().getColumn(0).setMinWidth(100);
+		tableNCC.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tableNCC.getColumnModel().getColumn(1).setMinWidth(100);
+		scrollPane.setViewportView(tableNCC);
+		tableNCC.setToolTipText("");
 		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setBounds(10, 128, 1151, 78);
 		panel.add(splitPane);
 		
-		JPanel panel_1 = new JPanel();
-		splitPane.setLeftComponent(panel_1);
-		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 25));
+		JPanel panel_left = new JPanel();
+		splitPane.setLeftComponent(panel_left);
+		panel_left.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 25));
 		
-		JLabel lblNewLabel_17 = new JLabel("Mã nhà cung cấp :");
-		lblNewLabel_17.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_1.add(lblNewLabel_17);
+		JLabel lblSearch = new JLabel("Mã nhà cung cấp :");
+		lblSearch.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_left.add(lblSearch);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(15);
-		panel_1.add(textField_3);
+		txtSearch = new JTextField();
+		txtSearch.setColumns(15);
+		panel_left.add(txtSearch);
 		
-		JButton btnNewButton_3 = new JButton("Tìm");
-		btnNewButton_3.setForeground(new Color(0, 0, 0));
-		btnNewButton_3.setBackground(new Color(64, 128, 128));
-		btnNewButton_3.addActionListener(new ActionListener() {
+		JButton btnSearch = new JButton("Tìm");
+		btnSearch.setForeground(new Color(0, 0, 0));
+		btnSearch.setBackground(new Color(64, 128, 128));
+		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		panel_1.add(btnNewButton_3);
+		panel_left.add(btnSearch);
 		
-		JPanel panel_2 = new JPanel();
-		splitPane.setRightComponent(panel_2);
-		panel_2.setLayout(new GridLayout(3, 3, 20, 5));
+		JPanel panel_right = new JPanel();
+		splitPane.setRightComponent(panel_right);
+		panel_right.setLayout(new GridLayout(3, 3, 20, 5));
 		
 		JLabel lblNewLabel_4 = new JLabel("");
 		lblNewLabel_4.setEnabled(false);
-		panel_2.add(lblNewLabel_4);
+		panel_right.add(lblNewLabel_4);
 		
 		JLabel lblNewLabel_4_1 = new JLabel("");
 		lblNewLabel_4_1.setEnabled(false);
-		panel_2.add(lblNewLabel_4_1);
+		panel_right.add(lblNewLabel_4_1);
 		
 		JLabel lblNewLabel_4_2 = new JLabel("");
 		lblNewLabel_4_2.setEnabled(false);
-		panel_2.add(lblNewLabel_4_2);
+		panel_right.add(lblNewLabel_4_2);
 		
 		JLabel lblNewLabel_4_6 = new JLabel("");
 		lblNewLabel_4_6.setEnabled(false);
-		panel_2.add(lblNewLabel_4_6);
+		panel_right.add(lblNewLabel_4_6);
 		
 		JLabel lblNewLabel_4_8 = new JLabel("");
 		lblNewLabel_4_8.setEnabled(false);
-		panel_2.add(lblNewLabel_4_8);
+		panel_right.add(lblNewLabel_4_8);
 		
 		JLabel lblNewLabel_4_10 = new JLabel("");
 		lblNewLabel_4_10.setEnabled(false);
-		panel_2.add(lblNewLabel_4_10);
+		panel_right.add(lblNewLabel_4_10);
 		
 		JLabel lblNewLabel_7 = new JLabel("");
-		panel_2.add(lblNewLabel_7);
+		panel_right.add(lblNewLabel_7);
 		
-		JButton btnNewButton_1 = new JButton("Thêm mới");
-		btnNewButton_1.setForeground(new Color(0, 0, 0));
-		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton_1.setBackground(new Color(64, 128, 128));
-		panel_2.add(btnNewButton_1);
+		JButton btnAdd = new JButton("Thêm mới");
+		btnAdd.setForeground(new Color(0, 0, 0));
+		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAdd.setBackground(new Color(64, 128, 128));
+		panel_right.add(btnAdd);
 		
-		JButton btnNewButton = new JButton("Chỉnh sửa");
-		btnNewButton.setForeground(new Color(0, 0, 0));
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton.setBackground(new Color(64, 128, 128));
-		panel_2.add(btnNewButton);
+		JButton btnUpdate = new JButton("Chỉnh sửa");
+		btnUpdate.setForeground(new Color(0, 0, 0));
+		btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnUpdate.setBackground(new Color(64, 128, 128));
+		panel_right.add(btnUpdate);
 		
-		JButton btnNewButton_2 = new JButton("Xóa");
-		btnNewButton_2.setForeground(new Color(0, 0, 0));
-		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton_2.setBackground(new Color(64, 128, 128));
-		panel_2.add(btnNewButton_2);
+		JButton btnDelete = new JButton("Xóa");
+		btnDelete.setForeground(new Color(0, 0, 0));
+		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnDelete.setBackground(new Color(64, 128, 128));
+		panel_right.add(btnDelete);
 		
-		JButton btnNewButton_4 = new JButton("Lưu");
-		btnNewButton_4.setBackground(new Color(64, 128, 128));
-		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_2.add(btnNewButton_4);
+		JButton btnSave = new JButton("Lưu");
+		btnSave.setBackground(new Color(64, 128, 128));
+		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_right.add(btnSave);
 		
 		JLabel lblNewLabel_4_11 = new JLabel("");
 		lblNewLabel_4_11.setEnabled(false);
-		panel_2.add(lblNewLabel_4_11);
+		panel_right.add(lblNewLabel_4_11);
 		
 		JLabel lblNewLabel_4_9 = new JLabel("");
 		lblNewLabel_4_9.setEnabled(false);
-		panel_2.add(lblNewLabel_4_9);
+		panel_right.add(lblNewLabel_4_9);
 		
 		JLabel lblNewLabel_4_7 = new JLabel("");
 		lblNewLabel_4_7.setEnabled(false);
-		panel_2.add(lblNewLabel_4_7);
+		panel_right.add(lblNewLabel_4_7);
 		
 		JLabel lblNewLabel_4_4 = new JLabel("");
 		lblNewLabel_4_4.setEnabled(false);
-		panel_2.add(lblNewLabel_4_4);
+		panel_right.add(lblNewLabel_4_4);
 		
 		JLabel lblNewLabel_4_5 = new JLabel("");
 		lblNewLabel_4_5.setEnabled(false);
-		panel_2.add(lblNewLabel_4_5);
+		panel_right.add(lblNewLabel_4_5);
 		
 		JLabel lblNewLabel_4_3 = new JLabel("");
 		lblNewLabel_4_3.setEnabled(false);
-		panel_2.add(lblNewLabel_4_3);
+		panel_right.add(lblNewLabel_4_3);
 		
 		JLabel lblNewLabel_6 = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
 		lblNewLabel_6.setForeground(new Color(64, 128, 128));
@@ -234,7 +238,18 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_6.setBounds(0, 21, 1171, 38);
 		add(lblNewLabel_6);
+		
+		ncc_dao = new NhaCungCap_DAO();
+		
+		loadDSNCC();
+		
+		//table
+		
 
+	}
+	
+	public void loadDSNCC() {
+		
 	}
 
 	@Override

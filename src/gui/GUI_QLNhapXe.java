@@ -8,6 +8,14 @@ import java.awt.BorderLayout;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import dao.CanCuocCongDan_DAO;
+import dao.KhachHang_DAO;
+import dao.NhaCungCap_DAO;
+import dao.XeMay_DAO;
+import entity.NhaCungCap;
+import entity.XeMay;
+
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.ImageIcon;
@@ -25,8 +33,16 @@ import javax.swing.UIManager;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
-public class GUI_QLNhapXe extends JPanel {
+public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener,KeyListener {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtMaNCC;
 	private JTextField txtTenNCC;
@@ -47,6 +63,8 @@ public class GUI_QLNhapXe extends JPanel {
 	private JLabel lblSoTien;
 	private Image imgXeMay;
 	private JTextField txtNgayDatHang;
+	private XeMay_DAO xe_dao;
+	private NhaCungCap_DAO ncc_dao;
 
 	/**
 	 * @author An Quốc Việt
@@ -91,6 +109,7 @@ public class GUI_QLNhapXe extends JPanel {
 								panelInfoNCC.add(lblMaNCC, gbc_lblMaNCC);
 				
 						txtMaNCC = new JTextField();
+						txtMaNCC.setEnabled(false);
 						GridBagConstraints gbc_txtMaNCC = new GridBagConstraints();
 						gbc_txtMaNCC.fill = GridBagConstraints.HORIZONTAL;
 						gbc_txtMaNCC.anchor = GridBagConstraints.NORTH;
@@ -111,6 +130,7 @@ public class GUI_QLNhapXe extends JPanel {
 				panelInfoNCC.add(lblTenNCC, gbc_lblTenNCC);
 				
 						txtTenNCC = new JTextField();
+						txtTenNCC.setEnabled(false);
 						GridBagConstraints gbc_txtTenNCC = new GridBagConstraints();
 						gbc_txtTenNCC.fill = GridBagConstraints.HORIZONTAL;
 						gbc_txtTenNCC.anchor = GridBagConstraints.NORTH;
@@ -378,7 +398,90 @@ public class GUI_QLNhapXe extends JPanel {
 		btnNhapHang.setFont(new Font("Dialog", Font.PLAIN, 14));
 		btnNhapHang.setIcon(new ImageIcon(imgThem));
 		panelNhapHang.add(btnNhapHang);
+		
+		ncc_dao = new NhaCungCap_DAO();
+		xe_dao = new XeMay_DAO();
 
+		loadDSNhaCungCap();
+		loadDSXe();
+
+		//txtMaNCC.addKeyListener(this);
+		tableNCC.addMouseListener(this);
+		tableXe.addMouseListener(this);
+
+	}
+	private void loadDSXe() {
+		ArrayList<XeMay> dsXe = xe_dao.getAllXeMay();
+		xe_dao.getAllXeMay().forEach(xe -> {
+			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getMauXe()});
+		});
+	}
+	public void loadDSNhaCungCap() {
+		DefaultTableModel tableModel = (DefaultTableModel) tableNCC.getModel();
+		tableModel.setRowCount(0);
+		ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+		    if (!dsNCC.isEmpty()) {
+		        for (NhaCungCap ncc : dsNCC) {
+		            String maNCC = ncc.getMaNCC();
+		            String tenNCC = ncc.getTenNCC();
+		            tableModel.addRow(new Object[] { maNCC, tenNCC });
+		        }
+		  }
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(tableNCC)) {
+			int rowSl = tableNCC.getSelectedRow();
+			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
+			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
+		}
+		if (o.equals(tableNCC)) {
+			int rowSl = tableNCC.getSelectedRow();
+			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
+			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
+		}
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		
 	}
 
 }
