@@ -82,5 +82,39 @@ public class KhachHang_DAO {
 		}
 		return kh;
 	}
+	
+	/**
+	 * @author AnQuocViet
+	 */
+	public KhachHang getKhachHangMaCCCD(String maCCCD) {
+		KhachHang kh = null;
+		Connection con = ConnectDB.getInstance().getConnection();
+		Statement stmt = null;
+		try {
+			stmt = con.createStatement();
+
+			String sql = "SELECT * FROM KhachHang WHERE MaCCCD = '" + maCCCD + "'";
+
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				String maKH = rs.getString("MaKH");
+				String sdt = rs.getString("SoDienThoai");
+				cccd_dao = new CanCuocCongDan_DAO();
+				CanCuocCongDan cc = cccd_dao.getCCCD(maCCCD);
+				kh = new KhachHang(maKH, sdt, cc);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return kh;
+	}
 
 }

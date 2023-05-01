@@ -14,6 +14,44 @@ import entity.NhaCungCap;
 import entity.XeMay;
 
 public class XeMay_DAO {
+	/**
+	 * @author Dang Thi Quyen Co
+	 * @return
+	 */
+	public ArrayList<XeMay> getAllXeMay() {
+		ArrayList<XeMay> dsXeMay = new ArrayList<XeMay>();
+		Connection conn = ConnectDB.getInstance().getConnection();
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			String sql = "select*from XeMay";
+			ResultSet rs = stm.executeQuery(sql);
+			while(rs.next()) {
+				String soKhung =rs.getString("SoKhung");
+				String soMay =  rs.getString("SoMay");
+				LoaiXe loaiXe =new LoaiXe(rs.getString("MaLoai"));
+				NhaCungCap nhaCungCap= new NhaCungCap(rs.getString("MaNCC"));
+				String tenXe = rs.getString("TenXe");
+				String nuocSanXuat =rs.getString("NuocSX");
+				String mauXe = rs.getString("MauXe");
+				double gia = rs.getDouble("Gia");
+				int namSanXuat = rs.getInt("NamSX");
+				String anh = rs.getString("AnhMinhHoa");
+				XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCungCap, tenXe, nuocSanXuat, mauXe, gia, namSanXuat, anh);
+				dsXeMay.add(xeMay);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dsXeMay;
+	}
+	
+	/**
+	 * @author An Quoc Viet
+	 * @param soKhung
+	 * @return
+	 */
 	public XeMay getXeMayTheoSoKhung(String soKhung) {
 		XeMay xe = null;
 		Connection con = ConnectDB.getInstance().getConnection();

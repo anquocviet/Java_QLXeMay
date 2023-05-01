@@ -83,10 +83,10 @@ public class Appication implements ActionListener, MouseListener, KeyListener {
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		tabbedPane.addTab("Bán xe", new GUI_QLBanXe());
-		//tabbedPane.addTab("Bảo hành", new GUI_QLBaoHanh());
+		tabbedPane.addTab("Bảo hành", new GUI_QLBaoHanh());
 		tabbedPane.addTab("Nhập xe", new GUI_QLNhapXe());
 		tabbedPane.addTab("QL xe", new GUI_QLXe());
-		//tabbedPane.addTab("Thống kê loại xe", new GUI_ThongKeLoaiXe());
+		tabbedPane.addTab("Thống kê loại xe", new GUI_ThongKeLoaiXe());
 		tabbedPane.addTab("Nhân viên", new GUI_QLNhanVien());
 		tabbedPane.addTab("Khách hàng", new GUI_QLKhachHang());
 		tabbedPane.addTab("Nhà cung cấp", new GUI_QLNhaCungCap());
