@@ -27,13 +27,16 @@ import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 
-public class GUI_QLNhaCungCap extends JPanel {
+public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseListener{
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -139,7 +142,7 @@ public class GUI_QLNhaCungCap extends JPanel {
 		panel_1.add(textField_3);
 		
 		JButton btnNewButton_3 = new JButton("Tìm");
-		btnNewButton_3.setForeground(new Color(255, 255, 255));
+		btnNewButton_3.setForeground(new Color(0, 0, 0));
 		btnNewButton_3.setBackground(new Color(64, 128, 128));
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -149,28 +152,124 @@ public class GUI_QLNhaCungCap extends JPanel {
 		
 		JPanel panel_2 = new JPanel();
 		splitPane.setRightComponent(panel_2);
-		panel_2.setLayout(null);
+		panel_2.setLayout(new GridLayout(3, 3, 20, 5));
+		
+		JLabel lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setEnabled(false);
+		panel_2.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("");
+		lblNewLabel_4_1.setEnabled(false);
+		panel_2.add(lblNewLabel_4_1);
+		
+		JLabel lblNewLabel_4_2 = new JLabel("");
+		lblNewLabel_4_2.setEnabled(false);
+		panel_2.add(lblNewLabel_4_2);
+		
+		JLabel lblNewLabel_4_6 = new JLabel("");
+		lblNewLabel_4_6.setEnabled(false);
+		panel_2.add(lblNewLabel_4_6);
+		
+		JLabel lblNewLabel_4_8 = new JLabel("");
+		lblNewLabel_4_8.setEnabled(false);
+		panel_2.add(lblNewLabel_4_8);
+		
+		JLabel lblNewLabel_4_10 = new JLabel("");
+		lblNewLabel_4_10.setEnabled(false);
+		panel_2.add(lblNewLabel_4_10);
+		
+		JLabel lblNewLabel_7 = new JLabel("");
+		panel_2.add(lblNewLabel_7);
 		
 		JButton btnNewButton_1 = new JButton("Thêm mới");
-		btnNewButton_1.setBounds(70, 10, 170, 56);
-		btnNewButton_1.setForeground(Color.WHITE);
+		btnNewButton_1.setForeground(new Color(0, 0, 0));
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_1.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton_1);
 		
 		JButton btnNewButton = new JButton("Chỉnh sửa");
-		btnNewButton.setBounds(300, 10, 170, 56);
-		btnNewButton.setForeground(Color.WHITE);
+		btnNewButton.setForeground(new Color(0, 0, 0));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton);
 		
 		JButton btnNewButton_2 = new JButton("Xóa");
-		btnNewButton_2.setBounds(530, 10, 170, 56);
-		btnNewButton_2.setForeground(Color.WHITE);
+		btnNewButton_2.setForeground(new Color(0, 0, 0));
 		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_2.setBackground(new Color(64, 128, 128));
 		panel_2.add(btnNewButton_2);
+		
+		JButton btnNewButton_4 = new JButton("Lưu");
+		btnNewButton_4.setBackground(new Color(64, 128, 128));
+		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_2.add(btnNewButton_4);
+		
+		JLabel lblNewLabel_4_11 = new JLabel("");
+		lblNewLabel_4_11.setEnabled(false);
+		panel_2.add(lblNewLabel_4_11);
+		
+		JLabel lblNewLabel_4_9 = new JLabel("");
+		lblNewLabel_4_9.setEnabled(false);
+		panel_2.add(lblNewLabel_4_9);
+		
+		JLabel lblNewLabel_4_7 = new JLabel("");
+		lblNewLabel_4_7.setEnabled(false);
+		panel_2.add(lblNewLabel_4_7);
+		
+		JLabel lblNewLabel_4_4 = new JLabel("");
+		lblNewLabel_4_4.setEnabled(false);
+		panel_2.add(lblNewLabel_4_4);
+		
+		JLabel lblNewLabel_4_5 = new JLabel("");
+		lblNewLabel_4_5.setEnabled(false);
+		panel_2.add(lblNewLabel_4_5);
+		
+		JLabel lblNewLabel_4_3 = new JLabel("");
+		lblNewLabel_4_3.setEnabled(false);
+		panel_2.add(lblNewLabel_4_3);
+		
+		JLabel lblNewLabel_6 = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
+		lblNewLabel_6.setForeground(new Color(64, 128, 128));
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_6.setBounds(0, 21, 1171, 38);
+		add(lblNewLabel_6);
 
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
