@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -12,6 +13,10 @@ import entity.NhaCungCap;
 import entity.XeMay;
 
 public class LoaiXe_DAO {
+	/**
+	 * @author Dang Thi Quyen Co
+	 * @return
+	 */
 	public ArrayList<LoaiXe> getAllLoaiXe() {
 		ArrayList<LoaiXe> dsLoaiXe = new ArrayList<LoaiXe>();
 		Connection conn = ConnectDB.getInstance().getConnection();
@@ -20,7 +25,7 @@ public class LoaiXe_DAO {
 			stm = conn.createStatement();
 			String sql = "select*from LoaiXe";
 			ResultSet rs = stm.executeQuery(sql);
-			while(rs.next()) {
+			while (rs.next()) {
 				String maLoaiXe = rs.getString("MaLoai");
 				LoHang loHang = new LoHang(rs.getString("SoLo"));
 				String tenLoaiXe = rs.getString("TenLoai");
@@ -36,9 +41,9 @@ public class LoaiXe_DAO {
 		}
 		return dsLoaiXe;
 	}
-	
+
 	/**
-	 * lấy loại xe theo mã có sẵn
+	 * @author Dang Thi Quyen Co lấy loại xe theo mã có sẵn
 	 * @param maLoaiXe
 	 * @return
 	 */
@@ -48,9 +53,9 @@ public class LoaiXe_DAO {
 		Statement stm = null;
 		try {
 			stm = conn.createStatement();
-			String sql = "select*from LoaiXe where MaLoai ='"+maLoaiXe+"'";
+			String sql = "select*from LoaiXe where MaLoai ='" + maLoaiXe + "'";
 			ResultSet rs = stm.executeQuery(sql);
-			while(rs.next()) {
+			while (rs.next()) {
 				LoHang loHang = new LoHang(rs.getString("SoLo"));
 				String tenLoaiXe = rs.getString("TenLoai");
 				String tenHang = rs.getString("TenHang");
@@ -61,7 +66,7 @@ public class LoaiXe_DAO {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				stm.close();
 			} catch (Exception e2) {
@@ -71,9 +76,9 @@ public class LoaiXe_DAO {
 		}
 		return loaiXe;
 	}
-	
+
 	/**
-	 * lấy loai xe theo tên có sẵn
+	 * @author Dang Thi Quyen Co
 	 * @param tenLoaiXe
 	 * @return
 	 */
@@ -83,9 +88,9 @@ public class LoaiXe_DAO {
 		Statement stm = null;
 		try {
 			stm = conn.createStatement();
-			String sql = "select*from LoaiXe where TenLoai =N'"+tenLoaiXe+"'";
+			String sql = "select*from LoaiXe where TenLoai =N'" + tenLoaiXe + "'";
 			ResultSet rs = stm.executeQuery(sql);
-			while(rs.next()) {
+			while (rs.next()) {
 				LoHang loHang = new LoHang(rs.getString("SoLo"));
 				String maLoaiXe = rs.getString("MaLoai");
 				String tenHang = rs.getString("TenHang");
@@ -96,7 +101,7 @@ public class LoaiXe_DAO {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				stm.close();
 			} catch (Exception e2) {
@@ -105,5 +110,63 @@ public class LoaiXe_DAO {
 			}
 		}
 		return loaiXe;
+	}
+
+	/**
+	 * @author An Quoc Viet
+	 * @return
+	 */
+	public ArrayList<Integer> getAllPhanKhoi() {
+		ArrayList<Integer> dsPhanKhoi = new ArrayList<Integer>();
+		Connection conn = ConnectDB.getInstance().getConnection();
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			String sql = "SELECT * FROM LoaiXe";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				int soPhanKhoi = rs.getInt("SoPhanKhoi");
+				if (!dsPhanKhoi.contains(soPhanKhoi))
+					dsPhanKhoi.add(soPhanKhoi);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dsPhanKhoi;
+	}
+
+	/**
+	 * @author An Quoc Viet
+	 * @return
+	 */
+	public ArrayList<String> getAllHangXe() {
+		ArrayList<String> dsHangXe = new ArrayList<String>();
+		Connection conn = ConnectDB.getInstance().getConnection();
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			String sql = "SELECT * FROM LoaiXe";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String hangXe = rs.getString("TenHang");
+				if (!dsHangXe.contains(hangXe))
+					dsHangXe.add(hangXe);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dsHangXe;
 	}
 }

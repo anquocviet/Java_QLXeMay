@@ -293,4 +293,33 @@ public class XeMay_DAO {
 		}
 		return n > 0;
 	}
+
+	/**
+	 * @author An Quoc Viet
+	 * @return
+	 */
+	public ArrayList<String> getAllMauXe() {
+		ArrayList<String> dsMauXe = new ArrayList<String>();
+		Connection conn = ConnectDB.getInstance().getConnection();
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			String sql = "SELECT * FROM XeMay";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String mauXe = rs.getString("MauXe");
+				if (!dsMauXe.contains(mauXe)) 
+					dsMauXe.add(mauXe);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dsMauXe;
+	}
 }

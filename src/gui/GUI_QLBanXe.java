@@ -14,10 +14,17 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dao.CanCuocCongDan_DAO;
+import dao.HopDong_DAO;
 import dao.KhachHang_DAO;
+import dao.LoaiXe_DAO;
+import dao.NhanVien_DAO;
 import dao.XeMay_DAO;
 import entity.CanCuocCongDan;
+import entity.HopDong;
+import entity.HopDongTraGop;
 import entity.KhachHang;
+import entity.NhanVien;
+import entity.PhuongThucThanhToan;
 import entity.XeMay;
 
 import java.awt.List;
@@ -28,6 +35,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.JRadioButton;
@@ -55,7 +64,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	private JTextField txtGia;
 	private JTable tableKH;
 	private JTable tableChonXe;
-	private JTextField txtMaHoaDon;
 	private JTable tableXe;
 	private JTextField txtThanhTien;
 	private JTextField txtMaNV;
@@ -65,7 +73,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	private JTextField txtConNo;
 	private JTextField txtTenNguoiTra;
 	private JTextField txtMaNVNhan;
-	private JTextField txtSoLanTran;
 	private JTextField txtNgayTra;
 	private JTextField txtSoTienTraGop;
 	private JButton btnChonKhach;
@@ -78,6 +85,19 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	private DefaultTableModel tableModelXe;
 	private DefaultTableModel tableModelChonXe;
 	private JLabel lbAnhXe;
+	private LoaiXe_DAO loaiXe_dao;
+	private JComboBox cbLoaiXe;
+	private JComboBox cbMauXe;
+	private JComboBox cbSoPhanKhoi;
+	private JCheckBox chckbxDongXe;
+	private JComboBox cbHangXe;
+	private JComboBox cbPTThanhToan;
+	private JComboBox cbMaTraGop;
+	private HopDong_DAO hopDong_dao;
+	private JComboBox cbMaHopDong;
+	private JComboBox cbSoLanTra;
+	private NhanVien_DAO nv_dao;
+	private PhuongThucThanhToan TRAHET = PhuongThucThanhToan.TRAHET;
 
 	/**
 	 * Create the panel.
@@ -140,21 +160,14 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		JPanel pnHoaDon = new JPanel();
 		pnHoaDon.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				"H\u00F3a \u0111\u01A1n", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(64, 128, 128)));
+				"H\u1EE3p \u0111\u1ED3ng", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(64, 128, 128)));
 		pnHoaDon.setBounds(0, 210, 600, 402);
 		add(pnHoaDon);
 		pnHoaDon.setLayout(null);
 
-		JLabel lbMaHD = new JLabel("Mã hóa đơn :");
-		lbMaHD.setBounds(10, 60, 100, 20);
+		JLabel lbMaHD = new JLabel("Mã hợp đồng");
+		lbMaHD.setBounds(10, 29, 100, 20);
 		pnHoaDon.add(lbMaHD);
-
-		txtMaHoaDon = new JTextField();
-		txtMaHoaDon.setForeground(new Color(192, 192, 192));
-		txtMaHoaDon.setEnabled(false);
-		txtMaHoaDon.setBounds(160, 60, 135, 20);
-		pnHoaDon.add(txtMaHoaDon);
-		txtMaHoaDon.setColumns(10);
 
 		JScrollPane scrXe = new JScrollPane();
 		scrXe.setBounds(10, 202, 580, 110);
@@ -177,19 +190,19 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(txtThanhTien);
 		txtThanhTien.setColumns(10);
 
-		JButton btnLuu = new JButton("Lưu hóa đơn");
+		JButton btnLuu = new JButton("In hợp đồng");
 		btnLuu.setBackground(new Color(64, 128, 128));
 		btnLuu.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnLuu.setBounds(371, 358, 177, 34);
 		pnHoaDon.add(btnLuu);
 
 		JLabel lbPTThanhToan = new JLabel("Chọn cách thức thanh toán :");
-		lbPTThanhToan.setBounds(10, 30, 285, 20);
+		lbPTThanhToan.setBounds(10, 60, 184, 20);
 		pnHoaDon.add(lbPTThanhToan);
 
-		JComboBox cbPTThanhToan = new JComboBox();
+		cbPTThanhToan = new JComboBox();
 		cbPTThanhToan.setModel(new DefaultComboBoxModel(new String[] { "Trả hết", "Trả góp" }));
-		cbPTThanhToan.setBounds(192, 30, 103, 20);
+		cbPTThanhToan.setBounds(192, 61, 103, 20);
 		pnHoaDon.add(cbPTThanhToan);
 
 		JLabel lbMaNV = new JLabel("Nhân viên lập HĐ:");
@@ -206,6 +219,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(lbNgayLapHD);
 
 		txtNgayLapHD = new JTextField();
+		txtNgayLapHD.setEditable(false);
 		txtNgayLapHD.setBounds(160, 122, 135, 20);
 		pnHoaDon.add(txtNgayLapHD);
 		txtNgayLapHD.setColumns(10);
@@ -243,41 +257,37 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		JPanel pnTraGop = new JPanel();
 		pnTraGop.setLayout(null);
 		pnTraGop.setForeground(new Color(64, 128, 128));
-		pnTraGop.setBorder(new TitledBorder(null, "Tr\u1EA3 g\u00F3p", TitledBorder.LEADING, TitledBorder.TOP, null,
-				new Color(64, 128, 128)));
+		pnTraGop.setBorder(
+				new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Chi ti\u1EBFt thanh to\u00E1n",
+						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 128, 128)));
 		pnTraGop.setBounds(319, 10, 250, 190);
 		pnHoaDon.add(pnTraGop);
 
-		JLabel lbMaTraGop = new JLabel("Mã trả góp:");
+		JLabel lbMaTraGop = new JLabel("Mã trả");
 		lbMaTraGop.setBounds(10, 14, 90, 20);
 		pnTraGop.add(lbMaTraGop);
 
-		JLabel lbTenNguoiTra = new JLabel("Tên người trả :");
+		JLabel lbTenNguoiTra = new JLabel("Người trả :");
 		lbTenNguoiTra.setBounds(10, 44, 109, 20);
 		pnTraGop.add(lbTenNguoiTra);
 
 		txtTenNguoiTra = new JTextField();
 		txtTenNguoiTra.setColumns(10);
-		txtTenNguoiTra.setBounds(131, 44, 110, 20);
+		txtTenNguoiTra.setBounds(119, 44, 122, 20);
 		pnTraGop.add(txtTenNguoiTra);
 
 		JLabel lbMaNVNhan = new JLabel("Nhân viên nhận :");
-		lbMaNVNhan.setBounds(10, 74, 122, 20);
+		lbMaNVNhan.setBounds(10, 74, 115, 20);
 		pnTraGop.add(lbMaNVNhan);
 
 		txtMaNVNhan = new JTextField();
 		txtMaNVNhan.setColumns(10);
-		txtMaNVNhan.setBounds(131, 74, 110, 20);
+		txtMaNVNhan.setBounds(119, 74, 122, 20);
 		pnTraGop.add(txtMaNVNhan);
 
 		JLabel lbNgayTra = new JLabel("Ngày trả :");
 		lbNgayTra.setBounds(10, 104, 110, 20);
 		pnTraGop.add(lbNgayTra);
-
-		txtSoLanTran = new JTextField();
-		txtSoLanTran.setColumns(10);
-		txtSoLanTran.setBounds(131, 134, 110, 20);
-		pnTraGop.add(txtSoLanTran);
 
 		JLabel lbSoLanTra = new JLabel("Số lần trả :");
 		lbSoLanTra.setBounds(10, 134, 110, 20);
@@ -285,10 +295,10 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 		txtNgayTra = new JTextField();
 		txtNgayTra.setColumns(10);
-		txtNgayTra.setBounds(131, 104, 110, 20);
+		txtNgayTra.setBounds(119, 104, 122, 20);
 		pnTraGop.add(txtNgayTra);
 
-		JLabel lbSoTienTraGop = new JLabel("Số tiền trả góp :");
+		JLabel lbSoTienTraGop = new JLabel("Số tiền trả:");
 		lbSoTienTraGop.setBounds(10, 164, 102, 20);
 		pnTraGop.add(lbSoTienTraGop);
 
@@ -297,9 +307,20 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnTraGop.add(txtSoTienTraGop);
 		txtSoTienTraGop.setColumns(10);
 
-		JComboBox cbMaTraGop = new JComboBox();
-		cbMaTraGop.setBounds(131, 12, 110, 27);
+		cbMaTraGop = new JComboBox();
+		cbMaTraGop.setBounds(119, 12, 122, 27);
 		pnTraGop.add(cbMaTraGop);
+
+		cbSoLanTra = new JComboBox();
+		cbSoLanTra.setBounds(119, 132, 122, 27);
+		cbSoLanTra.addItem(1);
+		cbSoLanTra.addItem(2);
+		cbSoLanTra.addItem(3);
+		pnTraGop.add(cbSoLanTra);
+
+		cbMaHopDong = new JComboBox();
+		cbMaHopDong.setBounds(160, 27, 135, 27);
+		pnHoaDon.add(cbMaHopDong);
 
 		JPanel pnInfoXe = new JPanel();
 		pnInfoXe.setBorder(new TitledBorder(
@@ -327,7 +348,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		lbLoaiXe.setBounds(12, 40, 78, 20);
 		pnTxtXe.add(lbLoaiXe);
 
-		JComboBox cbLoaiXe = new JComboBox();
+		cbLoaiXe = new JComboBox();
 		cbLoaiXe.setModel(new DefaultComboBoxModel(new String[] { "--Tất cả--" }));
 		cbLoaiXe.setBounds(100, 40, 131, 20);
 		pnTxtXe.add(cbLoaiXe);
@@ -336,16 +357,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		lbMauXe.setBounds(12, 70, 78, 20);
 		pnTxtXe.add(lbMauXe);
 
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] { "--Tất cả--" }));
-		comboBox_1.setBounds(100, 100, 131, 20);
-		pnTxtXe.add(comboBox_1);
+		cbSoPhanKhoi = new JComboBox();
+		cbSoPhanKhoi.setModel(new DefaultComboBoxModel(new String[] { "--Tất cả--" }));
+		cbSoPhanKhoi.setBounds(100, 100, 131, 20);
+		pnTxtXe.add(cbSoPhanKhoi);
 
 		JLabel lbSoPhanKhoi = new JLabel("Số phân khối :");
 		lbSoPhanKhoi.setBounds(12, 100, 93, 20);
 		pnTxtXe.add(lbSoPhanKhoi);
 
-		JComboBox cbMauXe = new JComboBox();
+		cbMauXe = new JComboBox();
 		cbMauXe.setModel(new DefaultComboBoxModel(new String[] { "--Tất cả--" }));
 		cbMauXe.setBounds(100, 70, 130, 20);
 		pnTxtXe.add(cbMauXe);
@@ -354,7 +375,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		lbDongXe.setBounds(12, 160, 78, 20);
 		pnTxtXe.add(lbDongXe);
 
-		JCheckBox chckbxDongXe = new JCheckBox("Tiết kiệm xăng");
+		chckbxDongXe = new JCheckBox("Tiết kiệm xăng");
 		chckbxDongXe.setBounds(100, 160, 131, 20);
 		chckbxDongXe.setHorizontalAlignment(SwingConstants.CENTER);
 		pnTxtXe.add(chckbxDongXe);
@@ -363,7 +384,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		lbHangXe.setBounds(12, 130, 78, 20);
 		pnTxtXe.add(lbHangXe);
 
-		JComboBox cbHangXe = new JComboBox();
+		cbHangXe = new JComboBox();
 		cbHangXe.setModel(new DefaultComboBoxModel(new String[] { "--Tất cả--" }));
 		cbHangXe.setBounds(100, 130, 131, 20);
 		pnTxtXe.add(cbHangXe);
@@ -421,13 +442,48 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		kh_dao = new KhachHang_DAO();
 		cccd_dao = new CanCuocCongDan_DAO();
 		xe_dao = new XeMay_DAO();
+		loaiXe_dao = new LoaiXe_DAO();
+		hopDong_dao = new HopDong_DAO();
+		nv_dao = new NhanVien_DAO();
 
+		generateMaHD();
+		getNgayHienTai(txtNgayLapHD);
+		getNgayHienTai(txtNgayTra);
+		loadDSMaHopDongVaoComboBox();
 		loadDSKhachHang();
 		loadDSXe();
 
 		txtCCCD.addKeyListener(this);
 		tableKH.addMouseListener(this);
 		tableChonXe.addMouseListener(this);
+		cbMaHopDong.addActionListener(this);
+		cbMauXe.addActionListener(this);
+		cbLoaiXe.addActionListener(this);
+		cbSoPhanKhoi.addActionListener(this);
+		cbHangXe.addActionListener(this);
+		txtMaNV.addKeyListener(this);
+		txtMaNVNhan.addKeyListener(this);
+	}
+
+	public void generateMaHD() {
+		String maHD = "HD";
+		LocalDate ngayHT = LocalDate.now();
+		int slHDTrongNgay = hopDong_dao.countHopDongInDate(ngayHT);
+		DecimalFormat df = new DecimalFormat("00");
+		maHD += df.format(++slHDTrongNgay);
+		maHD += ngayHT.format(DateTimeFormatter.ofPattern("ddMMyy"));
+		cbMaHopDong.addItem(maHD);
+	}
+
+	public void getNgayHienTai(JTextField jtext) {
+		LocalDate ngayHT = LocalDate.now();
+		jtext.setText(ngayHT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	}
+
+	public void loadDSMaHopDongVaoComboBox() {
+		hopDong_dao.getAllListHopDong().forEach(hd -> {
+			cbMaHopDong.addItem(hd.getSoHopDong());
+		});
 	}
 
 	public void loadDSKhachHang() {
@@ -448,19 +504,106 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		});
 		tableChonXe.setRowSelectionInterval(0, 0);
 		loadThongTinXe(0);
+		themDSLoaiXeVaoComboBox();
+		themDSMauXeVaoComboBox();
+		themDSSoPhanKhoiVaoComboBox();
+		themDSHangXeVaoComboBox();
+
 	}
-	
+
+	private void themDSMauXeVaoComboBox() {
+		xe_dao.getAllMauXe().forEach(mau -> {
+			cbMauXe.addItem(mau);
+		});
+
+	}
+
+	private void themDSHangXeVaoComboBox() {
+		loaiXe_dao.getAllHangXe().forEach(hang -> {
+			cbHangXe.addItem(hang);
+		});
+
+	}
+
+	private void themDSSoPhanKhoiVaoComboBox() {
+		loaiXe_dao.getAllPhanKhoi().forEach(pk -> {
+			cbSoPhanKhoi.addItem(pk);
+		});
+	}
+
+	public void themDSLoaiXeVaoComboBox() {
+		loaiXe_dao.getAllLoaiXe().forEach(loaiXe -> {
+			cbLoaiXe.addItem(loaiXe.getTenLoaiXe());
+		});
+	}
+
 	public void loadThongTinXe(int rowSelected) {
 		txtTenXe.setText(tableChonXe.getValueAt(rowSelected, 1).toString());
 		String soKhung = tableChonXe.getValueAt(rowSelected, 2).toString();
 		txtSoKhung.setText(soKhung);
 		txtGia.setText(tableChonXe.getValueAt(rowSelected, 3).toString());
 		XeMay xe = xe_dao.getXeMayTheoSoKhung(soKhung);
-		Image img = new ImageIcon("data//image//" + xe.getAnhMinhHoa()).getImage()
-				.getScaledInstance(lbAnhXe.getWidth(), lbAnhXe.getHeight(), Image.SCALE_SMOOTH);
+		Image img = new ImageIcon("data//image//" + xe.getAnhMinhHoa()).getImage().getScaledInstance(lbAnhXe.getWidth(),
+				lbAnhXe.getHeight(), Image.SCALE_SMOOTH);
 		lbAnhXe.setIcon(new ImageIcon(img));
 	}
 
+	public void kiemTraThongTinNhanVien(JTextField jtext) {
+		String maNV = jtext.getText().trim();
+		if (maNV.equals("")) {
+			JOptionPane.showMessageDialog(null, "Hãy nhập thông tin của nhân viên!", "Cảnh báo",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		if (nv_dao.getNhanVienTheoMaNV(maNV) == null)
+			JOptionPane.showMessageDialog(null,
+					"Không có nhân viên này trong hệ thống, hãy thêm nhân viên mới ở trong giao diện Nhân Viên", "Lỗi",
+					JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void filterDSXe() {
+		String loaiXe = cbLoaiXe.getSelectedItem().toString();
+		String mauXe = cbMauXe.getSelectedItem().toString();
+		String soPhanKhoi = cbSoPhanKhoi.getSelectedItem().toString();
+		String hangXe = cbHangXe.getSelectedItem().toString();
+		boolean isDongTietKiem = chckbxDongXe.isSelected();
+		Object props[] = { "%", "%", "%", "%", 0 };
+		if (!loaiXe.equals("--Tất cả--"))
+			props[0] = loaiXe;
+		if (!mauXe.equals("--Tất cả--"))
+			props[1] = mauXe;
+		if (!soPhanKhoi.equals("--Tất cả--"))
+			props[2] = soPhanKhoi;
+		if (!hangXe.equals("--Tất cả--"))
+			props[3] = hangXe;
+		if (isDongTietKiem)
+			props[4] = 1;
+	}
+
+	public void loadThongTinHopDong() {
+		String soHD = cbMaHopDong.getSelectedItem().toString();
+		HopDong hd = hopDong_dao.getHopDongTheoSoHopDong(soHD);
+		if (hd == null) {
+			return;
+		}
+		String ptThanhToan = hd.getPhuongThucThanhToan() == TRAHET ? "Trả hết" : "Trả góp";
+		cbPTThanhToan.setSelectedItem(ptThanhToan);
+		txtMaNV.setText(hd.getNhanVienLapHopDong().getMaNhanVien());
+		txtThoiGianBaoHanh.setText(hd.getThoiGianBaoHanh().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		cbMaTraGop.removeAllItems();
+		hopDong_dao.getAllMaTraGopTheoMaHopDong(soHD).forEach(ma -> {
+			cbMaTraGop.addItem(ma);
+		});
+		cbSoLanTra.setSelectedItem(hd.getSoLanTra());
+		HopDong thongTinTra = hopDong_dao.getThongTinTraGopTheoMaTraGop(cbMaTraGop.getSelectedItem().toString());
+		txtTenNguoiTra.setText(((HopDongTraGop) thongTinTra).getNguoiTra().getMaCCCD());
+		txtMaNVNhan.setText(((HopDongTraGop) thongTinTra).getNguoiNhan().toString());
+		double soTienTra = ((HopDongTraGop) thongTinTra).getSoTienTraGop();
+		txtSoTienTraGop.setText(new DecimalFormat("0.##").format(soTienTra));
+
+	}
+
+//================================ Implement action ================================
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
@@ -482,7 +625,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			int rowSelected = tableChonXe.getSelectedRow();
 			loadThongTinXe(rowSelected);
 		}
-
 
 	}
 
@@ -510,6 +652,13 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		if (o.equals(btnLuu)) {
 
 		}
+
+		if (o.equals(cbMauXe) || o.equals(cbLoaiXe) || o.equals(cbSoPhanKhoi) || o.equals(cbHangXe)) {
+			filterDSXe();
+		}
+		if (o.equals(cbMaHopDong)) {
+			loadThongTinHopDong();
+		}
 	}
 
 	@Override
@@ -535,7 +684,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 				String ten = String.format("%s %s %s", cccd.getHo(), cccd.getHoDem(), cccd.getTen());
 				txtTenKH.setText(ten);
 			}
-
+		}
+		if (o.equals(txtMaNV)) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+				kiemTraThongTinNhanVien(txtMaNV);
+			}
+		}
+		if (o.equals(txtMaNVNhan)) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+				kiemTraThongTinNhanVien(txtMaNVNhan);
+			}
 		}
 
 	}

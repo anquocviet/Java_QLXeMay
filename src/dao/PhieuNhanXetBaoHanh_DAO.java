@@ -59,7 +59,6 @@ public class PhieuNhanXetBaoHanh_DAO {
 	 * @author AnQuocViet
 	 */
 	public int countPhieuBaoHanhInDate(LocalDate date) {
-		ArrayList<PhieuNhanXetBaoHanh> dsp = new ArrayList<PhieuNhanXetBaoHanh>();
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
 		int count = 0;
@@ -79,7 +78,6 @@ public class PhieuNhanXetBaoHanh_DAO {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
-
 				e.printStackTrace();
 			}
 		}
