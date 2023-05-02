@@ -66,7 +66,7 @@ public class KhachHang_DAO {
 				String maCCCD = rs.getString("MaCCCD");
 				String sdt = rs.getString("SoDienThoai");
 				cccd_dao = new CanCuocCongDan_DAO();
-				CanCuocCongDan cc = cccd_dao.getCCCD(maCCCD);
+				CanCuocCongDan cc = cccd_dao.getCCCDTheoMa(maCCCD);
 				kh = new KhachHang(maKH, sdt, cc);
 			}
 		} catch (SQLException e) {
@@ -100,7 +100,7 @@ public class KhachHang_DAO {
 				String maKH = rs.getString("MaKH");
 				String sdt = rs.getString("SoDienThoai");
 				cccd_dao = new CanCuocCongDan_DAO();
-				CanCuocCongDan cc = cccd_dao.getCCCD(maCCCD);
+				CanCuocCongDan cc = cccd_dao.getCCCDTheoMa(maCCCD);
 				kh = new KhachHang(maKH, sdt, cc);
 			}
 		} catch (SQLException e) {

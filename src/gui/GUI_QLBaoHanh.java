@@ -488,7 +488,7 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		cbSoKhung.addActionListener(this);
 
 		generateMaPhieuBH();
-		generateNgayLapHD();
+		generateNgayLapPhieu();
 	}
 
 	public void clearInfoKhachHang() {
@@ -566,7 +566,7 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		lblMaHD.setText(maPhieu);
 	}
 
-	public void generateNgayLapHD() {
+	public void generateNgayLapPhieu() {
 		LocalDate ngayHT = LocalDate.now();
 		lblNgayLap.setText(ngayHT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 	}

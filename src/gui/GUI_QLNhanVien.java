@@ -6,8 +6,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,14 +19,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import connect.ConnectDB;
+import dao.CanCuocCongDan_DAO;
+import dao.NhanVien_DAO;
+import entity.CanCuocCongDan;
+import entity.LoaiXe;
+import entity.NhaCungCap;
+import entity.NhanVien;
+import entity.NhanVienHanhChinh;
+import entity.NhanVienKiThuat;
+import entity.XeMay;
+
 import javax.swing.JCheckBox;
 
-public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListener{
+public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListener, ItemListener {
 
 	private JTable table;
 	private DefaultTableModel tableModel;
@@ -32,14 +49,13 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 	private JTextField txtDiaChi;
 	private JTextField txtSDT;
 	private JTextField txtEmail;
-	private JTextField txtMaMV;
-	private JTextField txtNgayVaoLam;
-	private JTextField txtMucLuong;
+	private JTextField txtNgayVaoLamKT;
+	private JTextField txtMucLuongKT;
 	private JTextField txtBacTho;
 	private JTextField txtPhongBan;
 	private JTextField txtNamKinhNghiem;
 	private JTextField txtTrinhDoHocVan;
-	private JTextField txtChucVu;
+	private JTextField txtChucVuKT;
 	private JComboBox cbxLoaiNhanVien;
 	private JPanel pNhanVienHanhChinh;
 	private JPanel pNhanVienKyThuat;
@@ -48,12 +64,30 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 	private JButton btnXoa;
 	private JButton btnSua;
 	private JButton btnLamMoi;
-	private JTextField txtTimKiem;
+	private NhanVien_DAO nhanVien_dao;
+	private CanCuocCongDan_DAO cCCD_dao;
+	private JCheckBox chckbxGioiTinh;
+	private JTextField txtCCCD;
+	private JTextField txtMaMVHC;
+	private JTextField txtMaMVKT;
+	private JTextField txtNgayVaoLamHC;
+	private JTextField txtMucLuongHC;
+	private JTextField txtChucVuHC;
 
 	/**
 	 * Create the panel.
 	 */
 	public GUI_QLNhanVien() {
+
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		nhanVien_dao = new NhanVien_DAO();
+		cCCD_dao = new CanCuocCongDan_DAO();
+
 		setBackground(new Color(255, 255, 255));
 		setLayout(null);
 
@@ -111,7 +145,7 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JPanel pMaNV_3_1 = new JPanel();
 		pMaNV_3_1.setLayout(null);
 		pMaNV_3_1.setBackground(Color.WHITE);
-		pMaNV_3_1.setBounds(17, 180, 541, 45);
+		pMaNV_3_1.setBounds(17, 180, 273, 45);
 		pThongTinXeMay.add(pMaNV_3_1);
 
 		JLabel lblNewLabel_3_1 = new JLabel("Địa chỉ:");
@@ -120,7 +154,7 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 
 		txtDiaChi = new JTextField();
 		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(76, 5, 455, 29);
+		txtDiaChi.setBounds(76, 5, 197, 29);
 		pMaNV_3_1.add(txtDiaChi);
 
 		JPanel pMaNV_3_2 = new JPanel();
@@ -163,10 +197,25 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		lblNewLabel_1_1.setBounds(0, 12, 56, 14);
 		pMaNV_1_1.add(lblNewLabel_1_1);
 
-		JCheckBox chckbxGioiTinh = new JCheckBox("Nam");
+		chckbxGioiTinh = new JCheckBox("Nam");
 		chckbxGioiTinh.setBackground(new Color(255, 255, 255));
 		chckbxGioiTinh.setBounds(49, 8, 187, 23);
 		pMaNV_1_1.add(chckbxGioiTinh);
+
+		JPanel pMaNV_3_1_1 = new JPanel();
+		pMaNV_3_1_1.setLayout(null);
+		pMaNV_3_1_1.setBackground(Color.WHITE);
+		pMaNV_3_1_1.setBounds(313, 180, 243, 45);
+		pThongTinXeMay.add(pMaNV_3_1_1);
+
+		JLabel lblNewLabel_3_1_2 = new JLabel("CCCD:");
+		lblNewLabel_3_1_2.setBounds(0, 12, 80, 14);
+		pMaNV_3_1_1.add(lblNewLabel_3_1_2);
+
+		txtCCCD = new JTextField();
+		txtCCCD.setColumns(10);
+		txtCCCD.setBounds(55, 5, 184, 29);
+		pMaNV_3_1_1.add(txtCCCD);
 
 		pThongTinCongViec = new JPanel();
 		pThongTinCongViec.setBackground(new Color(255, 255, 255));
@@ -190,19 +239,24 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		cbxLoaiNhanVien.addItem("Nhân viên hành chính");
 		cbxLoaiNhanVien.addItem("Nhân viên kỹ thuật");
 
-		themGiaoDienLoaiNhanVien();
+//		themGiaoDienLoaiNhanVien();
+		taoNhanVienHanhChinh(pThongTinCongViec);
+		taoNhanVienKyThuat(pThongTinCongViec);
 
 		Box bTable = Box.createVerticalBox();
 		bTable.setBounds(0, 305, 1180, 294);
 		add(bTable);
 		bTable.add(Box.createRigidArea(new Dimension(0, 5)));
-		String head[] = { "Mã nhân viên", "Họ", "Tên", "Ngày sinh", "Giới tính", "Địa chỉ thường trú", "SĐT", "Email",
-				"Ngày vào làm", "Mức lương", "Chức vụ", "Trình độ học vấn", "Phòng ban", "Bậc thợ",
+		String head[] = { "Mã nhân viên", "CCCD", "Họ", "Tên", "Ngày sinh", "Giới tính", "Địa chỉ thường trú", "SĐT",
+				"Email", "Ngày vào làm", "Mức lương", "Chức vụ", "Trình độ học vấn", "Phòng ban", "Bậc thợ",
 				"Số năm kinh nghiệm" };
 		tableModel = new DefaultTableModel(head, 0);
 		table = new JTable(tableModel);
 		table.setBackground(new Color(255, 255, 255));
 		bTable.add(new JScrollPane(table));
+
+		ArrayList<NhanVien> dsNhanVien = nhanVien_dao.getAllNhanVien();
+		docDanhSachNhanVienVaoTable(dsNhanVien);
 
 		btnLamMoi = new JButton("Làm mới");
 		btnLamMoi.setIcon(new ImageIcon("data\\lamMoi.png"));
@@ -233,27 +287,23 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		btnThem.setForeground(new Color(128, 0, 0));
 
 		cbxLoaiNhanVien.addActionListener(this);
+		cbxLoaiNhanVien.addItemListener(this);
+
+		btnLamMoi.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		table.addMouseListener(this);
 		
-		JButton btnLocTheoLoaiNV = new JButton("Làm mới");
-		btnLocTheoLoaiNV.setForeground(new Color(128, 0, 0));
-		btnLocTheoLoaiNV.setBackground(new Color(75, 209, 254));
-		btnLocTheoLoaiNV.setBounds(567, 259, 122, 37);
-		add(btnLocTheoLoaiNV);
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(857, 259, 302, 35);
-		add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblNewLabel_3 = new JLabel("Tìm nhân viên:");
-		lblNewLabel_3.setBounds(10, 11, 99, 14);
-		panel.add(lblNewLabel_3);
-		
-		txtTimKiem = new JTextField();
-		txtTimKiem.setBounds(103, 1, 189, 35);
-		panel.add(txtTimKiem);
-		txtTimKiem.setColumns(10);
+		JButton btnLoc = new JButton("Lọc");
+		btnLoc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnLoc.setForeground(new Color(128, 0, 0));
+		btnLoc.setBackground(new Color(75, 209, 254));
+		btnLoc.setBounds(966, 259, 175, 37);
+		add(btnLoc);
 
 	}
 
@@ -282,10 +332,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2 = new JLabel("Mã nhân viên:");
 		lblNewLabel_3_1_2.setBounds(0, 12, 80, 14);
 		pMaNV.add(lblNewLabel_3_1_2);
-		txtMaMV = new JTextField();
-		txtMaMV.setColumns(10);
-		txtMaMV.setBounds(77, 5, 177, 29);
-		pMaNV.add(txtMaMV);
+		txtMaMVHC = new JTextField();
+		txtMaMVHC.setColumns(10);
+		txtMaMVHC.setBounds(77, 5, 177, 29);
+		pMaNV.add(txtMaMVHC);
 
 		JPanel pNgayVaoLam = new JPanel();
 		pNgayVaoLam.setLayout(null);
@@ -295,10 +345,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_1 = new JLabel("Ngày vào làm:");
 		lblNewLabel_3_1_2_1.setBounds(0, 12, 80, 14);
 		pNgayVaoLam.add(lblNewLabel_3_1_2_1);
-		txtNgayVaoLam = new JTextField();
-		txtNgayVaoLam.setColumns(10);
-		txtNgayVaoLam.setBounds(77, 5, 177, 29);
-		pNgayVaoLam.add(txtNgayVaoLam);
+		txtNgayVaoLamHC = new JTextField();
+		txtNgayVaoLamHC.setColumns(10);
+		txtNgayVaoLamHC.setBounds(77, 5, 177, 29);
+		pNgayVaoLam.add(txtNgayVaoLamHC);
 
 		JPanel pMucLuong = new JPanel();
 		pMucLuong.setLayout(null);
@@ -308,10 +358,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_2 = new JLabel("Mức lương:");
 		lblNewLabel_3_1_2_2.setBounds(0, 12, 80, 14);
 		pMucLuong.add(lblNewLabel_3_1_2_2);
-		txtMucLuong = new JTextField();
-		txtMucLuong.setColumns(10);
-		txtMucLuong.setBounds(77, 5, 177, 29);
-		pMucLuong.add(txtMucLuong);
+		txtMucLuongHC = new JTextField();
+		txtMucLuongHC.setColumns(10);
+		txtMucLuongHC.setBounds(77, 5, 177, 29);
+		pMucLuong.add(txtMucLuongHC);
 
 		JPanel pPhongBan = new JPanel();
 		pPhongBan.setLayout(null);
@@ -347,10 +397,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_5 = new JLabel("Chức vụ:");
 		lblNewLabel_3_1_2_5.setBounds(10, 12, 80, 14);
 		pMaNV_8.add(lblNewLabel_3_1_2_5);
-		txtChucVu = new JTextField();
-		txtChucVu.setColumns(10);
-		txtChucVu.setBounds(95, 5, 177, 29);
-		pMaNV_8.add(txtChucVu);
+		txtChucVuHC = new JTextField();
+		txtChucVuHC.setColumns(10);
+		txtChucVuHC.setBounds(95, 5, 177, 29);
+		pMaNV_8.add(txtChucVuHC);
 	}
 
 	private void taoNhanVienKyThuat(JPanel pThongTinCongViec) {
@@ -370,10 +420,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2 = new JLabel("Mã nhân viên:");
 		lblNewLabel_3_1_2.setBounds(0, 12, 80, 14);
 		pMaNV.add(lblNewLabel_3_1_2);
-		txtMaMV = new JTextField();
-		txtMaMV.setColumns(10);
-		txtMaMV.setBounds(77, 5, 177, 29);
-		pMaNV.add(txtMaMV);
+		txtMaMVKT = new JTextField();
+		txtMaMVKT.setColumns(10);
+		txtMaMVKT.setBounds(77, 5, 177, 29);
+		pMaNV.add(txtMaMVKT);
 
 		JPanel pMaNV_4 = new JPanel();
 		pMaNV_4.setLayout(null);
@@ -383,10 +433,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_1 = new JLabel("Ngày vào làm:");
 		lblNewLabel_3_1_2_1.setBounds(0, 12, 80, 14);
 		pMaNV_4.add(lblNewLabel_3_1_2_1);
-		txtNgayVaoLam = new JTextField();
-		txtNgayVaoLam.setColumns(10);
-		txtNgayVaoLam.setBounds(77, 5, 177, 29);
-		pMaNV_4.add(txtNgayVaoLam);
+		txtNgayVaoLamKT = new JTextField();
+		txtNgayVaoLamKT.setColumns(10);
+		txtNgayVaoLamKT.setBounds(77, 5, 177, 29);
+		pMaNV_4.add(txtNgayVaoLamKT);
 
 		JPanel pMaNV_5 = new JPanel();
 		pMaNV_5.setLayout(null);
@@ -396,10 +446,10 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_2 = new JLabel("Mức lương:");
 		lblNewLabel_3_1_2_2.setBounds(0, 12, 80, 14);
 		pMaNV_5.add(lblNewLabel_3_1_2_2);
-		txtMucLuong = new JTextField();
-		txtMucLuong.setColumns(10);
-		txtMucLuong.setBounds(77, 5, 177, 29);
-		pMaNV_5.add(txtMucLuong);
+		txtMucLuongKT = new JTextField();
+		txtMucLuongKT.setColumns(10);
+		txtMucLuongKT.setBounds(77, 5, 177, 29);
+		pMaNV_5.add(txtMucLuongKT);
 
 		JPanel pBacTho = new JPanel();
 		pBacTho.setLayout(null);
@@ -435,36 +485,41 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 		JLabel lblNewLabel_3_1_2_5 = new JLabel("Chức vụ:");
 		lblNewLabel_3_1_2_5.setBounds(10, 12, 80, 14);
 		pMaNV_8.add(lblNewLabel_3_1_2_5);
-		txtChucVu = new JTextField();
-		txtChucVu.setColumns(10);
-		txtChucVu.setBounds(95, 5, 177, 29);
-		pMaNV_8.add(txtChucVu);
+		txtChucVuKT = new JTextField();
+		txtChucVuKT.setColumns(10);
+		txtChucVuKT.setBounds(95, 5, 177, 29);
+		pMaNV_8.add(txtChucVuKT);
+
 	}
 
 	private void themGiaoDienLoaiNhanVien() {
-
-		if (cbxLoaiNhanVien.getSelectedIndex() == 1) {
-			if(pNhanVienHanhChinh!=null) pThongTinCongViec.remove(pNhanVienHanhChinh);
-			taoNhanVienKyThuat(pThongTinCongViec);
-		} else {
-			if(pNhanVienKyThuat!=null) pThongTinCongViec.remove(pNhanVienKyThuat);
-			taoNhanVienHanhChinh(pThongTinCongViec);
+		int i = cbxLoaiNhanVien.getSelectedIndex();
+		if (i == 1) {
+			pNhanVienHanhChinh.setVisible(false);
+			pNhanVienKyThuat.setVisible(true);
+		} else if (i == 0) {
+			pNhanVienKyThuat.setVisible(false);
+			pNhanVienHanhChinh.setVisible(true);
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if (o.equals(cbxLoaiNhanVien)) {
-			themGiaoDienLoaiNhanVien();
-		}if(o.equals(btnThem)) {
-			
-		}if(o.equals(btnXoa)) {
-			
-		}if(o.equals(btnSua)) {
-			
-		}if(o.equals(btnLamMoi)) {
-			
+//		if (o.equals(cbxLoaiNhanVien)) {
+//			themGiaoDienLoaiNhanVien();
+//		}
+		if (o.equals(btnThem)) {
+			themNhanVien();
+		}
+		if (o.equals(btnXoa)) {
+			xoaNhanVien();
+		}
+		if (o.equals(btnSua)) {
+			capNhatNhanVien();
+		}
+		if (o.equals(btnLamMoi)) {
+			lamMoi();
 		}
 
 	}
@@ -472,30 +527,582 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		int row = table.getSelectedRow();
+		if (tableModel.getValueAt(row, 12).toString() != "") {
+			cbxLoaiNhanVien.setSelectedIndex(0);
+			txtMaMVHC.setText(tableModel.getValueAt(row, 0).toString());
+			txtNgayVaoLamHC.setText(tableModel.getValueAt(row, 9).toString());
+			txtMucLuongHC.setText(tableModel.getValueAt(row, 10).toString());
+			txtChucVuHC.setText(tableModel.getValueAt(row, 11).toString());
+			txtTrinhDoHocVan.setText(tableModel.getValueAt(row, 12).toString());
+			txtPhongBan.setText(tableModel.getValueAt(row, 13).toString());
+		} else {
+			cbxLoaiNhanVien.setSelectedIndex(1);
+			txtMaMVKT.setText(tableModel.getValueAt(row, 0).toString());
+			txtNgayVaoLamKT.setText(tableModel.getValueAt(row, 9).toString());
+			txtMucLuongKT.setText(tableModel.getValueAt(row, 10).toString());
+			txtChucVuKT.setText(tableModel.getValueAt(row, 11).toString());
+			txtBacTho.setText(tableModel.getValueAt(row, 14).toString());
+			txtNamKinhNghiem.setText(tableModel.getValueAt(row, 15).toString());
+		}
+
+		txtCCCD.setText(tableModel.getValueAt(row, 1).toString());
+		txtHo.setText(tableModel.getValueAt(row, 2).toString());
+		txtTen.setText(tableModel.getValueAt(row, 3).toString());
+		txtNgaySinh.setText(tableModel.getValueAt(row, 4).toString());
+		if (tableModel.getValueAt(row, 5).toString() == "Nam") {
+			chckbxGioiTinh.setSelected(true);
+		}
+		txtDiaChi.setText(tableModel.getValueAt(row, 6).toString());
+		txtSDT.setText(tableModel.getValueAt(row, 7).toString());
+		txtEmail.setText(tableModel.getValueAt(row, 8).toString());
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private void docDanhSachNhanVienVaoTable(ArrayList<NhanVien> dsNhanVien) {
+		CanCuocCongDan cCCD;
+		for (NhanVien nhanVien : dsNhanVien) {
+			cCCD = cCCD_dao.getCCCDTheoMa(nhanVien.getCccd().getMaCCCD());
+			if (nhanVien instanceof NhanVienHanhChinh) {
+				tableModel.addRow(new Object[] { nhanVien.getMaNhanVien(), cCCD.getMaCCCD(),
+						cCCD.getHo() + " " + cCCD.getHoDem(), cCCD.getTen(), cCCD.getNgaySinh(),
+						cCCD.isGioiTinh() ? "Nam" : "Nữ", cCCD.getThuongTru(), nhanVien.getSoDienThoai(),
+						nhanVien.getEmail(), nhanVien.getNgayVaoLamViec(), nhanVien.getLuong(), nhanVien.getChucVu(),
+						((NhanVienHanhChinh) nhanVien).getTrinhDoHocVan(), ((NhanVienHanhChinh) nhanVien).getPhongBan(),
+						"", "" });
+			} else if (nhanVien instanceof NhanVienKiThuat) {
+				tableModel.addRow(new Object[] { nhanVien.getMaNhanVien(), cCCD.getMaCCCD(), cCCD.getHo(),
+						cCCD.getTen(), cCCD.getNgaySinh(), cCCD.isGioiTinh() ? "Nữ" : "Nam", cCCD.getThuongTru(),
+						nhanVien.getSoDienThoai(), nhanVien.getEmail(), nhanVien.getNgayVaoLamViec(),
+						nhanVien.getLuong(), nhanVien.getChucVu(), "", "", ((NhanVienKiThuat) nhanVien).getBacTho(),
+						((NhanVienKiThuat) nhanVien).getSoNamKN() });
+			}
+
+		}
+	}
+
+	private void xoaDuLieuTrongTable() {
+		DefaultTableModel dm = (DefaultTableModel) table.getModel();
+		dm.getDataVector().removeAllElements();
+		dm.fireTableDataChanged();
+	}
+
+	private void lamMoi() {
+		cbxLoaiNhanVien.setSelectedIndex(0);
+//		cbxLoaiNhanVien.setEnabled(true);
+		txtMaMVHC.setText("");
+		txtNamKinhNghiem.setText("");
+		txtTrinhDoHocVan.setText("");
+		txtChucVuHC.setText("");
+		txtDiaChi.setText("");
+		txtEmail.setText("");
+		txtHo.setText("");
+		txtMaMVKT.setText("");
+		txtMucLuongHC.setText("");
+		txtNgaySinh.setText("");
+		txtNgayVaoLamHC.setText("");
+		txtPhongBan.setText("");
+		txtSDT.setText("");
+		txtTen.setText("");
+		txtMaMVKT.setText("");
+		txtBacTho.setText("");
+		txtChucVuKT.setText("");
+		txtMucLuongKT.setText("");
+		txtNgayVaoLamKT.setText("");
+
+		ArrayList<NhanVien> dsNhanVien = nhanVien_dao.getAllNhanVien();
+		xoaDuLieuTrongTable();
+		docDanhSachNhanVienVaoTable(dsNhanVien);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		themGiaoDienLoaiNhanVien();
+	}
+
+	private void themNhanVien() {
+		String cc = txtCCCD.getText();
+		String ho = txtHo.getText();
+		String ten = txtTen.getText();
+		// kt ngày sinh
+		if (!kiemTraNgay(txtNgaySinh.getText())) {
+			txtNgaySinh.selectAll();
+			txtNgaySinh.requestFocus();
+			return;
+		}
+		LocalDate ngayString;
+		try {
+			ngayString = LocalDate.parse(txtNgaySinh.getText());
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+			return;
+		}
+		boolean gioiTinh = chckbxGioiTinh.isSelected();
+		String diaChi = txtDiaChi.getText();
+		String sdt = txtSDT.getText();
+		if (!kiemTraSDT(sdt))
+			return;
+		String email = txtEmail.getText();
+		if (!kiemTraEmail(email))
+			return;
+		String maNV;
+		LocalDate ngayVaoLam;
+		double mucLuong;
+		String chucVu;
+		String trinhDo;
+		String phongBan;
+		String ho_hoDem[] = ho.split(" ");
+		ho = ho_hoDem[0];
+		String tenDem = "";
+		for (int i = 1; i < ho_hoDem.length; i++) {
+			tenDem += ho_hoDem[i] + " ";
+		}
+		CanCuocCongDan cccd = null;
+		// kiem tra căn cước công dân có trùng hay không
+		if (!kiemTraCCCDTrung(cc)) {
+			JOptionPane.showMessageDialog(this, "Mã căn cước công dân không được phép trung!");
+			txtCCCD.selectAll();
+			txtCCCD.requestFocus();
+			return;
+		}
+		if (!kiemTraMaCCCD(cc, ngayString, gioiTinh))
+			return;
+		try {
+			cccd = new CanCuocCongDan(cc, ho, tenDem, ten, gioiTinh, ngayString, diaChi, diaChi);
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(this, e);
+			return;
+		}
+		//nếu là nhân viên văn phòng
+		if (cbxLoaiNhanVien.getSelectedIndex() == 0) {
+			trinhDo = txtTrinhDoHocVan.getText();
+			phongBan = txtPhongBan.getText();
+			maNV = txtMaMVHC.getText();
+
+			// kt ngày vào làm
+			if (!kiemTraNgay(txtNgayVaoLamHC.getText())) {
+				txtNgayVaoLamHC.selectAll();
+				txtNgayVaoLamHC.requestFocus();
+				return;
+			}
+			try {
+				ngayVaoLam = LocalDate.parse(txtNgayVaoLamHC.getText());
+			} catch (Exception e) {
+				// TODO: handle exception
+				JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+				return;
+			}
+
+			mucLuong = Double.parseDouble(txtMucLuongHC.getText());
+			chucVu = txtChucVuHC.getText();
+			if (!kiemTraMaNhanVienTrung(maNV)) {
+				JOptionPane.showMessageDialog(this, "Mã nhân viên không được phép trung!");
+				txtMaMVHC.selectAll();
+				txtMaMVHC.requestFocus();
+				return;
+			}
+			if (!kiemTraMaNV(maNV)) {
+				txtMaMVHC.selectAll();
+				txtMaMVHC.requestFocus();
+				return;
+			}
+			try {
+				NhanVienHanhChinh nv = new NhanVienHanhChinh(maNV, cccd, ngayVaoLam, sdt, email, chucVu, mucLuong,
+						trinhDo, phongBan);
+				xoaDuLieuTrongTable();
+				nhanVien_dao.themNhanVienHanhChinh(nv, cccd);
+				ArrayList<NhanVien> ds = nhanVien_dao.getAllNhanVien();
+				docDanhSachNhanVienVaoTable(ds);
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				JOptionPane.showMessageDialog(this, e);
+				return;
+			}
+		} 
+		//nếu là nhân viên kỹ thuật
+		else {
+			int bacTho = Integer.parseInt(txtBacTho.getText());
+			int namKinhNghiem = Integer.parseInt(txtNamKinhNghiem.getText());
+			maNV = txtMaMVKT.getText();
+
+			if (!kiemTraNgay(txtNgayVaoLamKT.getText())) {
+				txtNgayVaoLamKT.selectAll();
+				txtNgayVaoLamKT.requestFocus();
+				return;
+			}
+			try {
+				ngayVaoLam = LocalDate.parse(txtNgayVaoLamKT.getText());
+			} catch (Exception e) {
+				// TODO: handle exception
+				JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+				return;
+			}
+
+			mucLuong = Double.parseDouble(txtMucLuongKT.getText());
+			chucVu = txtChucVuKT.getText();
+			if (!kiemTraMaNhanVienTrung(maNV)) {
+				JOptionPane.showMessageDialog(this, "Mã nhân viên không được phép trung!");
+				txtMaMVKT.selectAll();
+				txtMaMVKT.requestFocus();
+				return;
+			}
+			if (!kiemTraMaNV(maNV)) {
+				txtMaMVKT.selectAll();
+				txtMaMVKT.requestFocus();
+				return;
+			}
+			try {
+				NhanVienKiThuat nv = new NhanVienKiThuat(maNV, cccd, ngayVaoLam, sdt, email, chucVu, mucLuong, bacTho,
+						namKinhNghiem);
+				xoaDuLieuTrongTable();
+				nhanVien_dao.themNhanVienKyThuat(nv, cccd);
+				ArrayList<NhanVien> ds = nhanVien_dao.getAllNhanVien();
+				docDanhSachNhanVienVaoTable(ds);
+			} catch (Exception e) {
+				// TODO: handle exception
+				JOptionPane.showMessageDialog(this, e);
+				return;
+			}
+		}
+	}
+
+	private boolean kiemTraChonHangNhanVienTable(int row) {
+		if (row < 0) {
+			JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng dòng trên table");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private void xoaNhanVien() {
+		int row = table.getSelectedRow();
+		if (kiemTraChonHangNhanVienTable(row)) {
+			int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa không !!!");
+			if (result == JOptionPane.NO_OPTION) {
+				lamMoi();
+				return;
+			} else if (result == JOptionPane.CANCEL_OPTION) {
+				return;
+			} else {
+				String maNV = tableModel.getValueAt(row, 0).toString();
+				if (cbxLoaiNhanVien.getSelectedIndex() == 0) {
+					nhanVien_dao.xoaNhanVienHanhChinh(maNV);
+				} else
+					nhanVien_dao.xoaNhanVienKyThuat(maNV);
+				xoaDuLieuTrongTable();
+				ArrayList<NhanVien> ds = nhanVien_dao.getAllNhanVien();
+				docDanhSachNhanVienVaoTable(ds);
+			}
+		}
+	}
+
+	private boolean kiemTraMaNhanVienTrung(String maNV) {
+		ArrayList<NhanVien> dsNhanViens = nhanVien_dao.getAllNhanVien();
+		for (NhanVien nv : dsNhanViens) {
+			if (maNV.trim().equals(nv.getMaNhanVien())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean kiemTraCCCDTrung(String maCCCD) {
+		ArrayList<CanCuocCongDan> dsCCCD = cCCD_dao.getAllCCCD();
+		for (CanCuocCongDan cc : dsCCCD) {
+			if (maCCCD.trim().equals(cc.getMaCCCD())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean kiemTraMaCCCD(String maCCCD, LocalDate ngaySinh, boolean gioiTinh) {
+		if (maCCCD.length() < 12) {
+			JOptionPane.showMessageDialog(this, "Mã căn cước công dân phải có đủ 12 kí tự số!");
+			txtCCCD.selectAll();
+			txtCCCD.requestFocus();
+			return false;
+		}
+		int namSinh = ngaySinh.getYear();
+		char gioiTinhMa = maCCCD.charAt(3);
+		if (namSinh >= 1900 && namSinh < 2000) {
+			if (gioiTinh) {
+				if (!(gioiTinhMa == '0')) {
+					JOptionPane.showMessageDialog(this, "Giới tính nam sinh từ 1900-1999 có mã là 0!");
+					txtCCCD.selectAll();
+					txtCCCD.requestFocus();
+					return false;
+				}
+			} else {
+				if (!(gioiTinhMa == '1')) {
+					JOptionPane.showMessageDialog(this, "Giới tính nữ sinh từ 1900-1999 có mã là 1!");
+					txtCCCD.selectAll();
+					txtCCCD.requestFocus();
+					return false;
+				}
+			}
+		} else if (namSinh >= 2000 && namSinh < 2099) {
+			if (gioiTinh) {
+				if (!(gioiTinhMa == '2')) {
+					JOptionPane.showMessageDialog(this, "Giới tính nam sinh từ 2000-2099 có mã là 2!");
+					txtCCCD.selectAll();
+					txtCCCD.requestFocus();
+					return false;
+				}
+			} else {
+				if (!(gioiTinhMa == '3')) {
+					JOptionPane.showMessageDialog(this, "Giới tính nữ sinh từ 2000-2099 có mã là 3!");
+					txtCCCD.selectAll();
+					txtCCCD.requestFocus();
+					return false;
+				}
+			}
+		}
+		String haiSoCuoiNgaySinh = String.valueOf(namSinh);
+		haiSoCuoiNgaySinh = haiSoCuoiNgaySinh.substring(2);
+		String maNgaySinh = maCCCD.substring(4, 6);
+		if (!haiSoCuoiNgaySinh.equals(maNgaySinh)) {
+			JOptionPane.showMessageDialog(this, "Không khớp mã ngày sinh!");
+			txtCCCD.selectAll();
+			txtCCCD.requestFocus();
+			return false;
+		}
+		if (!maCCCD.matches("(0([0-8][0-9]|9[0-6])([0-9])([0-9]){2}([0-9]){6})")) {
+			JOptionPane.showMessageDialog(this, "Mã căn cước công dân không hợp lệ!");
+			txtCCCD.selectAll();
+			txtCCCD.requestFocus();
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean kiemTraNgay(String ngay) {
+		if (!ngay.matches("[0-9]{4}-(0?[1-9]|(1[0-2]))-(0?[1-9]|([1-2][0-9])|(3[0-1]))")) {
+			JOptionPane.showMessageDialog(this, "Ngày phải có dạng yyyy-mm-dd");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean kiemTraSDT(String sdt) {
+		if (sdt.equals("")) {
+			JOptionPane.showMessageDialog(this, "Số điện thoại không được rỗng");
+			txtSDT.selectAll();
+			txtSDT.requestFocus();
+			return false;
+		}
+		if (!sdt.matches("[0-9]{10}")) {
+			JOptionPane.showMessageDialog(this, "Số điện thoại chứa 10 kí số!");
+			txtSDT.selectAll();
+			txtSDT.requestFocus();
+			return false;
+		}
+		return true;
+	}
+
+	private boolean kiemTraEmail(String eMail) {
+		if (eMail.equals("")) {
+			JOptionPane.showMessageDialog(this, "Email không được rỗng");
+			txtEmail.selectAll();
+			txtEmail.requestFocus();
+			return false;
+		}
+		if (!eMail.matches("([A-Za-z0-9]+@[A-Za-z0-9]+\\.com)")) {
+			JOptionPane.showMessageDialog(this, "Email phải có dạng phannnhu981@gmail.com");
+			txtEmail.selectAll();
+			txtEmail.requestFocus();
+			return false;
+		}
+		return true;
+	}
+
+	private boolean kiemTraMaNV(String maNV) {
+		if (maNV.equals("")) {
+			JOptionPane.showMessageDialog(this, "Mã nhân viên không được rỗng");
+			return false;
+		}
+		if (!maNV.matches("(NV[0-9]{8})")) {
+			JOptionPane.showMessageDialog(this,
+					"Mã nhân viên phải bắt đầu bằng NV và tiếp theo là 8 kí tự số. Ví dụ: NV01010322");
+			return false;
+		}
+		return true;
+	}
+
+	private void capNhatNhanVien() {
+		int row = table.getSelectedRow();
+		if (kiemTraChonHangNhanVienTable(row)) {
+			int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn sửa không !!!");
+			if (result == JOptionPane.NO_OPTION) {
+				lamMoi();
+				return;
+			} else if (result == JOptionPane.CANCEL_OPTION) {
+				return;
+			} else {				
+				String cc = txtCCCD.getText();
+				String ho = txtHo.getText();
+				String ten = txtTen.getText();
+				// kt ngày sinh
+				if (!kiemTraNgay(txtNgaySinh.getText())) {
+					txtNgaySinh.selectAll();
+					txtNgaySinh.requestFocus();
+					return;
+				}
+				LocalDate ngayString;
+				try {
+					ngayString = LocalDate.parse(txtNgaySinh.getText());
+				} catch (Exception e) {
+					// TODO: handle exception
+					JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+					return;
+				}
+				boolean gioiTinh = chckbxGioiTinh.isSelected();
+				String diaChi = txtDiaChi.getText();
+				String sdt = txtSDT.getText();
+				if (!kiemTraSDT(sdt))
+					return;
+				String email = txtEmail.getText();
+				if (!kiemTraEmail(email))
+					return;
+				String maNV;
+				LocalDate ngayVaoLam;
+				double mucLuong;
+				String chucVu;
+				String trinhDo;
+				String phongBan;
+				String ho_hoDem[] = ho.split(" ");
+				ho = ho_hoDem[0];
+				String tenDem = "";
+				for (int i = 1; i < ho_hoDem.length; i++) {
+					tenDem += ho_hoDem[i] + " ";
+				}
+				CanCuocCongDan cccd = null;
+				// kiem tra căn cước công dân có trùng hay không
+				if (kiemTraCCCDTrung(cc)) {
+					JOptionPane.showMessageDialog(this, "Mã căn cước công dân không được phép đổi!");
+					txtCCCD.setText(tableModel.getValueAt(row, 1).toString());
+					return;
+				}
+				try {
+					cccd = new CanCuocCongDan(cc, ho, tenDem, ten, gioiTinh, ngayString, diaChi, diaChi);
+				} catch (Exception e) {
+					// TODO: handle exception
+					JOptionPane.showMessageDialog(this, e);
+					return;
+				}
+				//nếu là nhân viên hành chính
+				if (cbxLoaiNhanVien.getSelectedIndex() == 0) {
+					trinhDo = txtTrinhDoHocVan.getText();
+					phongBan = txtPhongBan.getText();
+					maNV = txtMaMVHC.getText();
+
+					// kt ngày vào làm
+					if (!kiemTraNgay(txtNgayVaoLamHC.getText())) {
+						txtNgayVaoLamHC.selectAll();
+						txtNgayVaoLamHC.requestFocus();
+						return;
+					}
+					try {
+						ngayVaoLam = LocalDate.parse(txtNgayVaoLamHC.getText());
+					} catch (Exception e) {
+						// TODO: handle exception
+						JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+						return;
+					}
+
+					mucLuong = Double.parseDouble(txtMucLuongHC.getText());
+					chucVu = txtChucVuHC.getText();
+					if (kiemTraMaNhanVienTrung(maNV)) {
+						JOptionPane.showMessageDialog(this, "Mã nhân viên không được phép đổi!");
+						txtMaMVHC.setText(tableModel.getValueAt(row, 0).toString());
+						txtMaMVHC.requestFocus();
+						return;
+					}
+					try {
+						NhanVienHanhChinh nv = new NhanVienHanhChinh(maNV, cccd, ngayVaoLam, sdt, email, chucVu,
+								mucLuong, trinhDo, phongBan);
+						xoaDuLieuTrongTable();
+						nhanVien_dao.updateNhanVienHanhChinh(nv, cccd);
+						ArrayList<NhanVien> ds = nhanVien_dao.getAllNhanVien();
+						docDanhSachNhanVienVaoTable(ds);
+
+					} catch (Exception e) {
+						// TODO: handle exception
+						JOptionPane.showMessageDialog(this, e);
+						return;
+					}
+				} 
+				//nếu là nhân viên kỹ thuật
+				else {
+					int bacTho = Integer.parseInt(txtBacTho.getText());
+					int namKinhNghiem = Integer.parseInt(txtNamKinhNghiem.getText());
+					maNV = txtMaMVKT.getText();
+
+					if (!kiemTraNgay(txtNgayVaoLamKT.getText())) {
+						txtNgayVaoLamKT.selectAll();
+						txtNgayVaoLamKT.requestFocus();
+						return;
+					}
+					try {
+						ngayVaoLam = LocalDate.parse(txtNgayVaoLamKT.getText());
+					} catch (Exception e) {
+						// TODO: handle exception
+						JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+						return;
+					}
+
+					mucLuong = Double.parseDouble(txtMucLuongKT.getText());
+					chucVu = txtChucVuKT.getText();
+					if (kiemTraMaNhanVienTrung(maNV)) {
+						JOptionPane.showMessageDialog(this, "Mã nhân viên không được phép đổi!");
+						txtMaMVKT.setText(tableModel.getValueAt(row, 0).toString());
+						txtMaMVKT.requestFocus();
+						return;
+					}
+					try {
+						NhanVienKiThuat nv = new NhanVienKiThuat(maNV, cccd, ngayVaoLam, sdt, email, chucVu, mucLuong,
+								bacTho, namKinhNghiem);
+						xoaDuLieuTrongTable();
+						nhanVien_dao.updateNhanVienKyThuat(nv, cccd);
+						ArrayList<NhanVien> ds = nhanVien_dao.getAllNhanVien();
+						docDanhSachNhanVienVaoTable(ds);
+					} catch (Exception e) {
+						// TODO: handle exception
+						JOptionPane.showMessageDialog(this, e);
+						return;
+					}
+				}
+			}
+		}
 	}
 }
