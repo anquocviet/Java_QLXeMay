@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Color;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -125,6 +126,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 		tableModelKH = new DefaultTableModel(new String[] { "T\u00EAn kh\u00E1ch h\u00E0ng", "CCCD" }, 0);
 		tableKH = new JTable(tableModelKH);
+		tableKH.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableKH.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		scrPaneKH.setViewportView(tableKH);
 		tableKH.setToolTipText("");
@@ -412,6 +414,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		tableModelChonXe = new DefaultTableModel(
 				new String[] { "M\u00E3 lo\u1EA1i", "T\u00EAn xe", "S\u1ED1 khung", "Gi\u00E1" }, 0);
 		tableChonXe = new JTable(tableModelChonXe);
+		tableChonXe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrPaneChonXe.setViewportView(tableChonXe);
 		tableChonXe.setBackground(Color.LIGHT_GRAY);
 
@@ -430,7 +433,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	public void loadDSKhachHang() {
 		kh_dao.getAllKhachHang().forEach(kh -> {
 			String maCCCD = kh.getCccd().getMaCCCD();
-			CanCuocCongDan cccd = cccd_dao.getCCCD(maCCCD);
+			CanCuocCongDan cccd = cccd_dao.getCCCDTheoMa(maCCCD);
 			String ten = String.format("%s %s %s", cccd.getHo(), cccd.getHoDem(), cccd.getTen());
 			tableModelKH.addRow(new Object[] { ten, maCCCD });
 		});
@@ -444,17 +447,31 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 					df.format(xe.getGia() + 0.1 * xe.getGia() + 0.05 * xe.getGia()), xe.getAnhMinhHoa() });
 		});
 		tableChonXe.setRowSelectionInterval(0, 0);
-		txtTenXe.setText(tableChonXe.getValueAt(0, 1).toString());
-		String soKhung = tableChonXe.getValueAt(0, 2).toString();
+		loadThongTinXe(0);
+	}
+	
+	public void loadThongTinXe(int rowSelected) {
+		txtTenXe.setText(tableChonXe.getValueAt(rowSelected, 1).toString());
+		String soKhung = tableChonXe.getValueAt(rowSelected, 2).toString();
 		txtSoKhung.setText(soKhung);
-		txtGia.setText(tableChonXe.getValueAt(0, 3).toString());
-		Image img = new ImageIcon("data//image//" + xe_dao.getXeMayTheoSoKhung(soKhung).getAnhMinhHoa()).getImage()
+		txtGia.setText(tableChonXe.getValueAt(rowSelected, 3).toString());
+		XeMay xe = xe_dao.getXeMayTheoSoKhung(soKhung);
+		Image img = new ImageIcon("data//image//" + xe.getAnhMinhHoa()).getImage()
 				.getScaledInstance(lbAnhXe.getWidth(), lbAnhXe.getHeight(), Image.SCALE_SMOOTH);
 		lbAnhXe.setIcon(new ImageIcon(img));
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		Object o = e.getSource();
 		if (o.equals(tableKH)) {
 			int rowSelected = tableKH.getSelectedRow();
@@ -463,22 +480,9 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		}
 		if (o.equals(tableChonXe)) {
 			int rowSelected = tableChonXe.getSelectedRow();
-			txtTenXe.setText(tableChonXe.getValueAt(rowSelected, 1).toString());
-			txtSoKhung.setText(tableChonXe.getValueAt(rowSelected, 2).toString());
-			txtGia.setText(tableChonXe.getValueAt(rowSelected, 3).toString());
+			loadThongTinXe(rowSelected);
 		}
 
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -527,7 +531,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 							"Lỗi", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				CanCuocCongDan cccd = cccd_dao.getCCCD(maCCCD);
+				CanCuocCongDan cccd = cccd_dao.getCCCDTheoMa(maCCCD);
 				String ten = String.format("%s %s %s", cccd.getHo(), cccd.getHoDem(), cccd.getTen());
 				txtTenKH.setText(ten);
 			}
