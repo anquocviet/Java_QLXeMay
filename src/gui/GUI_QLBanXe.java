@@ -820,3 +820,4 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 	}
 }
+
