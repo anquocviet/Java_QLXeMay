@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.SortedSet;
@@ -31,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
 
 import connect.ConnectDB;
 import dao.LoaiXe_DAO;
+import dao.NhaCungCap_DAO;
 import dao.XeMay_DAO;
 import entity.LoaiXe;
 import entity.NhaCungCap;
@@ -62,6 +65,8 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 	private LoaiXe_DAO loaiXe_DAO;
 	private JLabel lblIMG;
 	private JTextField txtAnhMinhHoa;
+	private NhaCungCap_DAO nhaCC_DAO;
+	private JLabel lblLoiTimKiem;
 
 	/**
 	 * Create the panel.
@@ -76,6 +81,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		}
 		xeMay_DAO = new XeMay_DAO();
 		loaiXe_DAO = new LoaiXe_DAO();
+		nhaCC_DAO = new NhaCungCap_DAO();
 
 		setBackground(new Color(255, 255, 255));
 		setLayout(null);
@@ -194,7 +200,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		txtNamSanXuat.setBounds(84, 5, 268, 29);
 		pNamSanXuat.add(txtNamSanXuat);
 
-		Image imgThem = new ImageIcon("data/them.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		Image imgThem = new ImageIcon("data//them.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 		btnThem = new JButton("Thêm");
 		btnThem.setIcon(new ImageIcon(imgThem));
 		btnThem.setBackground(new Color(75, 209, 254));
@@ -203,28 +209,28 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		pThongTinXeMay.add(btnThem);
 
 		btnXoa = new JButton("Xóa");
-		btnXoa.setIcon(new ImageIcon("data\\xoa.png"));
+		btnXoa.setIcon(new ImageIcon("data//xoa.png"));
 		btnXoa.setForeground(new Color(128, 0, 0));
 		btnXoa.setBackground(new Color(75, 209, 254));
 		btnXoa.setBounds(128, 256, 98, 37);
 		pThongTinXeMay.add(btnXoa);
 
 		btnSua = new JButton("Sửa");
-		btnSua.setIcon(new ImageIcon("data\\sua.png"));
+		btnSua.setIcon(new ImageIcon("data//sua.png"));
 		btnSua.setForeground(new Color(128, 0, 0));
 		btnSua.setBackground(new Color(75, 209, 254));
 		btnSua.setBounds(236, 256, 98, 37);
 		pThongTinXeMay.add(btnSua);
 
 		btnLamMoi = new JButton("Làm mới");
-		btnLamMoi.setIcon(new ImageIcon("data\\lamMoi.png"));
+		btnLamMoi.setIcon(new ImageIcon("data//lamMoi.png"));
 		btnLamMoi.setForeground(new Color(128, 0, 0));
 		btnLamMoi.setBackground(new Color(75, 209, 254));
 		btnLamMoi.setBounds(345, 256, 122, 37);
 		pThongTinXeMay.add(btnLamMoi);
 
 		btnLoc = new JButton("Lọc");
-		btnLoc.setIcon(new ImageIcon("data\\filter.png"));
+		btnLoc.setIcon(new ImageIcon("data//filter.png"));
 		btnLoc.setForeground(new Color(128, 0, 0));
 		btnLoc.setBackground(new Color(75, 209, 254));
 		btnLoc.setBounds(480, 256, 98, 37);
@@ -235,7 +241,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		add(bTable);
 		bTable.add(Box.createRigidArea(new Dimension(0, 5)));
 		String head[] = { "Số khung", "Số máy", "Tên xe", "Loại xe", "Màu xe", "Giá", "Tên nhà cung cấp",
-				"Nước sản xuất", "Năm sản xuất" };
+				"Nước sản xuất", "Năm sản xuất", "Ảnh" };
 		tableModel = new DefaultTableModel(head, 0);
 		table = new JTable(tableModel);
 		table.setBackground(new Color(255, 255, 255));
@@ -252,7 +258,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		lblIMG = new JLabel();
 		panel_2.add(lblIMG);
 		// =====ảnh tạm
-		anhMinhHoa = "data\\feature125.jpg";
+		anhMinhHoa = "data//feature125.jpg";
 		createIconImage(lblIMG, 400, 230, anhMinhHoa);
 
 		JPanel pNhaCC = new JPanel();
@@ -269,21 +275,28 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		txtNhaCungCap.setColumns(10);
 		txtNhaCungCap.setBounds(106, 5, 260, 29);
 		pNhaCC.add(txtNhaCungCap);
-		
+
 		JPanel pNuocSanXua_1 = new JPanel();
 		pNuocSanXua_1.setLayout(null);
 		pNuocSanXua_1.setBackground(Color.WHITE);
 		pNuocSanXua_1.setBounds(413, 194, 352, 45);
 		pThongTinXeMay.add(pNuocSanXua_1);
-		
+
 		JLabel lblNewLabel_3_2 = new JLabel("Ảnh minh họa:");
 		lblNewLabel_3_2.setBounds(0, 12, 90, 14);
 		pNuocSanXua_1.add(lblNewLabel_3_2);
-		
+
 		txtAnhMinhHoa = new JTextField();
 		txtAnhMinhHoa.setColumns(10);
 		txtAnhMinhHoa.setBounds(85, 5, 267, 29);
 		pNuocSanXua_1.add(txtAnhMinhHoa);
+		
+		lblLoiTimKiem = new JLabel("");
+		lblLoiTimKiem.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblLoiTimKiem.setForeground(new Color(255, 0, 0));
+		lblLoiTimKiem.setBounds(596, 253, 292, 38);
+		pThongTinXeMay.add(lblLoiTimKiem);
+		
 
 		btnLamMoi.addActionListener(this);
 		btnLoc.addActionListener(this);
@@ -319,13 +332,24 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 			lamMoi();
 		}
 		if (o.equals(btnLoc)) {
-			locTheoLoaiXe();
+			locXeMay();
 		}
 
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		int row = table.getSelectedRow();
 		txtSoKhung.setText(tableModel.getValueAt(row, 0).toString());
@@ -338,20 +362,9 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		txtNuocSanXuat.setText(tableModel.getValueAt(row, 7).toString());
 		txtNamSanXuat.setText(tableModel.getValueAt(row, 8).toString());
 		// tìm ảnh minh họa theo số khung
-		anhMinhHoa ="data\\"+tableModel.getValueAt(row, 9).toString();
+		anhMinhHoa = "data//image//" + tableModel.getValueAt(row, 9).toString();
+		txtAnhMinhHoa.setText(tableModel.getValueAt(row, 9).toString());
 		createIconImage(lblIMG, 400, 230, anhMinhHoa);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -397,12 +410,15 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 	 * đọc danh sách xe máy vào table
 	 */
 	private void docDanhSachXeMayVaoTable(ArrayList<XeMay> dsXeMay) {
+		DecimalFormat df = new DecimalFormat("0.##");
 		LoaiXe loaiXe;
+		NhaCungCap nhaCC;
 		for (XeMay xeMay : dsXeMay) {
 			loaiXe = loaiXe_DAO.getLoaiXeTheoMa(xeMay.getLoaiXe().getMaLoaiXe());
+			nhaCC = nhaCC_DAO.findNhaCungCapByMaNCC(xeMay.getNhaCungCap().getMaNCC());
 			tableModel.addRow(new Object[] { xeMay.getSoKhung(), xeMay.getSoMay(), xeMay.getTenXe(),
-					loaiXe.getTenLoaiXe(), xeMay.getMauXe(), xeMay.getGia(), xeMay.getNhaCungCap().getMaNCC(),
-					xeMay.getNuocSanXuat(), xeMay.getNamSanXuat() });
+					loaiXe.getTenLoaiXe(), xeMay.getMauXe(), df.format(xeMay.getGia()), nhaCC.getTenNCC(),
+					xeMay.getNuocSanXuat(), xeMay.getNamSanXuat(), xeMay.getAnhMinhHoa() });
 		}
 	}
 
@@ -417,6 +433,8 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		cbxLoaiXe.setSelectedIndex(0);
 		cbxMauXe.setSelectedIndex(0);
 		txtAnhMinhHoa.setText("");
+		lblLoiTimKiem.setText("");
+		createIconImage(lblIMG, 400, 230, "data//feature125.jpg");
 		ArrayList<XeMay> dsXeMay = xeMay_DAO.getAllXeMay();
 		xoaDuLieuTrongTable();
 		docDanhSachXeMayVaoTable(dsXeMay);
@@ -428,50 +446,30 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		dm.fireTableDataChanged();
 	}
 
-	/**
-	 * loc xe theo loai xe
-	 */
-	private void locTheoLoaiXe() {
-		String tenLoaiXe = cbxLoaiXe.getSelectedItem().toString();
-		if (cbxLoaiXe.getSelectedIndex() == 0) {
-			ArrayList<XeMay> dsXeMay = xeMay_DAO.getAllXeMay();
-			docDanhSachXeMayVaoTable(dsXeMay);
-			return;
-		}
-		LoaiXe loaiXe = loaiXe_DAO.getLoaiXeTheoTen(tenLoaiXe);
-		xoaDuLieuTrongTable();
-		ArrayList<XeMay> dsXeMayTheoTen = xeMay_DAO.getDanhSachXeMayTheoMaLoaiXe(loaiXe.getMaLoaiXe());
-		if (dsXeMayTheoTen == null) {
-			String thongBao = "Không tìm thấy thông tin xe máy tương ứng với loại xe: " + tenLoaiXe;
-			JOptionPane.showMessageDialog(this, thongBao);
-			return;
-		} else {
-			docDanhSachXeMayVaoTable(dsXeMayTheoTen);
-		}
-	}
-
 	private void themXeMay() {
+		
 		String soKhung = txtSoKhung.getText();
-		if(!kiemTraSoKhungHopLe(soKhung)) return;
+		if (!kiemTraSoKhungHopLe(soKhung))
+			return;
 		String soMay = txtSoMay.getText();
+		if(!kiemTraRong())return ;
 		String tenXe = txtTenXe.getText();
 		String tenLoaiXe = cbxLoaiXe.getSelectedItem().toString();
 		LoaiXe loaiXe = loaiXe_DAO.getLoaiXeTheoTen(tenLoaiXe);
 		String mauXe = cbxMauXe.getSelectedItem().toString();
 		double gia = Double.parseDouble(txtGia.getText());
-		// chưa có dao nhà cung cấp
 		String tenNCC = txtNhaCungCap.getText();
 		NhaCungCap nhaCC = null;
 		try {
-			nhaCC = new NhaCungCap(tenNCC);
+			nhaCC = nhaCC_DAO.findNhaCungCapByTenNCC(tenNCC);
 		} catch (Exception e) {
 			// TODO: handle exception
 			JOptionPane.showMessageDialog(this, e);
 		}
 		String nuocSX = txtNuocSanXuat.getText();
 		String anh = txtAnhMinhHoa.getText();
+		
 		if (kiemTraTrungSoKhung(soKhung) && kiemTraTrungSoMay(soMay) && kiemTraSoKhungHopLe(soKhung)) {
-//			Date namSX = Date.valueOf(txtNamSanXuat.getText());
 			int namSX = Integer.parseInt(txtNamSanXuat.getText());
 			XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCC, tenXe, nuocSX, mauXe, gia, namSX, anh);
 			xeMay_DAO.themXeMay(xeMay);
@@ -532,27 +530,28 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 				String tenNCC = txtNhaCungCap.getText();
 				NhaCungCap nhaCC = null;
 				try {
-					nhaCC = new NhaCungCap(tenNCC);
+					nhaCC = nhaCC_DAO.findNhaCungCapByTenNCC(tenNCC);
 				} catch (Exception e) {
 					// TODO: handle exception
 					JOptionPane.showMessageDialog(this, e);
 				}
 				String nuocSX = txtNuocSanXuat.getText();
-				
-				if(kiemTraTrungSoKhung(soKhung)) {
+
+				if (kiemTraTrungSoKhung(soKhung)) {
 					JOptionPane.showMessageDialog(this, "Không được đổi số khung! ");
 					txtSoKhung.setText(tableModel.getValueAt(row, 0).toString());
 					txtSoKhung.requestFocus();
-					return; 
+					return;
 				}
 				if (kiemTraTrungSoMay(soMay)) {
 					JOptionPane.showMessageDialog(this, "Không được đổi số máy! ");
 					txtSoMay.setText(tableModel.getValueAt(row, 0).toString());
 					txtSoMay.requestFocus();
-					return; 
+					return;
 				}
 				int namSX = Integer.parseInt(txtNamSanXuat.getText());
-				XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCC, tenXe, nuocSX, mauXe, gia, namSX, "abc");
+				String anhMinhHoa = txtAnhMinhHoa.getText();
+				XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCC, tenXe, nuocSX, mauXe, gia, namSX,anhMinhHoa );
 				xeMay_DAO.updateXeMay(xeMay);
 				xoaDuLieuTrongTable();
 				ArrayList<XeMay> dsXemay = xeMay_DAO.getAllXeMay();
@@ -598,7 +597,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 	 * @return true nếu hợp lệ, false nếu không hợp lệ
 	 */
 	private boolean kiemTraSoKhungHopLe(String soKhung) {
-		if(soKhung.equals("")) {
+		if (soKhung.equals("")) {
 			JOptionPane.showMessageDialog(this, "Số khung không được rỗng!");
 			txtSoKhung.selectAll();
 			txtSoKhung.requestFocus();
@@ -617,13 +616,13 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 	}
 
 	private boolean kiemTraSoMay(String soMay) {
-		if(soMay.equals("")) {
+		if (soMay.equals("")) {
 			JOptionPane.showMessageDialog(this, "Số máy không được rỗng!");
 			txtSoKhung.selectAll();
 			txtSoKhung.requestFocus();
 			return false;
 		}
-		if(soMay.matches("(([0-9A-Z]){4,5}-([0-9A-Z]){6,12})")) {
+		if (soMay.matches("(([0-9A-Z]){4,5}-([0-9A-Z]){6,12})")) {
 			JOptionPane.showMessageDialog(this,
 					"Số máy có chiều dài từ 10-17 ký tự và có dạng XXXX-XXXXXX.. trong đó X là các kí tự số hoặc chữ hoa. Ví dụ: 082U-12H1268712");
 			txtSoKhung.selectAll();
@@ -632,6 +631,273 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		}
 		return true;
 	}
-	
+
+	private ArrayList<XeMay> LayDanhSachXeMayTuTable() {
+		ArrayList<XeMay> dsXeMay = new ArrayList<XeMay>();
+		int row = table.getRowCount();
+		for (int i = 0; i < row; i++) {
+			String soKhung = tableModel.getValueAt(i, 0).toString();
+			String soMay = tableModel.getValueAt(i, 1).toString();
+			String tenXe = tableModel.getValueAt(i, 2).toString();
+			LoaiXe loaiXe = loaiXe_DAO.getLoaiXeTheoTen(tableModel.getValueAt(i, 3).toString());
+			String mauXe = tableModel.getValueAt(i, 4).toString();
+			double gia = Double.parseDouble(tableModel.getValueAt(i, 5).toString());
+			NhaCungCap nhaCungCap = nhaCC_DAO.findNhaCungCapByTenNCC(tableModel.getValueAt(i, 6).toString());
+			String nuocSanXuat = tableModel.getValueAt(i, 7).toString();
+			int namSanXuat = Integer.parseInt(tableModel.getValueAt(i, 8).toString());
+			String anh = tableModel.getValueAt(i, 9).toString();
+			XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCungCap, tenXe, nuocSanXuat, mauXe, gia, namSanXuat,
+					anh);
+			dsXeMay.add(xeMay);
+		}
+		return dsXeMay;
+	}
+
+	private void locXeMay() {
+		int result = JOptionPane.showConfirmDialog(this, "Bạn đã làm mới trang trước khi chọn lọc chưa??!", "Xác nhận",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (result == JOptionPane.NO_OPTION) {
+			return;
+		} else {
+			if(!txtAnhMinhHoa.getText().equals("")) {
+				JOptionPane.showMessageDialog(this, "Không thể tìm xe theo ảnh");
+				txtAnhMinhHoa.selectAll();
+				txtAnhMinhHoa.requestFocus();
+				return;
+			}
+			xoaDuLieuTrongTable();
+			ArrayList<XeMay> ds = xeMay_DAO.getAllXeMay();
+			docDanhSachXeMayVaoTable(ds);
+			locXeTheoTheoSoKhung();
+			locXeTheoTheoSoMay();
+			locXeTheoTenXe();
+			locTheoLoaiXe();
+			locTheoMauXe();
+			locXeTheoNamSX();
+			locXeTheoGia();
+			ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+			if(dsXeMay.size()<=0) {
+				lblLoiTimKiem.setText("Không tìm thấy dữ liệu bạn tìm kiếm!!");
+			}else lblLoiTimKiem.setText("Tìm thấy!");
+		}
+	}
+
+	/**
+	 * loc xe theo loai xe
+	 */
+	private void locTheoLoaiXe() {
+		String tenLoaiXe = cbxLoaiXe.getSelectedItem().toString();
+		if (tenLoaiXe.trim().equals("")) {
+			return;
+		}
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (tenLoaiXe.equals(xeMay.getLoaiXe().getTenLoaiXe())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locTheoMauXe() {
+		String mauXe = cbxMauXe.getSelectedItem().toString();
+		if (mauXe.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (mauXe.equals(xeMay.getMauXe())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoTheoSoKhung() {
+		String soKhung = txtSoKhung.getText();
+		if (soKhung.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (soKhung.equals(xeMay.getSoKhung())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoTheoSoMay() {
+		String soMay = txtSoMay.getText();
+		if (soMay.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (soMay.equals(xeMay.getSoMay())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoTenXe() {
+		String tenXe = txtTenXe.getText();
+		if (tenXe.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (tenXe.equals(xeMay.getTenXe())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoTenNCC() {
+		String tenNCC = txtNhaCungCap.getText();
+		if (tenNCC.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (tenNCC.equals(xeMay.getNhaCungCap().getTenNCC())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoNuocSX() {
+		String nuocSX = txtNuocSanXuat.getText();
+		if (nuocSX.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		for (XeMay xeMay : dsXeMay) {
+			if (nuocSX.equals(xeMay.getNuocSanXuat())) {
+				dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	/**
+	 * có thể nhập số hoặc kí tự đầu tiên là >, <, ""
+	 */
+	private void locXeTheoNamSX() {
+		String namSX = txtNamSanXuat.getText();
+		if (namSX.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		int lon_be = 0; // nếu bắt đầu bằng đấu lớn thì lon_be=1, dấu bé lon_be=-1, dấu bằng lon_be=0
+		if (namSX.charAt(0) == '>')
+			lon_be = 1;
+		if (namSX.charAt(0) == '<')
+			lon_be = -1;
+		int nam;
+		if (lon_be == 0)
+			nam = Integer.parseInt(namSX);
+		else nam = Integer.parseInt(namSX.substring(1));
+		for (XeMay xeMay : dsXeMay) {
+			if (lon_be == 0) {
+				if (nam == xeMay.getNamSanXuat())
+					dsLoc.add(xeMay);
+			} else if (lon_be ==-1) {
+				if (nam > xeMay.getNamSanXuat())
+					dsLoc.add(xeMay);
+			}
+			else if (lon_be > 0) {
+				if (nam < xeMay.getNamSanXuat())
+					dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private void locXeTheoGia() {
+		String giaString = txtGia.getText();
+		if (giaString.trim().equals(""))
+			return;
+		ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
+		ArrayList<XeMay> dsLoc = new ArrayList<XeMay>();
+		int lon_be = 0; // nếu bắt đầu bằng đấu lớn thì lon_be=1, dấu bé lon_be=-1, dấu bằng lon_be=0
+		if (giaString.charAt(0) == '>')
+			lon_be = 1;
+		if (giaString.charAt(0) == '<')
+			lon_be = -1;
+		int gia;
+		if (lon_be == 0)
+			gia = Integer.parseInt(giaString);
+		else gia = Integer.parseInt(giaString.substring(1));
+		for (XeMay xeMay : dsXeMay) {
+			if (lon_be == 0) {
+				if (gia == xeMay.getGia())
+					dsLoc.add(xeMay);
+			} else if (lon_be ==-1) {
+				if (gia > xeMay.getGia())
+					dsLoc.add(xeMay);
+			}
+			else if (lon_be > 0) {
+				if (gia < xeMay.getGia())
+					dsLoc.add(xeMay);
+			}
+		}
+		xoaDuLieuTrongTable();
+		docDanhSachXeMayVaoTable(dsLoc);
+	}
+
+	private boolean kiemTraRong() {
+		if(txtTenXe.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Tên xe máy không được rỗng!");
+			txtTenXe.selectAll();
+			txtTenXe.requestFocus();
+			return false;
+		}
+		if(txtNhaCungCap.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Nhà cũng cấp không được rỗng!");
+			txtNhaCungCap.selectAll();
+			txtNhaCungCap.requestFocus();
+			return false;
+		}
+		if(txtNuocSanXuat.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Nước sản xuất xe máy không được rỗng!");
+			txtNuocSanXuat.selectAll();
+			txtNuocSanXuat.requestFocus();
+			return false;
+		}
+		if(cbxLoaiXe.getSelectedItem().toString().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Vui lòng chọn loại xe!");
+			return false;
+		}if(cbxMauXe.getSelectedItem().toString().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Vui lòng chọn màu xe!");
+			return false;
+		}
+		if(txtGia.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Giá xe máy không được rỗng!");
+			txtGia.selectAll();
+			txtGia.requestFocus();
+			return false;
+		}
+		if(txtNamSanXuat.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "Năm sản xuất xe máy không được rỗng!");
+			txtNamSanXuat.selectAll();
+			txtNamSanXuat.requestFocus();
+			return false;
+		}
+		
+		return true;
+	}
 	
 }

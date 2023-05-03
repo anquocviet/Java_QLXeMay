@@ -140,6 +140,41 @@ public class NhaCungCap_DAO {
 	    }
 	    return rows > 0;
 	}
+	
+	/**
+	 * Quyen Cơ tìm nhà cung cấp từ tên nhà cung cấp
+	 * @param maNCC
+	 * @return
+	 */
+	public NhaCungCap findNhaCungCapByTenNCC(String tenNCC) {
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    PreparedStatement stmt = null;
+	    NhaCungCap ncc = null;
+	    try {
+	        stmt = con.prepareStatement("SELECT * FROM NhaCungCap WHERE TenNCC=?");
+	        stmt.setString(1, tenNCC);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            String maNCC = rs.getString("MaNCC");
+	            String sdt = rs.getString("SoDienThoai");
+	            String diaChi = rs.getString("DiaChi");
+	            ncc = new NhaCungCap(maNCC, tenNCC, diaChi, sdt);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return ncc;
+	}
+
+
 
 	
 }

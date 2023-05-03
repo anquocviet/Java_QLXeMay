@@ -71,7 +71,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	private JTextField txtThoiGianBaoHanh;
 	private JTextField txtTienDaNhan;
 	private JTextField txtConNo;
-	private JTextField txtTenNguoiTra;
+	private JTextField txtNguoiTra;
 	private JTextField txtMaNVNhan;
 	private JTextField txtNgayTra;
 	private JTextField txtSoTienTraGop;
@@ -173,8 +173,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		scrXe.setBounds(10, 202, 580, 110);
 		pnHoaDon.add(scrXe);
 
-		tableModelXe = new DefaultTableModel(new String[] { "T\u00EAn xe", "M\u00E0u xe", "S\u1ED1 khung", "Gi\u00E1" },
-				0);
+		tableModelXe = new DefaultTableModel(new String[] { "T\u00EAn xe", "S\u1ED1 khung", "Số máy", "Gi\u00E1" }, 0);
 		tableXe = new JTable(tableModelXe);
 		scrXe.setViewportView(tableXe);
 
@@ -184,6 +183,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(lbThanhTien);
 
 		txtThanhTien = new JTextField();
+		txtThanhTien.setText("0");
 		txtThanhTien.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtThanhTien.setEnabled(false);
 		txtThanhTien.setBounds(146, 330, 149, 20);
@@ -239,6 +239,9 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(lbTienDaNhan);
 
 		txtTienDaNhan = new JTextField();
+		txtTienDaNhan.setForeground(Color.GRAY);
+		txtTienDaNhan.setEditable(false);
+		txtTienDaNhan.setText("0");
 		txtTienDaNhan.setBounds(420, 330, 149, 20);
 		pnHoaDon.add(txtTienDaNhan);
 		txtTienDaNhan.setColumns(10);
@@ -249,6 +252,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(lbConNo);
 
 		txtConNo = new JTextField();
+		txtConNo.setText("0");
 		txtConNo.setEnabled(false);
 		txtConNo.setBounds(146, 368, 149, 20);
 		pnHoaDon.add(txtConNo);
@@ -271,10 +275,10 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		lbTenNguoiTra.setBounds(10, 44, 109, 20);
 		pnTraGop.add(lbTenNguoiTra);
 
-		txtTenNguoiTra = new JTextField();
-		txtTenNguoiTra.setColumns(10);
-		txtTenNguoiTra.setBounds(119, 44, 122, 20);
-		pnTraGop.add(txtTenNguoiTra);
+		txtNguoiTra = new JTextField();
+		txtNguoiTra.setColumns(10);
+		txtNguoiTra.setBounds(119, 44, 122, 20);
+		pnTraGop.add(txtNguoiTra);
 
 		JLabel lbMaNVNhan = new JLabel("Nhân viên nhận :");
 		lbMaNVNhan.setBounds(10, 74, 115, 20);
@@ -418,7 +422,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnAnhVaGia.add(txtGia);
 		txtGia.setColumns(10);
 
-		JButton btnThem = new JButton("Thêm vào giỏ hàng");
+		btnThem = new JButton("Thêm vào giỏ hàng");
 		btnThem.setBackground(new Color(64, 128, 128));
 		btnThem.setBounds(393, 281, 154, 21);
 		pnAnhVaGia.add(btnThem);
@@ -447,6 +451,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		nv_dao = new NhanVien_DAO();
 
 		generateMaHD();
+		generateMaTG();
 		getNgayHienTai(txtNgayLapHD);
 		getNgayHienTai(txtNgayTra);
 		loadDSMaHopDongVaoComboBox();
@@ -454,6 +459,9 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		loadDSXe();
 
 		txtCCCD.addKeyListener(this);
+		txtMaNV.addKeyListener(this);
+		txtMaNVNhan.addKeyListener(this);
+		txtSoTienTraGop.addKeyListener(this);
 		tableKH.addMouseListener(this);
 		tableChonXe.addMouseListener(this);
 		cbMaHopDong.addActionListener(this);
@@ -461,8 +469,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		cbLoaiXe.addActionListener(this);
 		cbSoPhanKhoi.addActionListener(this);
 		cbHangXe.addActionListener(this);
-		txtMaNV.addKeyListener(this);
-		txtMaNVNhan.addKeyListener(this);
+		btnThem.addActionListener(this);
 	}
 
 	public void generateMaHD() {
@@ -473,6 +480,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		maHD += df.format(++slHDTrongNgay);
 		maHD += ngayHT.format(DateTimeFormatter.ofPattern("ddMMyy"));
 		cbMaHopDong.addItem(maHD);
+	}
+
+	public void generateMaTG() {
+		String maTG = "TG";
+		LocalDate ngayHT = LocalDate.now();
+		int slLuotTGTrongNgay = hopDong_dao.countLuotTraGopTrongNgay(ngayHT);
+		DecimalFormat df = new DecimalFormat("00");
+		maTG += df.format(++slLuotTGTrongNgay);
+		maTG += ngayHT.format(DateTimeFormatter.ofPattern("ddMMyy"));
+		cbMaTraGop.addItem(maTG);
 	}
 
 	public void getNgayHienTai(JTextField jtext) {
@@ -496,9 +513,8 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	}
 
 	public void loadDSXe() {
-		DecimalFormat df = new DecimalFormat("0.##");
-		ArrayList<XeMay> dsXe = xe_dao.getAllXeMay();
-		xe_dao.getAllXeMay().forEach(xe -> {
+		DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+		xe_dao.getAllXeMayConTrongKho().forEach(xe -> {
 			tableModelChonXe.addRow(new Object[] { xe.getLoaiXe().getMaLoaiXe(), xe.getTenXe(), xe.getSoKhung(),
 					df.format(xe.getGia() + 0.1 * xe.getGia() + 0.05 * xe.getGia()), xe.getAnhMinhHoa() });
 		});
@@ -582,24 +598,91 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 	public void loadThongTinHopDong() {
 		String soHD = cbMaHopDong.getSelectedItem().toString();
+		DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+
 		HopDong hd = hopDong_dao.getHopDongTheoSoHopDong(soHD);
 		if (hd == null) {
+			clearThongTinHopDong();
 			return;
 		}
+
+		txtCCCD.setText(hd.getKhachHang().getMaKhachHang());
 		String ptThanhToan = hd.getPhuongThucThanhToan() == TRAHET ? "Trả hết" : "Trả góp";
 		cbPTThanhToan.setSelectedItem(ptThanhToan);
 		txtMaNV.setText(hd.getNhanVienLapHopDong().getMaNhanVien());
+		txtNgayLapHD.setText(hd.getNgayHopDong().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		txtThoiGianBaoHanh.setText(hd.getThoiGianBaoHanh().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
 		cbMaTraGop.removeAllItems();
 		hopDong_dao.getAllMaTraGopTheoMaHopDong(soHD).forEach(ma -> {
 			cbMaTraGop.addItem(ma);
 		});
 		cbSoLanTra.setSelectedItem(hd.getSoLanTra());
 		HopDong thongTinTra = hopDong_dao.getThongTinTraGopTheoMaTraGop(cbMaTraGop.getSelectedItem().toString());
-		txtTenNguoiTra.setText(((HopDongTraGop) thongTinTra).getNguoiTra().getMaCCCD());
-		txtMaNVNhan.setText(((HopDongTraGop) thongTinTra).getNguoiNhan().toString());
+		txtNguoiTra.setText(((HopDongTraGop) thongTinTra).getNguoiTra().getMaCCCD());
+		txtMaNVNhan.setText(((HopDongTraGop) thongTinTra).getNguoiNhan().getMaNhanVien());
+		txtNgayTra.setText(
+				((HopDongTraGop) thongTinTra).getNgayTraGop().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		double soTienTra = ((HopDongTraGop) thongTinTra).getSoTienTraGop();
-		txtSoTienTraGop.setText(new DecimalFormat("0.##").format(soTienTra));
+		txtSoTienTraGop.setText(df.format(soTienTra));
+		txtThanhTien.setText(df.format(hd.getTongTien()));
+		double tienDaNhan = hopDong_dao.getTienDaNhan(soHD);
+		txtTienDaNhan.setText(df.format(tienDaNhan));
+		txtConNo.setText(df.format(hd.getTongTien() - tienDaNhan));
+
+		tableModelXe.getDataVector().removeAllElements();
+		hd.getDanhSachXe().forEach(xe -> {
+			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getSoKhung(), xe.getSoMay(), df.format(xe.getGia()) });
+		});
+	}
+
+	public void clearThongTinHopDong() {
+		cbPTThanhToan.setSelectedIndex(0);
+		txtMaNV.setText("");
+		txtThoiGianBaoHanh.setText("");
+		cbMaTraGop.removeAllItems();
+		generateMaTG();
+		cbSoLanTra.setSelectedIndex(0);
+		txtNguoiTra.setText("");
+		txtMaNVNhan.setText("");
+		txtSoTienTraGop.setText("");
+		getNgayHienTai(txtNgayLapHD);
+		getNgayHienTai(txtNgayTra);
+		txtThanhTien.setText("");
+		txtTienDaNhan.setText("");
+		txtConNo.setText("");
+		tableModelXe.getDataVector().removeAllElements();
+		tableModelXe.fireTableDataChanged();
+	}
+
+	public boolean validateData() {
+		String cccdKH = txtCCCD.getText().trim();
+		String maNVLapHD = txtMaNV.getText().trim();
+		String thoiGianBH = txtThoiGianBaoHanh.getText().trim();
+		String soTienTra = txtSoTienTraGop.getText().trim();
+		String cccdNguoiTra = txtNguoiTra.getText().trim();
+		String maNVNhan = txtMaNVNhan.getText().trim();
+		if (kh_dao.getKhachHangTheoMaCCCD(cccdKH) == null) {
+			JOptionPane.showMessageDialog(null,
+					"Không tồn tại khách hàng này trong hệ thống, hãy kiểm tra lại hoặc thêm mới khách hàng trong giao diện Quản lý khách hàng",
+					"Cảnh báo", JOptionPane.WARNING_MESSAGE);
+			txtCCCD.selectAll();
+			txtCCCD.requestFocus();
+			return false;
+		}
+		if (nv_dao.getNhanVienTheoMaNV(maNVLapHD) == null) {
+			JOptionPane.showMessageDialog(null,
+					"Không tồn tại nhân viên này trong hệ thống, hãy kiểm tra lại hoặc thêm mới nhân viên trong giao diện Quản lý Nhân viên",
+					"Cảnh báo", JOptionPane.WARNING_MESSAGE);
+			txtMaNV.selectAll();
+			txtMaNV.requestFocus();
+			return false;
+		}
+//		------ Continue
+		return true;
+	}
+
+	public void luuThongTinHopDong() {
 
 	}
 
@@ -647,12 +730,30 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 		}
 		if (o.equals(btnThem)) {
+			int rowSelected = tableChonXe.getSelectedRow();
+			if (rowSelected == -1) {
+				JOptionPane.showMessageDialog(null, "Vui lòng chọn xe để thêm vào hợp đồng!", "Lỗi",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String tenXe = tableChonXe.getValueAt(rowSelected, 1).toString();
+			String soKhung = tableChonXe.getValueAt(rowSelected, 2).toString();
+			String soMay = xe_dao.getXeMayTheoSoKhung(soKhung).getSoMay();
+			String gia = tableChonXe.getValueAt(rowSelected, 3).toString();
+			tableModelXe.addRow(new Object[] { tenXe, soKhung, soMay, gia });
+			tableModelChonXe.removeRow(rowSelected);
+
+			DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+			String tienXe = gia.replaceAll(",", "");
+			double tongTien = Double.parseDouble(txtThanhTien.getText().replaceAll(",", ""))
+					+ Double.parseDouble(tienXe);
+			txtThanhTien.setText(df.format(tongTien));
 
 		}
 		if (o.equals(btnLuu)) {
-
+			if (validateData())
+				luuThongTinHopDong();
 		}
-
 		if (o.equals(cbMauXe) || o.equals(cbLoaiXe) || o.equals(cbSoPhanKhoi) || o.equals(cbHangXe)) {
 			filterDSXe();
 		}
@@ -663,8 +764,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -673,7 +772,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		if (o.equals(txtCCCD)) {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				String maCCCD = txtCCCD.getText().trim();
-				KhachHang kh = kh_dao.getKhachHangMaCCCD(maCCCD);
+				KhachHang kh = kh_dao.getKhachHangTheoMaCCCD(maCCCD);
 				if (kh == null) {
 					JOptionPane.showMessageDialog(null,
 							"Chưa có khách hàng trong hệ thống, hãy thêm khách hàng mới ở trong giao diện Khách Hàng",
@@ -700,7 +799,24 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(txtSoTienTraGop)) {
+			try {
+				double x = Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
+			} catch (Exception e2) {
+				JOptionPane.showMessageDialog(null, "Số tiền trả sai định dạng, chỉ nhập bao gồm số, ký tự , hoặc .");
+				txtSoTienTraGop.selectAll();
+				txtSoTienTraGop.requestFocus();
+				return;
+			}
+			DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+			txtTienDaNhan.setText(txtSoTienTraGop.getText());
+			String tongTien = txtThanhTien.getText().toString();
+			String conNo = txtConNo.getText().toString();
+			double x = Double.parseDouble(tongTien.replaceAll(",", ""))
+					- Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
+			txtConNo.setText(df.format(x));
+		}
 
 	}
 }

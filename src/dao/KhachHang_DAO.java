@@ -86,7 +86,7 @@ public class KhachHang_DAO {
 	/**
 	 * @author AnQuocViet
 	 */
-	public KhachHang getKhachHangMaCCCD(String maCCCD) {
+	public KhachHang getKhachHangTheoMaCCCD(String maCCCD) {
 		KhachHang kh = null;
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;

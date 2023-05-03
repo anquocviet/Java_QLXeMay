@@ -10,6 +10,7 @@ public class HopDong {
 	protected LocalDate ngayHopDong;
 	protected PhuongThucThanhToan phuongThucThanhToan;
 	protected int soLanTra;
+	protected double tongTien;
 	protected LocalDate thoiGianBaoHanh;
 	protected ArrayList<XeMay> danhSachXe;
 	protected final int CHIETKHAUTHANHTOANNGAY = 2;
@@ -26,7 +27,7 @@ public class HopDong {
 	}
 
 	public HopDong(String soHopDong, KhachHang khachHang, NhanVien nhanVienLapHopDong, LocalDate ngayHopDong,
-			PhuongThucThanhToan phuongThucThanhToan, int soLanTra, LocalDate thoiGianBaoHanh,
+			PhuongThucThanhToan phuongThucThanhToan, int soLanTra, double tongTien, LocalDate thoiGianBaoHanh,
 			ArrayList<XeMay> danhSachXe) throws Exception {
 		super();
 		setSoHopDong(soHopDong);
@@ -34,9 +35,21 @@ public class HopDong {
 		setNhanVienLapHopDong(nhanVienLapHopDong);
 		setPhuongThucThanhToan(phuongThucThanhToan);
 		setSoLanTra(soLanTra);
+		setTongTien(tongTien);
 		setThoiGianBaoHanh(thoiGianBaoHanh);
 		setNgayHopDong(ngayHopDong);
 		setDanhSachXe(danhSachXe);
+	}
+
+	public double getTongTien() {
+		return tongTien;
+	}
+
+	public void setTongTien(double tongTien) throws Exception {
+		if (tongTien < 0)
+			throw new Exception("Tổng tiền không được âm");
+		else
+			this.tongTien = tongTien;
 	}
 
 	public int getSoLanTra() {

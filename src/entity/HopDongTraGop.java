@@ -13,10 +13,10 @@ public class HopDongTraGop extends HopDong {
 	private NhanVien nguoiNhan;
 
 	public HopDongTraGop(String soHopDong, KhachHang khachHang, NhanVien nhanVienLapHopDong, LocalDate ngayHopDong,
-			PhuongThucThanhToan phuongThucThanhToan, int soLanTra, LocalDate thoiGianBaoHanh,
+			PhuongThucThanhToan phuongThucThanhToan, int soLanTra, double tongTien, LocalDate thoiGianBaoHanh,
 			ArrayList<XeMay> danhSachXe, String maTraGop, int soLanTraGop, double soTienTraGop, LocalDate ngayTraGop,
 			CanCuocCongDan nguoiTra, NhanVien nguoiNhan) throws Exception {
-		super(soHopDong, khachHang, nhanVienLapHopDong, ngayHopDong, phuongThucThanhToan, soLanTra, thoiGianBaoHanh,
+		super(soHopDong, khachHang, nhanVienLapHopDong, ngayHopDong, phuongThucThanhToan, soLanTra, tongTien, thoiGianBaoHanh,
 				danhSachXe);
 		this.maTraGop = maTraGop;
 		this.soLanTraGop = soLanTraGop;

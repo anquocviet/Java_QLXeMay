@@ -281,7 +281,7 @@ VALUES
     ( '89CB-9871276', '6129L-9172997712', 'LX002', 'NCC001', N'AirBlade 125cc', N'Thái Lan', N'Đỏ Đen', 43000000, 2023, 'AirBlade-125.png' ),
     ( '082U-12H1268712', '987E-1927ER12', 'LX003', 'NCC002', N'Winner X', N'Việt Nam', N'Đỏ Đen Trắng', 50000000, 2022, 'Winner-X.png' ),
     ( '621G-12N12797H', '9712Y-98127BN23', 'LX003', 'NCC002', N'CBR150R', N'Việt Nam', N'Đen Xám', 74000000, 2022, 'CBR-150R.png' ),
-    ( '812K-9712T712FA', '08912-7766BV727', 'LX004', 'NCC002', N'CBR500R', N'Trung Quốc', N'Đỏ Đen', 19300000, 2022, 'CBR500R.jpeg' ),
+    ( '812K-9712T712FA', '08912-7766BV727', 'LX004', 'NCC002', N'CBR500R', N'Trung Quốc', N'Đỏ Đen', 193000000, 2022, 'CBR500R.jpeg' ),
     ( '98DN-JL97122', '9182H-129NBH612', 'LX004', 'NCC002', N'Rebel 500', N'Việt Nam', N'Đen', 182000000, 2022, 'Rebel-500.jpeg' ),
     ( '987KM-861268R', '098HA-912621LE', 'LX004', 'NCC003', N'CB500X', N'Trung Quốc', N'Đen Đỏ', 195000000, 2022, 'CB500X.jpeg' ),
     ( 'Y716-W1297972232', '9797129-JH7219', 'LX005', 'NCC002', N'Weaver++', N'Việt Nam', N'Đen Cam', 66000000, 2022, 'Weaver++.png' )
@@ -312,10 +312,10 @@ GO
 INSERT INTO [dbo].[CT_TraGop]
     ( MaTraGop, SoHopDong, SoTienTraGop, NgayTraGop, MaNguoiTra, MaNguoiNhan )
 VALUES
-    ( 'TG01230322', 'HD01230322', 54240000, '2022-03-23', '087180000999', 'NV01120321' ),
-    ( 'TG02230322', 'HD02230322', 30000000, '2022-03-23', '031099758391', 'NV02120321' ),
-    ( 'TG01010422', 'HD02230322', 37860000, '2022-04-01', '031099758391', 'NV02120321' ),
-    ( 'TG01290522', 'HD01290522', 165000000, '2022-05-29', '035200981263', 'NV03120321' )
+    ( 'TG01230322', 'HD01230322', 27048000, '2022-03-23', '087180000999', 'NV01120321' ),
+    ( 'TG02230322', 'HD02230322', 20000000, '2022-03-23', '031099758391', 'NV02120321' ),
+    ( 'TG01010422', 'HD02230322', 46700000, '2022-04-01', '031099758391', 'NV02120321' ),
+    ( 'TG01290522', 'HD01290522', 152950000, '2022-05-29', '035200981263', 'NV03120321' )
 GO
 
 INSERT INTO [dbo].[LinhKien]
@@ -346,3 +346,20 @@ VALUES
     ( 'P001061122', 'LK0005', 'Mút lọc gió lỏng ốc', 1, 1, NULL, NULL ),
     ( 'P001061122', 'LK0002', 'Nhông xích dãn', 0, 1, 231000, 231000 )
 GO
+
+
+SELECT * FROM XeMay WHERE SoKhung NOT IN (SELECT SoKhung FROM CT_HopDong)
+-- -- Drop the database 'QuanLyBanXeMay'
+-- -- Connect to the 'master' database to run this snippet
+-- USE master
+-- GO
+-- -- Uncomment the ALTER DATABASE statement below to set the database to SINGLE_USER mode if the drop database command fails because the database is in use.
+-- -- ALTER DATABASE QuanLyBanXeMay SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+-- -- Drop the database if it exists
+-- IF EXISTS (
+--     SELECT [name]
+--         FROM sys.databases
+--         WHERE [name] = N'QuanLyBanXeMay'
+-- )
+-- DROP DATABASE QuanLyBanXeMay
+-- GO

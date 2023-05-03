@@ -48,6 +48,40 @@ public class XeMay_DAO {
 		}
 		return dsXeMay;
 	}
+	
+	/**
+	 * @author An Quoc Viet
+	 * @return
+	 */
+	public ArrayList<XeMay> getAllXeMayConTrongKho() {
+		ArrayList<XeMay> dsXeMay = new ArrayList<XeMay>();
+		Connection conn = ConnectDB.getInstance().getConnection();
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			String sql = "SELECT * FROM XeMay WHERE SoKhung NOT IN (SELECT SoKhung FROM CT_HopDong)";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String soKhung = rs.getString("SoKhung");
+				String soMay = rs.getString("SoMay");
+				LoaiXe loaiXe = new LoaiXe(rs.getString("MaLoai"));
+				NhaCungCap nhaCungCap = new NhaCungCap(rs.getString("MaNCC"));
+				String tenXe = rs.getString("TenXe");
+				String nuocSanXuat = rs.getString("NuocSX");
+				String mauXe = rs.getString("MauXe");
+				double gia = rs.getDouble("Gia");
+				int namSanXuat = rs.getInt("NamSX");
+				String anh = rs.getString("AnhMinhHoa");
+				XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCungCap, tenXe, nuocSanXuat, mauXe, gia, namSanXuat,
+						anh);
+				dsXeMay.add(xeMay);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dsXeMay;
+	}
 
 	/**
 	 * @author An Quoc Viet

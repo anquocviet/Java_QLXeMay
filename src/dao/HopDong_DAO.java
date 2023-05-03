@@ -48,9 +48,10 @@ public class HopDong_DAO {
 				double tongTien = rs.getDouble("TongTien");
 				KhachHang khachHang = kh_dao.getKhachHangTheoMaKH(maKH);
 				NhanVien nhanVien = nv_dao.getNhanVienTheoMaNV(maNV);
-				ArrayList<XeMay> dsXe = xe_dao.getDSXeMayCuaKhachHang(soHopDong);
+				ArrayList<XeMay> dsXe = xe_dao.getDSXeMayCuaKhachHang(maKH);
 				HopDong hopDong = new HopDong(soHopDong, khachHang, nhanVien, ngayLapHopDong,
-						phuongThucThanhToan.equals("Trả hết") ? TRAHET : TRAGOP, soLanTra, thoiGianBaoHanh, dsXe);
+						phuongThucThanhToan.equals("Trả hết") ? TRAHET : TRAGOP, soLanTra, tongTien, thoiGianBaoHanh,
+						dsXe);
 				hopDongList.add(hopDong);
 			}
 		} catch (Exception e) {
@@ -93,7 +94,38 @@ public class HopDong_DAO {
 		}
 		return count;
 	}
-
+	
+	/**
+	 * @ @author An Quoc Viet
+	 * @param date
+	 * @return
+	 */
+	public int countLuotTraGopTrongNgay(LocalDate date) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		Statement stmt = null;
+		int count = 0;
+		try {
+			stmt = con.createStatement();
+			String dateFormat = date.toString();
+			String sql = String.format("SELECT * FROM CT_TraGop WHERE NgayTraGop = '%s'", dateFormat);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next())
+				count++;
+			return count;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * @author An Quoc Viet
 	 * @param soHD
@@ -118,9 +150,10 @@ public class HopDong_DAO {
 				double tongTien = rs.getDouble("TongTien");
 				KhachHang khachHang = kh_dao.getKhachHangTheoMaKH(maKH);
 				NhanVien nhanVien = nv_dao.getNhanVienTheoMaNV(maNV);
-				ArrayList<XeMay> dsXe = xe_dao.getDSXeMayCuaKhachHang(soHopDong);
+				ArrayList<XeMay> dsXe = xe_dao.getDSXeMayCuaKhachHang(maKH);
 				hd = new HopDong(soHopDong, khachHang, nhanVien, ngayLapHopDong,
-						phuongThucThanhToan.equals("Trả hết") ? TRAHET : TRAGOP, soLanTra, thoiGianBaoHanh, dsXe);
+						phuongThucThanhToan.equals("Trả hết") ? TRAHET : TRAGOP, soLanTra, tongTien, thoiGianBaoHanh,
+						dsXe);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,4 +228,33 @@ public class HopDong_DAO {
 		}
 		return hd;
 	}
+
+	/**
+	 * @author An Quoc Viet
+	 * @param maHD
+	 * @return
+	 */
+	public double getTienDaNhan(String maHD) {
+		double tienDaNhan = 0;
+		Connection con = ConnectDB.getInstance().getConnection();
+		Statement stmt = null;
+		try {
+			stmt = con.createStatement();
+			String sql = String.format("SELECT SUM(SoTienTraGop) FROM CT_TraGop where SoHopDong = '%s'", maHD);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				tienDaNhan = rs.getDouble(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return tienDaNhan;
+	}
+
 }
