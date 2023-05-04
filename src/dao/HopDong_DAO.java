@@ -1,10 +1,13 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 import connect.ConnectDB;
@@ -94,7 +97,7 @@ public class HopDong_DAO {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * @ @author An Quoc Viet
 	 * @param date
@@ -125,7 +128,7 @@ public class HopDong_DAO {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * @author An Quoc Viet
 	 * @param soHD
@@ -257,4 +260,85 @@ public class HopDong_DAO {
 		return tienDaNhan;
 	}
 
+	/**
+	 * @author An Quoc Viet
+	 * @param hd
+	 * @return
+	 */
+	public boolean themMoiHopDong(HopDong hd) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		PreparedStatement pstm = null;
+		try {
+			String sql = "INSERT INTO HopDong ( SoHopDong, MaKH, MaNV, NgayLapHopDong, ThoiGianBaoHanh,PhuongThucThanhToan, SoLanTraGop, TongTien )"
+					+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ))";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, hd.getSoHopDong());
+			pstm.setString(2, hd.getKhachHang().getMaKhachHang());
+			pstm.setString(3, hd.getNhanVienLapHopDong().getMaNhanVien());
+			pstm.setDate(4, (Date) Date.from(hd.getNgayHopDong().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			pstm.setDate(5, (Date) Date.from(hd.getThoiGianBaoHanh().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			pstm.setString(6, hd.getPhuongThucThanhToan() == PhuongThucThanhToan.TRAHET ? "Trả hết" : "Trả góp");
+			pstm.setInt(7, hd.getSoLanTra());
+			pstm.setDouble(8, hd.getTongTien());
+			return pstm.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean themMoiCT_HopDong(HopDong hd) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		hd.getDanhSachXe().forEach(xe -> {
+			PreparedStatement pstm = null;
+			try {
+				String sql = "INSERT INTO CT_HopDong ( SoHopDong, SoKhung, ThanhTien )" + "VALUES ( ?, ?, ? ))";
+				pstm = con.prepareStatement(sql);
+				pstm.setString(1, hd.getSoHopDong());
+				pstm.setString(2, xe.getSoKhung());
+				pstm.setDouble(3, xe.getGia() + 0.15 * xe.getGia());
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					pstm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		return false;
+	}
+	
+	public boolean themMoiCT_TraGop(HopDong hd) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		PreparedStatement pstm = null;
+		try {
+			String sql = "INSERT INTO CT_TraGop ( MaTraGop, SoHopDong, SoTienTraGop, NgayTraGop, MaNguoiTra, MaNguoiNhan )"
+					+ "VALUES ( ?, ?, ?, ?, ?, ? ))";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, ((HopDongTraGop) hd).getMaTraGop());
+			pstm.setString(2, hd.getSoHopDong());
+			pstm.setDouble(3, ((HopDongTraGop) hd).getSoTienTraGop());
+			pstm.setDate(4, (Date) (Date.from(((HopDongTraGop) hd).getNgayTraGop().atStartOfDay(ZoneId.systemDefault()).toInstant())));
+			pstm.setString(5, ((HopDongTraGop) hd).getNguoiTra().getMaCCCD());
+			pstm.setString(6, ((HopDongTraGop) hd).getNguoiNhan().getMaNhanVien());
+			return pstm.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 }
