@@ -54,7 +54,7 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 	private JButton btnSearch;
 	private JButton btnAdd;
 	private JButton btnUpdate;
-	private JButton btnClear;
+	private JButton btnRefresh;
 	private JButton btnDelete;
 
 	/**
@@ -226,10 +226,10 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		btnUpdate.setBackground(new Color(64, 128, 128));
 		panel_right.add(btnUpdate);
 		
-		btnClear = new JButton("Xóa rỗng");
-		btnClear.setBackground(new Color(64, 128, 128));
-		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_right.add(btnClear);
+		btnRefresh = new JButton("Làm mới");
+		btnRefresh.setBackground(new Color(64, 128, 128));
+		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panel_right.add(btnRefresh);
 		
 		btnDelete = new JButton("Xóa");
 		btnDelete.setForeground(new Color(0, 0, 0));
@@ -261,12 +261,12 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		lblNewLabel_4_3.setEnabled(false);
 		panel_right.add(lblNewLabel_4_3);
 		
-		JLabel lblNewLabel_6 = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
-		lblNewLabel_6.setForeground(new Color(64, 128, 128));
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_6.setBounds(0, 21, 1171, 38);
-		add(lblNewLabel_6);
+		JLabel lblTitle = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
+		lblTitle.setForeground(new Color(64, 128, 128));
+		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setBounds(0, 21, 1171, 38);
+		add(lblTitle);
 		
 		ncc_dao = new NhaCungCap_DAO();
 		ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
@@ -275,16 +275,15 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		tableNCC.addMouseListener(this);
 		
 		btnAdd.addActionListener(this);
-		btnClear.addActionListener(this);
+		btnRefresh.addActionListener(this);
 		btnDelete.addActionListener(this);
 		btnSearch.addActionListener(this);
 		btnUpdate.addActionListener(this);
 	}
 	
-	public void loadDSNCC(ArrayList<NhaCungCap> dsNCC) {
+	private void loadDSNCC(ArrayList<NhaCungCap> dsNCC) {
 		DefaultTableModel tableModelNCC = (DefaultTableModel) tableNCC.getModel();
 		tableModelNCC.setRowCount(0);
-		
 		if (!dsNCC.isEmpty()) {
 	        for (NhaCungCap ncc : dsNCC) {
 	            String maNCC = ncc.getMaNCC();
@@ -296,8 +295,12 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		}
 	}
 	
-	public void xoaNCC() {
+	private void xoaNCC() {
 		int row = tableNCC.getSelectedRow();
+	    if (row == -1) {
+	        JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần xóa");
+	        return;
+	    }
 		String maNCC = tableNCC.getValueAt(row, 0).toString();
 		int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa không !!!");
 		if (result == JOptionPane.NO_OPTION) {
@@ -306,40 +309,56 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		} else if (result == JOptionPane.CANCEL_OPTION) {
 			return;
 		} else {
-	    boolean resultncc = ncc_dao.xoaNhaCungCap(maNCC);
-	    if (resultncc) {
-	        JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thành công!");
-	        ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
-	        loadDSNCC(dsNCC);
-	    } else {
-	        JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thất bại!");
+		    boolean resultncc = ncc_dao.xoaNhaCungCap(maNCC);
+		    if (resultncc) {
+		        JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thành công!");
+		        ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+		        loadDSNCC(dsNCC);
+		        clearInput();
+		    } else {
+		        JOptionPane.showMessageDialog(null, "Xóa nhà cung cấp thất bại!");
+		    }
 	    }
+	}
+	
+	private void checkMaNCC(String maNCC) {
+	    ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+		for (NhaCungCap ncc : dsNCC) {
+	        if (ncc.getMaNCC().equals(maNCC)) {
+	            JOptionPane.showMessageDialog(null, "Mã NCC đã tồn tại!");
+	            txtMaNCC.requestFocus();
+	            return;
+	        }
 	    }
 	}
 
 	
-	public void themNCC() throws Exception{
+	private void themNCC() throws Exception{
+		boolean result =  validateNCCInput();
 		String maNCC = txtMaNCC.getText();
 		String tenNCC = txtTenNCC.getText();
 		String diaChi = txtDiaChi.getText();
 		String sdt = txtSDT.getText();
+		checkMaNCC(maNCC);
 	    NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, sdt);
-	    boolean result = ncc_dao.themNhaCungCap(ncc);
+	   
 	    if (result) {
+	    	ncc_dao.themNhaCungCap(ncc);
 	        JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!");
-	        ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+		    ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
 	        loadDSNCC(dsNCC);
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thất bại!");
 	    }
 	}
 	
-	public void suaNCC() throws Exception {
+	private void suaNCC() throws Exception {
 	    int row = tableNCC.getSelectedRow();
 	    if (row == -1) {
 	        JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp cần sửa thông tin!");
 	        return;
 	    }
+		validateNCCInput();
 	    String maNCC = tableNCC.getValueAt(row, 0).toString();
 	    String tenNCC = txtTenNCC.getText();
 	    String diaChi = txtDiaChi.getText();
@@ -360,14 +379,65 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 	    }
 	}
 
+	private void timNCCTheoMaNCC() {
+	    String maNCC = txtSearch.getText().toUpperCase();
+	    NhaCungCap ncc = ncc_dao.findNhaCungCapByMaNCC(maNCC);
+	    if (ncc != null) {
+	        txtMaNCC.setText(ncc.getMaNCC().toUpperCase());
+	        txtTenNCC.setText(ncc.getTenNCC());
+	        txtDiaChi.setText(ncc.getDiaChi());
+	        txtSDT.setText(ncc.getSdt());
+	        ArrayList<NhaCungCap> dsNCC = new ArrayList<NhaCungCap>();
+	        dsNCC.add(ncc);
+	        loadDSNCC(dsNCC);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Không tìm thấy nhà cung cấp có mã " + maNCC);
+	    }
+	}
 
-
-	// Hàm xóa dữ liệu trên các trường nhập liệu
 	private void clearInput() {
 	    txtMaNCC.setText("");
 	    txtTenNCC.setText("");
 	    txtSDT.setText("");
 	    txtDiaChi.setText("");
+	    txtSearch.setText("");
+	}
+
+	private boolean validateNCCInput() {
+	    String maNCC = txtMaNCC.getText();
+	    if (!maNCC.matches("^NCC\\d{3}$")) {
+	        JOptionPane.showMessageDialog(null, "Mã NCC không đúng định dạng NCCxxx với xxx là 3 số!");
+	        txtMaNCC.requestFocus();
+	        return false;
+	    }
+	    String tenNCC = txtTenNCC.getText();
+	    if (tenNCC.isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nhà cung cấp!");
+	        txtTenNCC.requestFocus();
+	        return false;
+	    }
+
+	    String diaChi = txtDiaChi.getText();
+	    if (diaChi.isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ nhà cung cấp!");
+	        txtDiaChi.requestFocus();
+	        return false;
+	    }
+
+	    String sdt = txtSDT.getText();
+	    if (sdt.isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại nhà cung cấp!");
+	        txtSDT.requestFocus();
+	        return false;
+	    }
+
+	    String sdtPattern = "^0\\d{9}";
+	    if (!sdt.matches(sdtPattern)) {
+	        JOptionPane.showMessageDialog(this, "Số điện thoại không đúng định dạng 0xxxxxxxxx với x là những số");
+	        txtSDT.requestFocus();
+	        return false;
+	    }
+	    return true;
 	}
 
 
@@ -418,8 +488,10 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 				e1.printStackTrace();
 			}
 		}
-		if(o.equals(btnClear)) {
+		if(o.equals(btnRefresh)) {
 			clearInput();
+			ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+			loadDSNCC(dsNCC);
 		}
 		if(o.equals(btnDelete)) {
 			xoaNCC();
@@ -428,9 +500,11 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 			try {
 				suaNCC();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+		if(o.equals(btnSearch)) {
+			timNCCTheoMaNCC();
 		}
 	}
 }

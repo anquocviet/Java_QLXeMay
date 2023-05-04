@@ -10,9 +10,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import dao.CanCuocCongDan_DAO;
+import dao.HopDong_DAO;
 import dao.KhachHang_DAO;
+import dao.LoaiXe_DAO;
 import dao.NhaCungCap_DAO;
 import dao.XeMay_DAO;
+import entity.HopDong;
 import entity.NhaCungCap;
 import entity.XeMay;
 
@@ -65,6 +68,8 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	private JTextField txtNgayDatHang;
 	private XeMay_DAO xe_dao;
 	private NhaCungCap_DAO ncc_dao;
+	private HopDong_DAO hd_dao;
+	private LoaiXe_DAO loaiXe_dao;
 
 	/**
 	 * @author An Quốc Việt
@@ -401,22 +406,39 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		
 		ncc_dao = new NhaCungCap_DAO();
 		xe_dao = new XeMay_DAO();
+		loaiXe_dao = new LoaiXe_DAO();
+		hd_dao = new HopDong_DAO();
 
 		loadDSNhaCungCap();
 		loadDSXe();
 
-		//txtMaNCC.addKeyListener(this);
+		
 		tableNCC.addMouseListener(this);
 		tableXe.addMouseListener(this);
 
 	}
+	
+	public void themDSLoaiXeVaoComboBox() {
+		loaiXe_dao.getAllLoaiXe().forEach(loaiXe -> {
+			cbLoaiXe.addItem(loaiXe.getTenLoaiXe());
+		});
+	}
+	private void loadDSHoaDon() {
+		ArrayList<HopDong> dsHD = hd_dao.getAllListHopDong();
+		if(!dsHD.isEmpty()) {
+			for (HopDong ncc : dsHD) {
+	             
+	        }
+		}
+	}
+	
 	private void loadDSXe() {
 		ArrayList<XeMay> dsXe = xe_dao.getAllXeMay();
 		xe_dao.getAllXeMay().forEach(xe -> {
 			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getMauXe()});
 		});
 	}
-	public void loadDSNhaCungCap() {
+	private void loadDSNhaCungCap() {
 		DefaultTableModel tableModel = (DefaultTableModel) tableNCC.getModel();
 		tableModel.setRowCount(0);
 		ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
