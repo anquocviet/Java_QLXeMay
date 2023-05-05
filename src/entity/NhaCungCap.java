@@ -16,9 +16,14 @@ public class NhaCungCap {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public NhaCungCap(String maNCC) throws Exception {
+	public NhaCungCap(String maNCC) throws Exception{
 		super();
 		setMaNCC(maNCC);
+	}
+
+	public NhaCungCap(String maNCC, String tenNCC) {
+		this.tenNCC = tenNCC;
+		this.maNCC = maNCC;
 	}
 
 	public String getMaNCC() {

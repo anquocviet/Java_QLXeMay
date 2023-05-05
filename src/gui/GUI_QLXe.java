@@ -310,7 +310,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 
 	public void createIconImage(JLabel x, int W, int H, String path) {
 		ImageIcon image = new ImageIcon(
-				new ImageIcon(path).getImage().getScaledInstance(W, H, java.awt.Image.SCALE_SMOOTH));
+				new ImageIcon(path).getImage().getScaledInstance(W, H, Image.SCALE_SMOOTH));
 		x.setIcon(image);
 		repaint();
 		revalidate();

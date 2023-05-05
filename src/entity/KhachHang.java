@@ -8,7 +8,7 @@ public class KhachHang {
 	public KhachHang() {
 	}
 
-	public KhachHang(String maKhachHang, String soDienThoai, CanCuocCongDan cccd) throws Exception {
+	public KhachHang(String maKhachHang,CanCuocCongDan cccd, String soDienThoai) throws Exception {
 		setMaKhachHang(maKhachHang);
 		setSoDienThoai(soDienThoai);
 		setCccd(cccd);

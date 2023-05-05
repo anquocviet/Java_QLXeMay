@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 import connect.ConnectDB;
 import entity.CanCuocCongDan;
@@ -24,14 +25,25 @@ public class KhachHang_DAO {
 		Statement stmt = null;
 		try {
 			stmt = con.createStatement();
-			String sql = "SELECT * FROM KhachHang";
+			String sql = "select MaKH, Ho, HoDem, Ten, cccd.MaCCCD, NgaySinh, SoDienThoai, GioiTinh, TamTru, ThuongTru " +
+					"from KhachHang kh " +
+					"inner join CanCuocCongDan cccd on kh.MaCCCD = cccd.MaCCCD";
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				String maKH = rs.getString("MaKH");
+				String ho = rs.getString("Ho");
+				String hoDem = rs.getString("HoDem");
+				String ten = rs.getString("Ten");
 				String maCCCD = rs.getString("MaCCCD");
+				LocalDate ngaySinh = rs.getDate("NgaySinh").toLocalDate();
 				String sdt = rs.getString("SoDienThoai");
-				CanCuocCongDan c = new CanCuocCongDan(maCCCD);
-				KhachHang kh = new KhachHang(maKH, sdt, c);
+				boolean gioiTinh = rs.getBoolean("GioiTinh");
+				String tamTru = rs.getString("TamTru");
+				String thuongTru = rs.getString("ThuongTru");
+
+				CanCuocCongDan canCuocCongDan = new CanCuocCongDan(maCCCD, ho, hoDem, ten, gioiTinh, ngaySinh, tamTru, thuongTru);
+
+				KhachHang kh = new KhachHang(maKH, canCuocCongDan, sdt);
 				dskh.add(kh);
 			}
 		} catch (SQLException e) {
@@ -67,7 +79,7 @@ public class KhachHang_DAO {
 				String sdt = rs.getString("SoDienThoai");
 				cccd_dao = new CanCuocCongDan_DAO();
 				CanCuocCongDan cc = cccd_dao.getCCCDTheoMa(maCCCD);
-				kh = new KhachHang(maKH, sdt, cc);
+				kh = new KhachHang(maKH, cc, sdt);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,7 +113,7 @@ public class KhachHang_DAO {
 				String sdt = rs.getString("SoDienThoai");
 				cccd_dao = new CanCuocCongDan_DAO();
 				CanCuocCongDan cc = cccd_dao.getCCCDTheoMa(maCCCD);
-				kh = new KhachHang(maKH, sdt, cc);
+				kh = new KhachHang(maKH, cc , sdt);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

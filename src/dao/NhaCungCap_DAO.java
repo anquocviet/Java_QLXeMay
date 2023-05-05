@@ -174,4 +174,7 @@ public class NhaCungCap_DAO {
 	    return ncc;
 	}
 
+
+
+	
 }

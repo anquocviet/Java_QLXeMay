@@ -623,13 +623,13 @@ public class GUI_QLNhanVien extends JPanel implements ActionListener, MouseListe
 			if (nhanVien instanceof NhanVienHanhChinh) {
 				tableModel.addRow(new Object[] { nhanVien.getMaNhanVien(), cCCD.getMaCCCD(),
 						cCCD.getHo() + " " + cCCD.getHoDem(), cCCD.getTen(), cCCD.getNgaySinh(),
-						cCCD.isGioiTinh() ? "Nam" : "Nữ", cCCD.getThuongTru(), nhanVien.getSoDienThoai(),
+						cCCD.getGioiTinh() ? "Nam" : "Nữ", cCCD.getThuongTru(), nhanVien.getSoDienThoai(),
 						nhanVien.getEmail(), nhanVien.getNgayVaoLamViec(), df.format(nhanVien.getLuong()),
 						nhanVien.getChucVu(), ((NhanVienHanhChinh) nhanVien).getTrinhDoHocVan(),
 						((NhanVienHanhChinh) nhanVien).getPhongBan(), "", "" });
 			} else if (nhanVien instanceof NhanVienKiThuat) {
 				tableModel.addRow(new Object[] { nhanVien.getMaNhanVien(), cCCD.getMaCCCD(), cCCD.getHo(),
-						cCCD.getTen(), cCCD.getNgaySinh(), cCCD.isGioiTinh() ? "Nam" : "Nữ", cCCD.getThuongTru(),
+						cCCD.getTen(), cCCD.getNgaySinh(), cCCD.getGioiTinh() ? "Nam" : "Nữ", cCCD.getThuongTru(),
 						nhanVien.getSoDienThoai(), nhanVien.getEmail(), nhanVien.getNgayVaoLamViec(),
 						df.format(nhanVien.getLuong()), nhanVien.getChucVu(), "", "",
 						((NhanVienKiThuat) nhanVien).getBacTho(), ((NhanVienKiThuat) nhanVien).getSoNamKN() });

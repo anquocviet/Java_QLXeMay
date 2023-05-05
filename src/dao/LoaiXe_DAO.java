@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 import connect.ConnectDB;
 import entity.LoHang;
@@ -23,16 +24,28 @@ public class LoaiXe_DAO {
 		Statement stm = null;
 		try {
 			stm = conn.createStatement();
-			String sql = "select*from LoaiXe";
+			String sql = "select MaLoai, TenLoai, TenHang, SoPhanKhoi, DongTietKiem, LoHang.SoLo, NhaCungCap.MaNCC, TenNCC, TenNuocNhap, SoLuong, NgayNhapKho " +
+					"from LoaiXe " +
+					"inner join LoHang on LoaiXe.SoLo = LoHang.SoLo " +
+					"inner join NhaCungCap on NhaCungCap.MaNCC = LoHang.MaNCC";
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
-				String maLoaiXe = rs.getString("MaLoai");
-				LoHang loHang = new LoHang(rs.getString("SoLo"));
-				String tenLoaiXe = rs.getString("TenLoai");
+				String maLoai = rs.getString("MaLoai");
+				String tenLoai = rs.getString("TenLoai");
 				String tenHang = rs.getString("TenHang");
 				int soPhanKhoi = rs.getInt("SoPhanKhoi");
 				boolean dongTietKiem = rs.getBoolean("DongTietKiem");
-				LoaiXe loaiXe = new LoaiXe(maLoaiXe, loHang, tenLoaiXe, tenHang, soPhanKhoi, dongTietKiem);
+				String soLo = rs.getString("SoLo");
+				String tenNCC = rs.getString("TenNCC");
+				String maNCC = rs.getString("MaNCC");
+				String tenNuocNhap = rs.getString("TenNuocNhap");
+				int soLuong = rs.getInt("SoLuong");
+				Date ngayNhapKho = rs.getDate("NgayNhapKho");
+
+
+				NhaCungCap nhaCungCap = new NhaCungCap(maNCC, tenNCC);
+				LoHang loHang = new LoHang(soLo, nhaCungCap, tenNuocNhap, soLuong, ngayNhapKho);
+				LoaiXe loaiXe = new LoaiXe(maLoai, tenLoai, tenHang, soPhanKhoi, dongTietKiem, loHang);
 				dsLoaiXe.add(loaiXe);
 			}
 		} catch (Exception e) {
