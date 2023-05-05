@@ -407,36 +407,46 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		ncc_dao = new NhaCungCap_DAO();
 		xe_dao = new XeMay_DAO();
 		loaiXe_dao = new LoaiXe_DAO();
-		hd_dao = new HopDong_DAO();
 
 		loadDSNhaCungCap();
-		loadDSXe();
+//		loadDSXe();
 
 		
 		tableNCC.addMouseListener(this);
 		tableXe.addMouseListener(this);
 
+		btnChonNCC.addActionListener(this);
+		btnNhapHang.addActionListener(this);
+		btnThemXe.addActionListener(this);
 	}
 	
-	public void themDSLoaiXeVaoComboBox() {
+	private void themDSLoaiXeVaoComboBox() {
 		loaiXe_dao.getAllLoaiXe().forEach(loaiXe -> {
 			cbLoaiXe.addItem(loaiXe.getTenLoaiXe());
 		});
 	}
-	private void loadDSHoaDon() {
-		ArrayList<HopDong> dsHD = hd_dao.getAllListHopDong();
-		if(!dsHD.isEmpty()) {
-			for (HopDong ncc : dsHD) {
-	             
-	        }
-		}
+	private void themDSMauXeVaoComboBox() {
+		xe_dao.getAllMauXe().forEach(mau -> {
+			cbMauXe.addItem(mau);
+		});
+	}
+	private void themDSHangXeVaoComboBox() {
+		loaiXe_dao.getAllHangXe().forEach(hang -> {
+			cbHangXe.addItem(hang);
+		});
+
 	}
 	
 	private void loadDSXe() {
-		ArrayList<XeMay> dsXe = xe_dao.getAllXeMay();
-		xe_dao.getAllXeMay().forEach(xe -> {
+		String maNCC = txtMaNCC.getText();
+		tableModelXe.setRowCount(0);
+		ArrayList<XeMay> dsXe = xe_dao.getDSXeMayTheoMaNCC(maNCC);
+		xe_dao.getDSXeMayTheoMaNCC(maNCC).forEach(xe -> {
 			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getMauXe()});
 		});
+		themDSHangXeVaoComboBox();
+		themDSLoaiXeVaoComboBox();
+		themDSMauXeVaoComboBox();
 	}
 	private void loadDSNhaCungCap() {
 		DefaultTableModel tableModel = (DefaultTableModel) tableNCC.getModel();
@@ -450,6 +460,8 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		        }
 		  }
 	}
+	
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -473,10 +485,9 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
 			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
 		}
-		if (o.equals(tableNCC)) {
-			int rowSl = tableNCC.getSelectedRow();
-			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
-			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
+		if (o.equals(tableXe)) {
+			int rowSl = tableXe.getSelectedRow();
+			txtTenXe.setText(tableXe.getValueAt(rowSl, 0).toString());
 		}
 		
 	}
@@ -502,7 +513,11 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		Object o = e.getSource();
+		if(o.equals(btnChonNCC)) {
+			
+			loadDSXe();
+		}
 		
 	}
 

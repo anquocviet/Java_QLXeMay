@@ -169,4 +169,30 @@ public class LoaiXe_DAO {
 		}
 		return dsHangXe;
 	}
+	public ArrayList<LoaiXe> getDSLoaiXeTheoMaNCC(String maNCC) {
+	    ArrayList<LoaiXe> dsLoaiXe = new ArrayList<>();
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    Statement stmt = null;
+	    try {
+	        stmt = con.createStatement();
+	        String sql = String.format("SELECT * FROM XeMay x join LoaiXe lx ON x.MaLoai = lx.MaLoai WHERE x.MaNCC = '%s'", maNCC);
+	        ResultSet rs = stmt.executeQuery(sql);
+	        while (rs.next()) {
+	            String maLoaiXe = rs.getString("MaLoai");
+	            String tenLoaiXe = rs.getString("TenLoai");
+	            LoaiXe loaiXe = new LoaiXe(maLoaiXe, tenLoaiXe);
+	            dsLoaiXe.add(loaiXe);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return dsLoaiXe;
+	}
+
 }

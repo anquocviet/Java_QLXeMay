@@ -356,4 +356,45 @@ public class XeMay_DAO {
 		}
 		return dsMauXe;
 	}
+	
+
+	public ArrayList<XeMay> getDSXeMayTheoMaNCC(String maNCC) {
+	    ArrayList<XeMay> dsXe = new ArrayList<XeMay>();
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    Statement stmt = null;
+	    try {
+	        stmt = con.createStatement();
+	        String sql = String.format("SELECT * FROM XeMay x join LoaiXe lx ON x.MaLoai = lx.MaLoai WHERE x.MaNCC = '%s'", maNCC);
+	        ResultSet rs = stmt.executeQuery(sql);
+	        while (rs.next()) {
+	            String tenXe = rs.getString("TenXe");
+	            String mauXe = rs.getString("MauXe");
+	            LoaiXe loaiXe = new LoaiXe(rs.getString("MaLoai"), rs.getString("TenLoai"));
+	            String soKhung = rs.getString("SoKhung");
+				String soMay = rs.getString("SoMay");
+				NhaCungCap nhaCungCap = new NhaCungCap(rs.getString("MaNCC"));
+				String nuocSanXuat = rs.getString("NuocSX");
+				double gia = rs.getDouble("Gia");
+				int namSanXuat = rs.getInt("NamSX");
+				String anh = rs.getString("AnhMinhHoa");
+	            XeMay xe = new XeMay(soKhung, soMay, loaiXe, nhaCungCap, tenXe, nuocSanXuat, mauXe, gia, namSanXuat,
+						anh);
+	            dsXe.add(xe);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return dsXe;
+	}
+
 }

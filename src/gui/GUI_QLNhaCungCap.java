@@ -82,6 +82,8 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 		panel.add(lblMaNCC);
 		
 		txtMaNCC = new JTextField();
+		txtMaNCC.setText("Mã nhà cung cấp sẽ được tự phát sinh");
+		txtMaNCC.setEnabled(false);
 		txtMaNCC.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtMaNCC.setBounds(185, 38, 338, 30);
 		panel.add(txtMaNCC);
@@ -332,14 +334,23 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 	    }
 	}
 
+	private String generateMaNCC() {
+	    ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
+	    int count = dsNCC.size() + 1;
+	    String maNCC = "NCC" + String.format("%03d", count);
+	    while (ncc_dao.findNhaCungCapByMaNCC(maNCC) != null) {
+	        count++;
+	        maNCC = "NCC" + String.format("%03d", count);
+	    }
+	    return maNCC;
+	}
 	
 	private void themNCC() throws Exception{
 		boolean result =  validateNCCInput();
-		String maNCC = txtMaNCC.getText();
+		String maNCC = generateMaNCC();
 		String tenNCC = txtTenNCC.getText();
 		String diaChi = txtDiaChi.getText();
 		String sdt = txtSDT.getText();
-		checkMaNCC(maNCC);
 	    NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, sdt);
 	   
 	    if (result) {
@@ -404,12 +415,12 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 	}
 
 	private boolean validateNCCInput() {
-	    String maNCC = txtMaNCC.getText();
-	    if (!maNCC.matches("^NCC\\d{3}$")) {
-	        JOptionPane.showMessageDialog(null, "Mã NCC không đúng định dạng NCCxxx với xxx là 3 số!");
-	        txtMaNCC.requestFocus();
-	        return false;
-	    }
+//	    String maNCC = txtMaNCC.getText();
+//	    if (!maNCC.matches("^NCC\\d{3}$")) {
+//	        JOptionPane.showMessageDialog(null, "Mã NCC không đúng định dạng NCCxxx với xxx là 3 số!");
+//	        txtMaNCC.requestFocus();
+//	        return false;
+//	    }
 	    String tenNCC = txtTenNCC.getText();
 	    if (tenNCC.isEmpty()) {
 	        JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nhà cung cấp!");
@@ -433,7 +444,7 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 
 	    String sdtPattern = "^0\\d{9}";
 	    if (!sdt.matches(sdtPattern)) {
-	        JOptionPane.showMessageDialog(this, "Số điện thoại không đúng định dạng 0xxxxxxxxx với x là những số");
+	        JOptionPane.showMessageDialog(this, "Số điện thoại gồm 10 số và được bất đầu bằng số 0!");
 	        txtSDT.requestFocus();
 	        return false;
 	    }
