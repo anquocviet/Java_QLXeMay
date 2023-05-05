@@ -105,7 +105,7 @@ public class CanCuocCongDan_DAO {
 			pstm.setString(2, cccd.getHo());
 			pstm.setString(3, cccd.getHoDem());
 			pstm.setString(4, cccd.getTen());
-			pstm.setBoolean(5, cccd.isGioiTinh());
+			pstm.setBoolean(5, cccd.getGioiTinh());
 			pstm.setDate(6, Date.valueOf(cccd.getNgaySinh()));
 			pstm.setString(7, cccd.getTamTru());
 			pstm.setString(8, cccd.getThuongTru());
@@ -151,7 +151,7 @@ public class CanCuocCongDan_DAO {
 			pstm.setString(1, cccd.getHo());
 			pstm.setString(2, cccd.getHoDem());
 			pstm.setString(3, cccd.getTen());
-			pstm.setBoolean(4, cccd.isGioiTinh());
+			pstm.setBoolean(4, cccd.getGioiTinh());
 			pstm.setDate(5, Date.valueOf(cccd.getNgaySinh()));
 			pstm.setString(6, cccd.getTamTru());
 			pstm.setString(7, cccd.getThuongTru());

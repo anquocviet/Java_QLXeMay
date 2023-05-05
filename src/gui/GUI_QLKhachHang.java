@@ -1,5 +1,8 @@
 package gui;
 
+import dao.KhachHang_DAO;
+import entity.KhachHang;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -20,6 +23,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class GUI_QLKhachHang extends JPanel {
 
@@ -27,7 +33,7 @@ public class GUI_QLKhachHang extends JPanel {
 	private JTextField txtMaKH;
 	private JTextField txtHoTenKH;
 	private JTextField txtNgaySinh;
-	private JTextField txtQueQuan;
+	private JTextField txtNoiTamTru;
 	private JTextField txtNoiThuongTru;
 	private JTextField txtSoCCCD;
 	private JTable table;
@@ -99,15 +105,15 @@ public class GUI_QLKhachHang extends JPanel {
 		checkboxNu.setBounds(259, 221, 97, 23);
 		panel.add(checkboxNu);
 		
-		JLabel lbQueQuan = new JLabel("Quê quán");
+		JLabel lbQueQuan = new JLabel("Tạm trú");
 		lbQueQuan.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lbQueQuan.setBounds(25, 258, 61, 20);
 		panel.add(lbQueQuan);
 		
-		txtQueQuan = new JTextField();
-		txtQueQuan.setColumns(10);
-		txtQueQuan.setBounds(156, 258, 234, 20);
-		panel.add(txtQueQuan);
+		txtNoiTamTru = new JTextField();
+		txtNoiTamTru.setColumns(10);
+		txtNoiTamTru.setBounds(156, 258, 234, 20);
+		panel.add(txtNoiTamTru);
 		
 		JLabel lblNewLabel = new JLabel("Nơi thường trú");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -143,40 +149,65 @@ public class GUI_QLKhachHang extends JPanel {
 		panel_1.setBounds(440, 54, 920, 349);
 		add(panel_1);
 		panel_1.setLayout(null);
-		
-		JScrollPane scrollPane = new JScrollPane();
+
+
+		DefaultTableModel tableModel = new DefaultTableModel();
+
+		tableModel.addColumn("Mã khách hàng");
+		tableModel.addColumn("Họ tên");
+		tableModel.addColumn("Số CCCD");
+		tableModel.addColumn("Ngày sinh");
+		tableModel.addColumn("Số điện thoại");
+		tableModel.addColumn("Giới tính");
+		tableModel.addColumn("Tạm trú");
+		tableModel.addColumn("Thường trú");
+
+		KhachHang_DAO khachHangDao = new KhachHang_DAO();
+		ArrayList<KhachHang> data = khachHangDao.getAllKhachHang();
+		for(KhachHang khachHang : data) {
+			Boolean val = khachHang.getCccd().getGioiTinh();
+			String gioiTinh;
+			if(val == true) {
+				gioiTinh = "Nam";
+			}
+			else gioiTinh = "Nữ";
+			Object[]row = {khachHang.getMaKhachHang(), khachHang.getCccd().getHo() + " " + khachHang.getCccd().getHoDem() + " " + khachHang.getCccd().getTen(),
+			khachHang.getCccd().getMaCCCD(), khachHang.getCccd().getNgaySinh(), khachHang.getSoDienThoai(), gioiTinh, khachHang.getCccd().getTamTru(), khachHang.getCccd().getThuongTru()};
+			tableModel.addRow(row);
+		}
+		this.table = new JTable(tableModel);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = table.getSelectedRow();
+				Object[] rowData = new Object[table.getColumnCount()];
+				for (int i = 0; i < table.getColumnCount(); i++) {
+					rowData[i] = table.getValueAt(row, i);
+				}
+				txtMaKH.setText(rowData[0].toString());
+				txtHoTenKH.setText(rowData[1].toString());
+				txtSoCCCD.setText(rowData[2].toString());
+				txtNgaySinh.setText(rowData[3].toString());
+				txtSoDienThoai.setText(rowData[4].toString());
+				if(rowData[5].toString() == "Nam") {
+					checkboxNam.setSelected(true);
+					checkboxNu.setSelected(false);
+				}
+				else {
+					checkboxNu.setSelected(true);
+					checkboxNam.setSelected(false);
+				}
+				txtNoiTamTru.setText(rowData[6].toString());
+				txtNoiThuongTru.setText(rowData[7].toString());
+			}
+		});
+		JScrollPane scrollPane = new JScrollPane(this.table);
 		scrollPane.setBounds(0, 0, 920, 349);
 		panel_1.add(scrollPane);
-		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"M\u00E3 kh\u00E1ch h\u00E0ng", "H\u1ECD t\u00EAn", "S\u1ED1 CCCD", "Ng\u00E0y sinh", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Gi\u1EDBi t\u00EDnh", "Qu\u00EA qu\u00E1n", "N\u01A1i th\u01B0\u1EDDng tr\u00FA"
-			}
-		));
-		scrollPane.setViewportView(table);
+
+
+
+		scrollPane.setViewportView(this.table);
 		
 		JLabel lbTimKiem = new JLabel("Nhập mã khách hàng hoặc số CCCD cần tìm");
 		lbTimKiem.setFont(new Font("Tahoma", Font.BOLD, 13));

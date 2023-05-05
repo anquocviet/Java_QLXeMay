@@ -6,7 +6,7 @@ public class LoaiXe {
 	private String maLoaiXe;
 	private LoHang loHang;
 	private String tenLoaiXe;
-	private String tenNhaSanXuat;
+	private String tenHang;
 	private int soPhanKhoi;
 	private boolean dongTietKiem;
 
@@ -19,16 +19,28 @@ public class LoaiXe {
 		this.maLoaiXe = maLoaiXe;
 	}
 
-	public LoaiXe(String maLoaiXe, LoHang loHang, String tenLoaiXe, String tenNhaSanXuat, int soPhanKhoi,
+	public LoaiXe(String maLoaiXe, LoHang loHang, String tenLoaiXe, String tenHang, int soPhanKhoi,
 			boolean dongTietKiem) {
 		super();
 		this.maLoaiXe = maLoaiXe;
 		this.loHang = loHang;
 		this.tenLoaiXe = tenLoaiXe;
-		this.tenNhaSanXuat = tenNhaSanXuat;
+		this.tenHang = tenHang;
 		this.soPhanKhoi = soPhanKhoi;
 		this.dongTietKiem = dongTietKiem;
 	}
+
+	public LoaiXe(String maLoai, String tenLoai, String tenHang, int soPhanKhoi, boolean dongTietKiem, LoHang loHang) {
+		this.maLoaiXe = maLoai;
+		this.tenLoaiXe = tenLoai;
+		this.tenHang = tenHang;
+		this.soPhanKhoi = soPhanKhoi;
+		this.dongTietKiem = dongTietKiem;
+		this.loHang = loHang;
+
+	}
+
+//	public LoaiXe(String maLoaiXe)
 
 	public String getMaLoaiXe() {
 		return maLoaiXe;
@@ -54,12 +66,12 @@ public class LoaiXe {
 		this.tenLoaiXe = tenLoaiXe;
 	}
 
-	public String getTenNhaSanXuat() {
-		return tenNhaSanXuat;
+	public String getTenHang() {
+		return tenHang;
 	}
 
-	public void setTenNhaSanXuat(String tenNhaSanXuat) {
-		this.tenNhaSanXuat = tenNhaSanXuat;
+	public void setTenHang(String tenHang) {
+		this.tenHang = tenHang;
 	}
 
 	public int getSoPhanKhoi() {
@@ -70,9 +82,10 @@ public class LoaiXe {
 		this.soPhanKhoi = soPhanKhoi;
 	}
 
-	public boolean isDongTietKiem() {
+	public boolean getDongTietKiem() {
 		return dongTietKiem;
 	}
+
 
 	public void setDongTietKiem(boolean dongTietKiem) {
 		this.dongTietKiem = dongTietKiem;

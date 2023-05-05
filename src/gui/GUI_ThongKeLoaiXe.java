@@ -1,5 +1,8 @@
 package gui;
 
+import dao.LoaiXe_DAO;
+import entity.LoaiXe;
+
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -15,6 +18,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class GUI_ThongKeLoaiXe extends JPanel {
 	private JTextField txtMaLoaiXe;
@@ -166,40 +172,64 @@ public class GUI_ThongKeLoaiXe extends JPanel {
 		add(panel_2);
 		panel_2.setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
+
+
+		DefaultTableModel tableModel = new DefaultTableModel();
+
+		tableModel.addColumn("Mã loại xe");
+		tableModel.addColumn("Tên loại xe");
+		tableModel.addColumn("Tên hãng");
+		tableModel.addColumn("Số phân khối");
+		tableModel.addColumn("Dòng tiết kiệm");
+		tableModel.addColumn("Số lô");
+		tableModel.addColumn("Nhà cung cấp");
+		tableModel.addColumn("Tên nước nhập");
+		tableModel.addColumn("Số lượng nhập");
+		tableModel.addColumn("Ngày nhập kho");
+
+		LoaiXe_DAO loaiXeDao = new LoaiXe_DAO();
+		ArrayList<LoaiXe> data = loaiXeDao.getAllLoaiXe();
+
+		for(LoaiXe loaiXe : data) {
+			Boolean val = loaiXe.getDongTietKiem();
+			String check;
+			if(val == true) {
+				check = "Có";
+			}
+			else {
+				check = "Không";
+			}
+			Object[]row = {loaiXe.getMaLoaiXe(), loaiXe.getTenLoaiXe(), loaiXe.getTenHang(), loaiXe.getSoPhanKhoi(), check,
+					loaiXe.getLoHang().getSoLo(), loaiXe.getLoHang().getNhaCungCap().getTenNCC(), loaiXe.getLoHang().getTenNuocNhap(), loaiXe.getLoHang().getSoLuong(), loaiXe.getLoHang().getNgayNhapKho()
+			};
+			tableModel.addRow(row);
+		}
+
+		this.table = new JTable(tableModel);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = table.getSelectedRow();
+				Object[] rowData = new Object[table.getColumnCount()];
+				for (int i = 0; i < table.getColumnCount(); i++) {
+					rowData[i] = table.getValueAt(row, i);
+				}
+				txtMaLoaiXe.setText(rowData[0].toString());
+				txtTenLoaiXe.setText(rowData[1].toString());
+				txtTenHang.setText(rowData[2].toString());
+				txtSoPhanKhoi.setText(rowData[3].toString());
+				txtDongTietKiem.setText(rowData[4].toString());
+				txtSoLo.setText(rowData[5].toString());
+				txtNhaCungCap.setText(rowData[6].toString());
+				txtTenNuocNhap.setText(rowData[7].toString());
+				txtSoLuongNhap.setText(rowData[8].toString());
+				txtNgayNhapKho.setText(rowData[9].toString());
+			}
+		});
+		JScrollPane scrollPane = new JScrollPane(this.table);
 		scrollPane.setBounds(0, 0, 855, 368);
 		panel_2.add(scrollPane);
-		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"M\u00E3 lo\u1EA1i xe", "T\u00EAn lo\u1EA1i xe", "T\u00EAn h\u00E3ng", "S\u1ED1 ph\u00E2n kh\u1ED1i", "D\u00F2ng ti\u1EBFt ki\u1EC7m", "S\u1ED1 l\u00F4", "Nh\u00E0 cung c\u1EA5p", "T\u00EAn n\u01B0\u1EDBc", "S\u1ED1 l\u01B0\u1EE3ng nh\u1EADp", "Ng\u00E0y nh\u1EADp"
-			}
-		));
-		scrollPane.setViewportView(table);
+		scrollPane.setViewportView(this.table);
 		
 		JButton btnNhapKho = new JButton("Nhập kho");
 		btnNhapKho.setFont(new Font("Tahoma", Font.BOLD, 13));
