@@ -347,16 +347,11 @@ VALUES
     ( 'P001061122', 'LK0002', 'Nhông xích dãn', 0, 1, 231000, 231000 )
 GO
 
-select * from HopDong
-select * from CT_HopDong
-select * from CT_TraGop
--- Delete rows from table '[CT_TraGop]' in schema '[dbo]'
-DELETE FROM [dbo].[CT_TraGop]
-WHERE SoHopDong = 'HD01050523'
-GO
-DELETE FROM [dbo].[CT_HopDong]
-WHERE SoHopDong = 'HD01050523'
-GO
-DELETE FROM [dbo].[HopDong]
-WHERE SoHopDong = 'HD01050523'
+SELECT * FROM NhanVien JOIN NhanVienKyThuat ON NhanVien.MaNV = NhanVienKyThuat.MaNV
+WHERE NhanVien.MaNV = 'NV01010322'
+select * from PhieuNhanXetBaoHanh
+
+-- Delete rows from table '[Phieu]' in schema '[dbo]'
+DELETE FROM [dbo].[PhieuNhanXetBaoHanh]
+WHERE MaPhieu = 'P001060523'
 GO

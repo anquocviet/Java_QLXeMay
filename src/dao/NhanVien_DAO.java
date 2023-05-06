@@ -132,6 +132,7 @@ public class NhanVien_DAO {
 	public NhanVien getNhanVienHanhChinhTheoMaNV(String ma) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
+		NhanVien nv = null;
 		try {
 			stmt = con.createStatement();
 			String sql = String
@@ -151,7 +152,7 @@ public class NhanVien_DAO {
 
 				cccd_dao = new CanCuocCongDan_DAO();
 				CanCuocCongDan c = cccd_dao.getCCCDTheoMa(maCCCD);
-				return new NhanVienHanhChinh(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, trinhDoHocVan,
+				nv = new NhanVienHanhChinh(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, trinhDoHocVan,
 						thuocPhongBan);
 			}
 		} catch (SQLException e) {
@@ -165,7 +166,7 @@ public class NhanVien_DAO {
 				e.printStackTrace();
 			}
 		}
-		return null;
+		return nv;
 	}
 
 	/**
@@ -174,6 +175,7 @@ public class NhanVien_DAO {
 	public NhanVien getNhanVienKyThuatTheoMaNV(String ma) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		Statement stmt = null;
+		NhanVien nv = null;
 		try {
 			stmt = con.createStatement();
 			String sql = String
@@ -193,7 +195,7 @@ public class NhanVien_DAO {
 
 				cccd_dao = new CanCuocCongDan_DAO();
 				CanCuocCongDan c = cccd_dao.getCCCDTheoMa(maCCCD);
-				return new NhanVienKiThuat(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, bacTho, soNamKN);
+				nv = new NhanVienKiThuat(maNV, c, ngayVaoLamViec, sdt, email, chucVu, luong, bacTho, soNamKN);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -206,7 +208,7 @@ public class NhanVien_DAO {
 				e.printStackTrace();
 			}
 		}
-		return null;
+		return nv;
 	}
 	
 	/**

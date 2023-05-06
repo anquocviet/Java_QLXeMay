@@ -1,6 +1,8 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,7 +11,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import connect.ConnectDB;
+import entity.CT_BaoHanh;
 import entity.CanCuocCongDan;
+import entity.HopDong;
+import entity.HopDongTraGop;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.NhanVienHanhChinh;
@@ -82,5 +87,58 @@ public class PhieuNhanXetBaoHanh_DAO {
 			}
 		}
 		return count;
+	}
+
+	public boolean themMoiPhieuBaoHanh(PhieuNhanXetBaoHanh p, double tienCong) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		PreparedStatement pstm = null;
+		try {
+			String sql = "INSERT INTO PhieuNhanXetBaoHanh ( MaPhieu, NgayLap, MaNV, MaKH, SoKhung, TienCong )"
+					+ "VALUES ( ?, ?, ?, ?, ?, ? )";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, p.getMaPhieu());
+			pstm.setDate(2, Date.valueOf(p.getNgayLap()));
+			pstm.setString(3, p.getNhanvien().getMaNhanVien());
+			pstm.setString(4, p.getKhachHang().getMaKhachHang());
+			pstm.setString(5, p.getXe().getSoKhung());
+			pstm.setDouble(6, tienCong);
+			return pstm.executeUpdate() > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
+	public boolean themMoiCT_BaoHanh(CT_BaoHanh ct) {
+		Connection con = ConnectDB.getInstance().getConnection();
+		PreparedStatement pstm = null;
+		try {
+			String sql = "INSERT INTO CT_BaoHanh ( MaPhieu, MaLinhKien, LyDo, LoiThuocSanPham, SoLuong, Gia, ThanhTien )"
+					+ "VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, ct.getPhieu().getMaPhieu());
+			pstm.setString(2, ct.getLinhKien().getMaLinhKien());
+			pstm.setString(3, ct.getLyDo());
+			pstm.setBoolean(4, ct.isLoiThuocSP());
+			pstm.setInt(5, ct.getSoLuong());
+			pstm.setDouble(6, ct.getGia());
+			pstm.setDouble(7, ct.getThanhTien());
+			return pstm.executeUpdate() > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }

@@ -14,12 +14,18 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dao.KhachHang_DAO;
+import dao.LinhKien_DAO;
 import dao.NhanVien_DAO;
 import dao.PhieuNhanXetBaoHanh_DAO;
 import dao.XeMay_DAO;
+import entity.CT_BaoHanh;
+import entity.HopDong;
 import entity.KhachHang;
+import entity.LinhKien;
 import entity.NhanVien;
 import entity.NhanVienKiThuat;
+import entity.PhieuNhanXetBaoHanh;
+import entity.XeMay;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -34,8 +40,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -74,11 +82,12 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 	private KhachHang_DAO kh_dao;
 	private JTextField txtSdtNV;
 	private NhanVien_DAO nv_dao;
-	private PhieuNhanXetBaoHanh_DAO phieuBH;
+	private PhieuNhanXetBaoHanh_DAO phieuBH_dao;
 	private JLabel lblMaHD;
 	private JLabel lblNgayLap;
 	private XeMay_DAO xemay_dao;
 	private JComboBox cbSoKhung;
+	private LinhKien_DAO lk_dao;
 
 	/**
 	 * Create the panel.
@@ -376,7 +385,7 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		JScrollPane scrollPane = new JScrollPane(table = new JTable(tableModelLinhKien));
 		table.setSelectionForeground(UIManager.getColor("Table.selectionInactiveForeground"));
 		table.setSelectionBackground(UIManager.getColor("Table.selectionInactiveBackground"));
-		tableModelLinhKien.addRow(new Object[] { 1 });
+		tableModelLinhKien.addRow(new Object[] { 1, "", "", "", true, 1, "", "" });
 		table.setRowSelectionInterval(0, 0);
 		table.getTableHeader().setFont(new Font(font.getName(), font.getStyle(), 13));
 		table.setFont(new Font(font.getName(), font.getStyle(), 14));
@@ -441,7 +450,8 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		gbc_lblThue.gridy = 2;
 		panelTinhTien.add(lblThue, gbc_lblThue);
 
-		txtThue = new JTextField();
+		txtThue = new JTextField("10%");
+		txtThue.setEditable(false);
 		GridBagConstraints gbc_txtThue = new GridBagConstraints();
 		gbc_txtThue.insets = new Insets(0, 0, 5, 0);
 		gbc_txtThue.fill = GridBagConstraints.BOTH;
@@ -479,8 +489,9 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 
 		kh_dao = new KhachHang_DAO();
 		nv_dao = new NhanVien_DAO();
-		phieuBH = new PhieuNhanXetBaoHanh_DAO();
+		phieuBH_dao = new PhieuNhanXetBaoHanh_DAO();
 		xemay_dao = new XeMay_DAO();
+		lk_dao = new LinhKien_DAO();
 
 		txtMaKH.addKeyListener(this);
 		txtMaNV.addKeyListener(this);
@@ -489,6 +500,8 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 
 		generateMaPhieuBH();
 		generateNgayLapPhieu();
+
+		btnInHoaDon.addActionListener(this);
 	}
 
 	public void clearInfoKhachHang() {
@@ -559,7 +572,7 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 	public void generateMaPhieuBH() {
 		String maPhieu = "P";
 		LocalDate ngayHT = LocalDate.now();
-		int slPhieuTrongNgay = phieuBH.countPhieuBaoHanhInDate(ngayHT);
+		int slPhieuTrongNgay = phieuBH_dao.countPhieuBaoHanhInDate(ngayHT);
 		DecimalFormat df = new DecimalFormat("000");
 		maPhieu += df.format(++slPhieuTrongNgay);
 		maPhieu += ngayHT.format(DateTimeFormatter.ofPattern("ddMMyy"));
@@ -577,7 +590,7 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 			int rowSelected = table.getSelectedRow();
 			if (JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa dòng này không ?", "Cảnh báo",
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {				
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				tableModelLinhKien.removeRow(rowSelected);
 				for (int i = rowSelected; i < table.getRowCount(); i++) {
 					table.setValueAt(i + 1, i, 0);
@@ -587,6 +600,17 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 				tableModelLinhKien.addRow(new Object[] { 1 });
 			}
 			table.setRowSelectionInterval(0, 0);
+		} else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+			int rowSelected = table.getSelectedRow();
+			if (table.getValueAt(rowSelected, 1) == null) return;
+			String maLK = table.getValueAt(rowSelected, 1).toString().trim();
+			if (!maLK.equals("")) {
+				LinhKien lk = lk_dao.getLinhKienTheoMaLK(maLK);
+				table.setValueAt(lk.getTenLinhKien(), rowSelected, 2);
+				table.setValueAt(lk.getGia() + 0.05 * lk.getGia(), rowSelected, 6);
+				double thanhTien = Double.parseDouble(table.getValueAt(rowSelected, 6).toString()) + Double.parseDouble(table.getValueAt(rowSelected, 5).toString());
+				table.setValueAt(thanhTien, rowSelected, 7);
+			}
 		}
 	}
 
@@ -654,6 +678,72 @@ public class GUI_QLBaoHanh extends JPanel implements ActionListener, MouseListen
 		Object o = e.getSource();
 		if (o.equals(cbSoKhung) && cbSoKhung.getItemCount() != 0) {
 			loadTenXe();
+		}
+		if (o.equals(btnInHoaDon)) {
+			if (validateData())
+				luuThongTinPhieu();
+		}
+	}
+
+	private boolean validateData() {
+		String maNV = txtMaNV.getText().trim();
+		String maKH = txtMaKH.getText().trim();
+		String tienCong = txtTienCong.getText().trim();
+		if (nv_dao.getNhanVienKyThuatTheoMaNV(maNV) == null) {
+			JOptionPane.showMessageDialog(null, "Không có nhân viên kỹ thuật có mã ' " + maNV
+					+ " ' trong hệ thống, vui lòng kiểm tra lại hoặc thêm nhân viên trong giao diện Quản lý nhân viên",
+					"Lỗi", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		if (kh_dao.getKhachHangTheoMaKH(maKH) == null) {
+			JOptionPane.showMessageDialog(null, "Khách hàng này chưa từng mua xe tại cửa hàng, vui lòng kiểm tra lại",
+					"Lỗi", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		try {
+			double x = Double.parseDouble(tienCong.replaceAll(",", ""));
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Số tiền trả sai định dạng, chỉ nhập bao gồm số, ký tự , hoặc .");
+			return false;
+		}
+		return true;
+	}
+
+	private void luuThongTinPhieu() {
+		DateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String maPhieu = lblMaHD.getText();
+		String maNV = txtMaNV.getText().trim();
+		String maKH = txtMaKH.getText().trim();
+		String soKhung = cbSoKhung.getSelectedItem().toString();
+		String ngayLap = lblNgayLap.getText();
+		double tienCong = Double.parseDouble(txtTienCong.getText().trim().replaceAll(",", ""));
+
+		try {
+			NhanVien nv = new NhanVienKiThuat(maNV);
+			KhachHang kh = new KhachHang(maKH);
+			XeMay xe = new XeMay(soKhung);
+			LocalDate dNgayLap = LocalDate.parse(outputFormat.format(inputFormat.parse(ngayLap)));
+			PhieuNhanXetBaoHanh p = new PhieuNhanXetBaoHanh(maPhieu, nv, kh, xe, dNgayLap);
+
+			phieuBH_dao.themMoiPhieuBaoHanh(p, tienCong);
+			for (int i = 0; i < table.getRowCount(); i++) {
+				String maLK = table.getValueAt(i, 1).toString();
+				String lyDo = table.getValueAt(i, 3).toString();
+				String isLoiDoSP = table.getValueAt(i, 4).toString();
+				String soLuong = table.getValueAt(i, 5).toString();
+				int nSoLuong = Integer.parseInt(soLuong);
+				String gia = table.getValueAt(i, 6).toString();
+				double nGia = Double.parseDouble(gia);
+				String thanhTien = table.getValueAt(i, 7).toString();
+				double nThanhTien = Double.parseDouble(thanhTien);
+				CT_BaoHanh ct = new CT_BaoHanh(p, new LinhKien(maLK), lyDo, isLoiDoSP.equals("true") ? true : false,
+						nSoLuong, nGia, nThanhTien);
+				phieuBH_dao.themMoiCT_BaoHanh(ct);
+			}
+			JOptionPane.showMessageDialog(null, "In và lưu thành công thông tin phiếu vào hệ thống");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi lưu thông tin của phiếu");
 		}
 	}
 
