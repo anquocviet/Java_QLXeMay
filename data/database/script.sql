@@ -347,19 +347,16 @@ VALUES
     ( 'P001061122', 'LK0002', 'Nhông xích dãn', 0, 1, 231000, 231000 )
 GO
 
-
-SELECT * FROM XeMay WHERE SoKhung NOT IN (SELECT SoKhung FROM CT_HopDong)
--- -- Drop the database 'QuanLyBanXeMay'
--- -- Connect to the 'master' database to run this snippet
--- USE master
--- GO
--- -- Uncomment the ALTER DATABASE statement below to set the database to SINGLE_USER mode if the drop database command fails because the database is in use.
--- -- ALTER DATABASE QuanLyBanXeMay SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
--- -- Drop the database if it exists
--- IF EXISTS (
---     SELECT [name]
---         FROM sys.databases
---         WHERE [name] = N'QuanLyBanXeMay'
--- )
--- DROP DATABASE QuanLyBanXeMay
--- GO
+select * from HopDong
+select * from CT_HopDong
+select * from CT_TraGop
+-- Delete rows from table '[CT_TraGop]' in schema '[dbo]'
+DELETE FROM [dbo].[CT_TraGop]
+WHERE SoHopDong = 'HD01050523'
+GO
+DELETE FROM [dbo].[CT_HopDong]
+WHERE SoHopDong = 'HD01050523'
+GO
+DELETE FROM [dbo].[HopDong]
+WHERE SoHopDong = 'HD01050523'
+GO

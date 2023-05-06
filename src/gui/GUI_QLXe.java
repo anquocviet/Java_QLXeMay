@@ -83,11 +83,11 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		loaiXe_DAO = new LoaiXe_DAO();
 		nhaCC_DAO = new NhaCungCap_DAO();
 
-		setBackground(new Color(255, 255, 255));
+//		setBackground(new Color(255, 255, 255));
 		setLayout(null);
 
 		JPanel pThongTinXeMay = new JPanel();
-		pThongTinXeMay.setBackground(new Color(255, 255, 255));
+//		pThongTinXeMay.setBackground(new Color(255, 255, 255));
 		pThongTinXeMay.setBounds(0, 0, 1180, 305);
 		add(pThongTinXeMay);
 		pThongTinXeMay.setLayout(null);
@@ -95,7 +95,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 				BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.blue), "Thông tin xe máy"));
 
 		JPanel pSoKhung = new JPanel();
-		pSoKhung.setBackground(new Color(255, 255, 255));
+//		pSoKhung.setBackground(new Color(255, 255, 255));
 		pSoKhung.setBounds(20, 21, 383, 45);
 		pThongTinXeMay.add(pSoKhung);
 		pSoKhung.setLayout(null);
@@ -108,7 +108,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		txtSoKhung.setColumns(10);
 
 		JPanel pTenXe = new JPanel();
-		pTenXe.setBackground(new Color(255, 255, 255));
+//		pTenXe.setBackground(new Color(255, 255, 255));
 		pTenXe.setLayout(null);
 		pTenXe.setBounds(20, 105, 383, 45);
 		pThongTinXeMay.add(pTenXe);
@@ -121,7 +121,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		pTenXe.add(txtTenXe);
 
 		JPanel pSoMay = new JPanel();
-		pSoMay.setBackground(new Color(255, 255, 255));
+//		pSoMay.setBackground(new Color(255, 255, 255));
 		pSoMay.setLayout(null);
 		pSoMay.setBounds(20, 62, 383, 45);
 		pThongTinXeMay.add(pSoMay);
@@ -134,7 +134,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		pSoMay.add(txtSoMay);
 
 		JPanel pNuocSanXua = new JPanel();
-		pNuocSanXua.setBackground(new Color(255, 255, 255));
+//		pNuocSanXua.setBackground(new Color(255, 255, 255));
 		pNuocSanXua.setLayout(null);
 		pNuocSanXua.setBounds(20, 194, 383, 45);
 		pThongTinXeMay.add(pNuocSanXua);
@@ -147,7 +147,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		pNuocSanXua.add(txtNuocSanXuat);
 
 		JPanel pLoaiXe = new JPanel();
-		pLoaiXe.setBackground(new Color(255, 255, 255));
+//		pLoaiXe.setBackground(new Color(255, 255, 255));
 		pLoaiXe.setLayout(null);
 		pLoaiXe.setBounds(413, 21, 352, 45);
 		pThongTinXeMay.add(pLoaiXe);
@@ -161,7 +161,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		docDanhSachLoaiXeVaoComboBox();
 
 		JPanel pMauXe = new JPanel();
-		pMauXe.setBackground(new Color(255, 255, 255));
+//		pMauXe.setBackground(new Color(255, 255, 255));
 		pMauXe.setLayout(null);
 		pMauXe.setBounds(413, 62, 352, 45);
 		pThongTinXeMay.add(pMauXe);
@@ -175,7 +175,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		docDanhSachMauVaoComboBox();
 
 		JPanel pGia = new JPanel();
-		pGia.setBackground(new Color(255, 255, 255));
+//		pGia.setBackground(new Color(255, 255, 255));
 		pGia.setLayout(null);
 		pGia.setBounds(413, 105, 352, 45);
 		pThongTinXeMay.add(pGia);
@@ -188,7 +188,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 		pGia.add(txtGia);
 
 		JPanel pNamSanXuat = new JPanel();
-		pNamSanXuat.setBackground(new Color(255, 255, 255));
+//		pNamSanXuat.setBackground(new Color(255, 255, 255));
 		pNamSanXuat.setLayout(null);
 		pNamSanXuat.setBounds(413, 149, 352, 45);
 		pThongTinXeMay.add(pNamSanXuat);
@@ -244,14 +244,14 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 				"Nước sản xuất", "Năm sản xuất", "Ảnh" };
 		tableModel = new DefaultTableModel(head, 0);
 		table = new JTable(tableModel);
-		table.setBackground(new Color(255, 255, 255));
+//		table.setBackground(new Color(255, 255, 255));
 		bTable.add(new JScrollPane(table));
 
 		ArrayList<XeMay> dsXeMay = xeMay_DAO.getAllXeMay();
 		docDanhSachXeMayVaoTable(dsXeMay);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(255, 255, 255));
+//		panel_2.setBackground(new Color(255, 255, 255));
 		panel_2.setBounds(810, 21, 345, 246);
 		pThongTinXeMay.add(panel_2);
 
@@ -263,7 +263,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 
 		JPanel pNhaCC = new JPanel();
 		pNhaCC.setLayout(null);
-		pNhaCC.setBackground(Color.WHITE);
+//		pNhaCC.setBackground(Color.WHITE);
 		pNhaCC.setBounds(20, 149, 383, 45);
 		pThongTinXeMay.add(pNhaCC);
 
@@ -278,7 +278,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 
 		JPanel pNuocSanXua_1 = new JPanel();
 		pNuocSanXua_1.setLayout(null);
-		pNuocSanXua_1.setBackground(Color.WHITE);
+//		pNuocSanXua_1.setBackground(Color.WHITE);
 		pNuocSanXua_1.setBounds(413, 194, 352, 45);
 		pThongTinXeMay.add(pNuocSanXua_1);
 
@@ -476,8 +476,9 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 			ArrayList<XeMay> dsXeMay = xeMay_DAO.getAllXeMay();
 			xoaDuLieuTrongTable();
 			docDanhSachXeMayVaoTable(dsXeMay);
+			lblLoiTimKiem.setText("Thêm thành công!");
 		}
-
+		
 	}
 
 	private boolean kiemTraChonHangTable(int row) {
@@ -506,6 +507,8 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 				docDanhSachXeMayVaoTable(dsXemay);
 			}
 		}
+
+		lblLoiTimKiem.setText("Xóa thành công!");
 	}
 
 	private void suaXeMay() {
@@ -549,6 +552,12 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 					txtSoMay.requestFocus();
 					return;
 				}
+				if(nhaCC==null) {
+					JOptionPane.showMessageDialog(this, "Nhà cung cấp này không tồn tại trong CSDL");
+					txtNhaCungCap.selectAll();
+					txtNhaCungCap.requestFocus();
+					return;
+				}
 				int namSX = Integer.parseInt(txtNamSanXuat.getText());
 				String anhMinhHoa = txtAnhMinhHoa.getText();
 				XeMay xeMay = new XeMay(soKhung, soMay, loaiXe, nhaCC, tenXe, nuocSX, mauXe, gia, namSX,anhMinhHoa );
@@ -559,6 +568,8 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 
 			}
 		}
+
+		lblLoiTimKiem.setText("Cập nhật thành công!");
 	}
 
 	/**
@@ -674,6 +685,7 @@ public class GUI_QLXe extends JPanel implements ActionListener, MouseListener {
 			locTheoLoaiXe();
 			locTheoMauXe();
 			locXeTheoNamSX();
+			locXeTheoNuocSX();
 			locXeTheoGia();
 			ArrayList<XeMay> dsXeMay = LayDanhSachXeMayTuTable();
 			if(dsXeMay.size()<=0) {

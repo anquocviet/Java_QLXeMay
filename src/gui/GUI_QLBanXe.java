@@ -322,8 +322,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		cbSoLanTra = new JComboBox();
 		cbSoLanTra.setBounds(119, 132, 122, 27);
 		cbSoLanTra.addItem(1);
-		cbSoLanTra.addItem(2);
-		cbSoLanTra.addItem(3);
 		pnTraGop.add(cbSoLanTra);
 
 		cbMaHopDong = new JComboBox();
@@ -455,6 +453,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		nv_dao = new NhanVien_DAO();
 
 		generateMaHD();
+		handlePTTT();
 		generateMaTG();
 		getNgayHienTai(txtNgayLapHD);
 		getNgayHienTai(txtNgayTra);
@@ -470,12 +469,15 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		tableChonXe.addMouseListener(this);
 		tableXe.addKeyListener(this);
 		cbMaHopDong.addActionListener(this);
+		cbMaTraGop.addActionListener(this);
+		cbPTThanhToan.addActionListener(this);
 		cbMauXe.addActionListener(this);
 		cbLoaiXe.addActionListener(this);
 		cbSoPhanKhoi.addActionListener(this);
 		cbHangXe.addActionListener(this);
 		btnThem.addActionListener(this);
 		btnLuu.addActionListener(this);
+		btnChonKhach.addActionListener(this);
 	}
 
 	public void generateMaHD() {
@@ -612,7 +614,11 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			return;
 		}
 
-		txtCCCD.setText(hd.getKhachHang().getMaKhachHang());
+		String soCCCD = hd.getKhachHang().getCccd().getMaCCCD();
+		txtCCCD.setText(soCCCD);
+		String hoTen = String.format("%s %s %s", cccd_dao.getCCCDTheoMa(soCCCD).getHo(),
+				cccd_dao.getCCCDTheoMa(soCCCD).getHoDem(), cccd_dao.getCCCDTheoMa(soCCCD).getTen());
+		txtTenKH.setText(hoTen);
 		String ptThanhToan = hd.getPhuongThucThanhToan() == TRAHET ? "Trả hết" : "Trả góp";
 		cbPTThanhToan.setSelectedItem(ptThanhToan);
 		txtMaNV.setText(hd.getNhanVienLapHopDong().getMaNhanVien());
@@ -623,6 +629,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		hopDong_dao.getAllMaTraGopTheoMaHopDong(soHD).forEach(ma -> {
 			cbMaTraGop.addItem(ma);
 		});
+
 		cbSoLanTra.setSelectedItem(hd.getSoLanTra());
 		HopDong thongTinTra = hopDong_dao.getThongTinTraGopTheoMaTraGop(cbMaTraGop.getSelectedItem().toString());
 		txtNguoiTra.setText(((HopDongTraGop) thongTinTra).getNguoiTra().getMaCCCD());
@@ -641,6 +648,30 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getSoKhung(), xe.getSoMay(),
 					df.format(xe.getGia() + xe.getGia() * 0.15) });
 		});
+
+//		Khi hợp thêm lịch sử trả góp
+		if (hd.getSoLanTra() > hopDong_dao.countLuotTraGopCuaHopDong(soHD)) {
+			hopDong_dao.getAllMaTraGopTheoMaHopDong(soHD).forEach(ma -> {
+				generateMaTG();
+				cbMaTraGop.setSelectedIndex(cbMaTraGop.getItemCount() - 1);
+				txtNguoiTra.setText("");
+				txtMaNVNhan.setText("");
+				getNgayHienTai(txtNgayTra);
+				txtSoTienTraGop.setText("");
+			});
+		}
+	}
+
+	public void handlePTTT() {
+		String pttt = cbPTThanhToan.getSelectedItem().toString();
+		if (pttt.equals("Trả hết")) {
+			cbSoLanTra.removeAllItems();
+			cbSoLanTra.addItem(1);
+		} else {
+			cbSoLanTra.removeAllItems();
+			cbSoLanTra.addItem(2);
+			cbSoLanTra.addItem(3);
+		}
 	}
 
 	public void clearThongTinHopDong() {
@@ -655,9 +686,9 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		txtSoTienTraGop.setText("");
 		getNgayHienTai(txtNgayLapHD);
 		getNgayHienTai(txtNgayTra);
-		txtThanhTien.setText("");
-		txtTienDaNhan.setText("");
-		txtConNo.setText("");
+		txtThanhTien.setText("0");
+		txtTienDaNhan.setText("0");
+		txtConNo.setText("0");
 		tableModelXe.getDataVector().removeAllElements();
 		tableModelXe.fireTableDataChanged();
 	}
@@ -669,16 +700,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		String cccdNguoiTra = txtNguoiTra.getText().trim();
 		String maNVNhan = txtMaNVNhan.getText().trim();
 		if (kh_dao.getKhachHangTheoMaCCCD(cccdKH) == null) {
-			JOptionPane.showMessageDialog(null, "Không tồn tại khách hàng có mã CCCD '" + cccdKH
-					+ "' trong hệ thống, hãy kiểm tra lại hoặc thêm mới khách hàng trong giao diện Quản lý khách hàng",
+			JOptionPane.showMessageDialog(null, "Không tồn tại khách hàng có mã CCCD ' " + cccdKH
+					+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới khách hàng trong giao diện Quản lý khách hàng",
 					"Cảnh báo", JOptionPane.ERROR_MESSAGE);
 			txtCCCD.selectAll();
 			txtCCCD.requestFocus();
 			return false;
 		}
 		if (nv_dao.getNhanVienTheoMaNV(maNVLapHD) == null) {
-			JOptionPane.showMessageDialog(null, "Không tồn tại nhân viên có mã '" + maNVLapHD
-					+ "' trong hệ thống, hãy kiểm tra lại hoặc thêm mới nhân viên trong giao diện Quản lý Nhân viên",
+			JOptionPane.showMessageDialog(null, "Không tồn tại nhân viên có mã ' " + maNVLapHD
+					+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới nhân viên trong giao diện Quản lý Nhân viên",
 					"Cảnh báo", JOptionPane.WARNING_MESSAGE);
 			txtMaNV.selectAll();
 			txtMaNV.requestFocus();
@@ -696,7 +727,6 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String outputDate = outputFormat.format(inputFormat.parse(thoiGianBH));
 			LocalDate date = LocalDate.parse(outputDate);
-			System.out.println(date);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Thời gian bảo hành phải theo định dạng dd/MM/yyyy. Hãy kiểm tra lại!",
 					"Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -705,16 +735,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			return false;
 		}
 		if (cccd_dao.getCCCDTheoMa(cccdNguoiTra) == null) {
-			JOptionPane.showMessageDialog(null, "Không tồn tại người có mã CCCD '" + cccdNguoiTra
-					+ "' trong hệ thống, hãy kiểm tra lại hoặc thêm mới người này trong giao diện Quản lý khách hàng",
+			JOptionPane.showMessageDialog(null, "Không tồn tại người có mã CCCD ' " + cccdNguoiTra
+					+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới người này trong giao diện Quản lý khách hàng",
 					"Cảnh báo", JOptionPane.ERROR_MESSAGE);
 			txtCCCD.selectAll();
 			txtCCCD.requestFocus();
 			return false;
 		}
 		if (nv_dao.getNhanVienTheoMaNV(maNVNhan) == null) {
-			JOptionPane.showMessageDialog(null, "Không tồn tại nhân viên có mã '" + maNVNhan
-					+ "' trong hệ thống, hãy kiểm tra lại hoặc thêm mới nhân viên trong giao diện Quản lý Nhân viên",
+			JOptionPane.showMessageDialog(null, "Không tồn tại nhân viên có mã ' " + maNVNhan
+					+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới nhân viên trong giao diện Quản lý Nhân viên",
 					"Cảnh báo", JOptionPane.WARNING_MESSAGE);
 			txtMaNVNhan.selectAll();
 			txtMaNVNhan.requestFocus();
@@ -737,11 +767,15 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		String tongTien = txtThanhTien.getText().toString();
 		ArrayList<XeMay> dsXe = new ArrayList<XeMay>();
 		for (int i = 0; i < tableModelXe.getRowCount(); i++) {
-			dsXe.add(new XeMay(tableXe.getValueAt(i, 2).toString()));
+			dsXe.add(new XeMay(tableXe.getValueAt(i, 1).toString()));
 		}
 		String thoiGianBH = txtThoiGianBaoHanh.getText().trim();
 		String cccdNguoiTra = txtNguoiTra.getText().trim();
 		String maNVNhan = txtMaNVNhan.getText().trim();
+		String maTG = cbMaTraGop.getSelectedItem().toString();
+		String soLanTG = cbSoLanTra.getSelectedItem().toString();
+		String soTienTG = txtSoTienTraGop.getText().trim();
+		String ngayTG = txtNgayTra.getText();
 
 		try {
 			KhachHang kh = kh_dao.getKhachHangTheoMaCCCD(cccdKH);
@@ -751,11 +785,26 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 			LocalDate dThoiGianBH = LocalDate.parse(outputFormat.format(inputFormat.parse(thoiGianBH)));
 			CanCuocCongDan nguoiTra = cccd_dao.getCCCDTheoMa(cccdNguoiTra);
 			NhanVien nvNhan = new NhanVienHanhChinh(maNVNhan);
-			HopDong hd = new HopDong(soHopDong, kh, nvNhan, ngayLap, ptThanhToan.equals("Trả hết") ? TRAHET : TRAGOP,
-					Integer.parseInt(soLanTra), nTongTien, dThoiGianBH, dsXe);
-			if (hopDong_dao.getHopDongTheoSoHopDong(soHopDong) != null) {
-				hopDong_dao.themMoiHopDong(hd);
-				
+			int nSoLanTG = Integer.parseInt(soLanTG);
+			double nSoTienTG = Double.parseDouble(soTienTG.replaceAll(",", ""));
+			LocalDate dNgayTG = LocalDate.parse(outputFormat.format(inputFormat.parse(ngayTG)));
+
+			HopDong hd = new HopDongTraGop(soHopDong, kh, nvNhan, ngayLap,
+					ptThanhToan.equals("Trả hết") ? TRAHET : TRAGOP, Integer.parseInt(soLanTra), nTongTien, dThoiGianBH,
+					dsXe, maTG, nSoLanTG, nSoTienTG, dNgayTG, nguoiTra, nvNhan);
+			if (hopDong_dao.getHopDongTheoSoHopDong(soHopDong) == null) {
+				if (hopDong_dao.themMoiHopDong(hd) && hopDong_dao.themMoiCT_HopDong(hd)
+						&& hopDong_dao.themMoiCT_TraGop(hd))
+					JOptionPane.showMessageDialog(null, "In và lưu thành công hợp đồng vào hệ thống");
+				else
+					JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi lưu thông tin của hợp đồng");
+
+			} else {
+				if (hopDong_dao.themMoiCT_TraGop(hd))
+					JOptionPane.showMessageDialog(null,
+							"In và cập nhật thành công thông tin trả góp của khách hàng vào hệ thống");
+				else
+					JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi cập nhật thông tin trả góp");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -803,7 +852,15 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if (o.equals(btnChonKhach)) {
-
+			String cccdKH = txtCCCD.getText().trim();
+			KhachHang kh = kh_dao.getKhachHangTheoMaCCCD(cccdKH);
+			if (kh_dao.getKhachHangTheoMaCCCD(cccdKH) == null) {
+				JOptionPane.showMessageDialog(null, "Không tồn tại khách hàng có mã CCCD ' " + cccdKH
+						+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới khách hàng trong giao diện Quản lý khách hàng",
+						"Cảnh báo", JOptionPane.ERROR_MESSAGE);
+				txtCCCD.selectAll();
+				txtCCCD.requestFocus();
+			}
 		}
 		if (o.equals(btnThem)) {
 			int rowSelected = tableChonXe.getSelectedRow();
@@ -838,6 +895,26 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		if (o.equals(cbMaHopDong)) {
 			loadThongTinHopDong();
 		}
+		if (o.equals(cbPTThanhToan)) {
+			handlePTTT();
+		}
+		if (o.equals(cbMaTraGop) && cbMaTraGop.getItemCount() != 0) {
+			DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+			String maTG = cbMaTraGop.getSelectedItem().toString();
+			HopDong hd = hopDong_dao.getThongTinTraGopTheoMaTraGop(maTG);
+			if (hd != null) {
+				txtNguoiTra.setText(((HopDongTraGop) hd).getNguoiTra().getMaCCCD());
+				txtMaNVNhan.setText(((HopDongTraGop) hd).getNguoiNhan().getMaNhanVien());
+				txtNgayTra.setText(
+						((HopDongTraGop) hd).getNgayTraGop().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+				txtSoTienTraGop.setText(df.format(((HopDongTraGop) hd).getSoTienTraGop()));
+			} else {
+				txtNguoiTra.setText("");
+				txtMaNVNhan.setText("");
+				getNgayHienTai(txtNgayTra);
+				txtSoTienTraGop.setText("");
+			}
+		}
 	}
 
 	@Override
@@ -852,9 +929,9 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 				String maCCCD = txtCCCD.getText().trim();
 				KhachHang kh = kh_dao.getKhachHangTheoMaCCCD(maCCCD);
 				if (kh == null) {
-					JOptionPane.showMessageDialog(null,
-							"Chưa có này khách hàng trong hệ thống, hãy thêm khách hàng mới ở trong giao diện Khách Hàng",
-							"Lỗi", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Không tồn tại khách hàng có mã CCCD ' " + maCCCD
+							+ " ' trong hệ thống, hãy kiểm tra lại hoặc thêm mới khách hàng trong giao diện Quản lý khách hàng",
+							"Cảnh báo", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				CanCuocCongDan cccd = cccd_dao.getCCCDTheoMa(maCCCD);
@@ -896,35 +973,40 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 				tableModelXe.removeRow(rowSelected);
 			}
 		}
+		if (o.equals(txtSoTienTraGop)) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				try {
+					double x = Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null,
+							"Số tiền trả sai định dạng, chỉ nhập bao gồm số, ký tự , hoặc .");
+					txtSoTienTraGop.selectAll();
+					txtSoTienTraGop.requestFocus();
+					return;
+				}
+
+				String soHD = cbMaHopDong.getSelectedItem().toString();
+				DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+				double tienDaNhan = Double.parseDouble(txtTienDaNhan.getText().trim().replaceAll(",", ""));
+				double tienTraGop = Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
+				txtTienDaNhan.setText(df.format(hopDong_dao.getTienDaNhan(soHD) + tienTraGop));
+				String tongTien = txtThanhTien.getText().toString();
+				String conNo = txtConNo.getText().toString();
+				double x = Double.parseDouble(tongTien.replaceAll(",", ""))
+						- Double.parseDouble(txtTienDaNhan.getText().trim().replaceAll(",", ""));
+				if (x < 0) {
+					JOptionPane.showMessageDialog(null, "Số tiền của khách hàng đưa đã quá số tiền mua xe");
+					txtSoTienTraGop.requestFocus();
+					txtSoTienTraGop.selectAll();
+					return;
+				}
+				txtConNo.setText(df.format(x));
+			}
+		}
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		Object o = e.getSource();
-		if (o.equals(txtSoTienTraGop)) {
-			try {
-				double x = Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
-			} catch (Exception e2) {
-				JOptionPane.showMessageDialog(null, "Số tiền trả sai định dạng, chỉ nhập bao gồm số, ký tự , hoặc .");
-				txtSoTienTraGop.selectAll();
-				txtSoTienTraGop.requestFocus();
-				return;
-			}
-			DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
-			txtTienDaNhan.setText(txtSoTienTraGop.getText());
-			String tongTien = txtThanhTien.getText().toString();
-			String conNo = txtConNo.getText().toString();
-			double x = Double.parseDouble(tongTien.replaceAll(",", ""))
-					- Double.parseDouble(txtSoTienTraGop.getText().trim().replaceAll(",", ""));
-			if (x < 0) {
-				JOptionPane.showMessageDialog(null, "Số tiền của khách hàng đưa đã quá số tiền mua xe");
-				txtSoTienTraGop.requestFocus();
-				txtSoTienTraGop.selectAll();
-				return;
-			}
-			txtConNo.setText(df.format(x));
-		}
-
 	}
 }

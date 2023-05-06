@@ -436,5 +436,33 @@ public class NhanVien_DAO {
 		}
 		return n>0;
 	}
+	
+	public int countNhanVienTheoNgay(LocalDate date) {
+		ArrayList<NhanVien> dsp = new ArrayList<NhanVien>();
+		Connection con = ConnectDB.getInstance().getConnection();
+		Statement stmt = null;
+		int count = 0;
+		try {
+			stmt = con.createStatement();
+			String dateFormat = date.toString();
+			String sql = String.format("SELECT * FROM NhanVien WHERE NgayVaoLamViec = '%s'", dateFormat);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next())
+				count++;
+			return count;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+		}
+		return count;
+	}
 
 }
