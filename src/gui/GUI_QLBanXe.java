@@ -194,7 +194,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		pnHoaDon.add(txtThanhTien);
 		txtThanhTien.setColumns(10);
 
-		JButton btnLuu = new JButton("In hợp đồng");
+		btnLuu = new JButton("In hợp đồng");
 		btnLuu.setBackground(new Color(64, 128, 128));
 		btnLuu.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnLuu.setBounds(371, 358, 177, 34);
@@ -467,6 +467,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		txtSoTienTraGop.addKeyListener(this);
 		tableKH.addMouseListener(this);
 		tableChonXe.addMouseListener(this);
+		tableXe.addKeyListener(this);
 		cbMaHopDong.addActionListener(this);
 		cbMaTraGop.addActionListener(this);
 		cbPTThanhToan.addActionListener(this);
@@ -477,6 +478,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 		btnThem.addActionListener(this);
 		btnLuu.addActionListener(this);
 		btnChonKhach.addActionListener(this);
+		btnLuu.addActionListener(this);
 	}
 
 	public void generateMaHD() {
@@ -805,7 +807,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 					JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi cập nhật thông tin trả góp");
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi lưu thông tin của hợp đồng");
 		}
 	}
 
@@ -858,6 +860,7 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 						"Cảnh báo", JOptionPane.ERROR_MESSAGE);
 				txtCCCD.selectAll();
 				txtCCCD.requestFocus();
+				return;
 			}
 		}
 		if (o.equals(btnThem)) {
@@ -876,8 +879,16 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 
 			DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
 			String tienXe = gia.replaceAll(",", "");
-			double tongTien = Double.parseDouble(txtThanhTien.getText().replaceAll(",", ""))
-					+ Double.parseDouble(tienXe);
+			double tongTien = 0;
+			for (int i = 0; i < tableXe.getRowCount(); i++) {
+				tongTien += Double.parseDouble(tableXe.getValueAt(i, 3).toString().replaceAll(",", ""));
+			}
+			if (cbSoLanTra.getSelectedItem().toString().equals("1")) {
+				if (tableXe.getRowCount() >= 3)
+					tongTien -= tongTien * 0.05;
+				else
+					tongTien -= 0.02 * tongTien;
+			}
 			txtThanhTien.setText(df.format(tongTien));
 
 		}
@@ -1005,4 +1016,3 @@ public class GUI_QLBanXe extends JPanel implements ActionListener, MouseListener
 	public void keyReleased(KeyEvent e) {
 	}
 }
-

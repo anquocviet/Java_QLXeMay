@@ -356,4 +356,79 @@ public class XeMay_DAO {
 		}
 		return dsMauXe;
 	}
+	
+
+	public ArrayList<XeMay> getDSXeMayTheoMaNCC(String maNCC) {
+	    ArrayList<XeMay> dsXe = new ArrayList<XeMay>();
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    Statement stmt = null;
+	    try {
+	        stmt = con.createStatement();
+	        String sql = String.format("SELECT * FROM XeMay x join LoaiXe lx ON x.MaLoai = lx.MaLoai WHERE x.MaNCC = '%s'", maNCC);
+	        ResultSet rs = stmt.executeQuery(sql);
+	        while (rs.next()) {
+	            String tenXe = rs.getString("TenXe");
+	            String mauXe = rs.getString("MauXe");
+	            LoaiXe loaiXe = new LoaiXe(rs.getString("TenHang"), rs.getString("TenLoai"));
+	            String soKhung = rs.getString("SoKhung");
+				String soMay = rs.getString("SoMay");
+				NhaCungCap nhaCungCap = new NhaCungCap(rs.getString("MaNCC"));
+				String nuocSanXuat = rs.getString("NuocSX");
+				double gia = rs.getDouble("Gia");
+				int namSanXuat = rs.getInt("NamSX");
+				String anh = rs.getString("AnhMinhHoa");
+	            XeMay xe = new XeMay(soKhung, soMay, loaiXe, nhaCungCap, tenXe, nuocSanXuat, mauXe, gia, namSanXuat,
+						anh);
+	            dsXe.add(xe);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return dsXe;
+	}
+	public XeMay getXeMayTheoTen(String tenXe) {
+	    XeMay xe = null;
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    Statement stmt = null;
+	    try {
+	        stmt = con.createStatement();
+	        String sql = String.format("SELECT * FROM XeMay WHERE TenXe = '%s'", tenXe);
+	        ResultSet rs = stmt.executeQuery(sql);
+	        while (rs.next()) {
+	            String soKhung = rs.getString("SoKhung");
+	            String soMay = rs.getString("SoMay");
+	            String maLoai = rs.getString("MaLoai");
+	            String maNCC = rs.getString("MaNCC");
+	            String nuocSX = rs.getString("NuocSX");
+	            String mauXe = rs.getString("MauXe");
+	            double gia = rs.getDouble("Gia");
+	            int namSX = rs.getInt("NamSX");
+	            String anhMinhHoa = rs.getString("AnhMinhHoa");
+	            xe = new XeMay(soKhung, soMay, new LoaiXe(maLoai), new NhaCungCap(), tenXe, nuocSX, mauXe, gia, namSX,
+	                    anhMinhHoa);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return xe;
+	}
+
 }

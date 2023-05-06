@@ -18,6 +18,11 @@ public class LoaiXe {
 		super();
 		this.maLoaiXe = maLoaiXe;
 	}
+	public LoaiXe(String tenNhaSanXuat ,String tenLoaiXe) {
+		super();
+		this.tenHang = tenNhaSanXuat;
+		this.tenLoaiXe = tenLoaiXe;
+	}
 
 	public LoaiXe(String maLoaiXe, LoHang loHang, String tenLoaiXe, String tenHang, int soPhanKhoi,
 			boolean dongTietKiem) {

@@ -182,4 +182,6 @@ public class LoaiXe_DAO {
 		}
 		return dsHangXe;
 	}
+
+
 }

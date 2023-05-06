@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.BorderLayout;
@@ -10,9 +12,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import dao.CanCuocCongDan_DAO;
+import dao.HopDong_DAO;
 import dao.KhachHang_DAO;
+import dao.LoaiXe_DAO;
 import dao.NhaCungCap_DAO;
 import dao.XeMay_DAO;
+import entity.HopDong;
 import entity.NhaCungCap;
 import entity.XeMay;
 
@@ -40,7 +45,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener,KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -55,9 +64,6 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	private JTextField txtHDTenNCC;
 	private JButton btnChonNCC;
 	private JTextField txtTenXe;
-	private JComboBox cbLoaiXe;
-	private JComboBox cbMauXe;
-	private JComboBox cbHangXe;
 	private JButton btnThemXe;
 	private JButton btnNhapHang;
 	private JLabel lblSoTien;
@@ -65,6 +71,17 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	private JTextField txtNgayDatHang;
 	private XeMay_DAO xe_dao;
 	private NhaCungCap_DAO ncc_dao;
+	private HopDong_DAO hd_dao;
+	private LoaiXe_DAO loaiXe_dao;
+	private JTextField txtLoaiXe;
+	private JTextField txtMauXe;
+	private JTextField txtHangXe;
+	private JLabel lblAnhMinhHoa;
+	
+	private int stt = 1;
+    private int sttXe = 1;
+	private String linkimgXeMay;
+	private int soTien = 0;
 
 	/**
 	 * @author An Quốc Việt
@@ -184,9 +201,9 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		panelChonXeLeft.add(panelInfoXe, BorderLayout.NORTH);
 		GridBagLayout gbl_panelInfoXe = new GridBagLayout();
 		gbl_panelInfoXe.columnWidths = new int[]{85, 119, 0};
-		gbl_panelInfoXe.rowHeights = new int[]{24, 24, 24, 24, 24, 0};
-		gbl_panelInfoXe.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_panelInfoXe.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelInfoXe.rowHeights = new int[]{24, 24, 24, 24, 24, 0, 0};
+		gbl_panelInfoXe.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_panelInfoXe.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelInfoXe.setLayout(gbl_panelInfoXe);
 												
 														JLabel lblTenXe = new JLabel("Tên xe");
@@ -199,6 +216,7 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 														panelInfoXe.add(lblTenXe, gbc_lblTenXe);
 										
 												txtTenXe = new JTextField();
+												txtTenXe.setEnabled(false);
 												GridBagConstraints gbc_txtTenXe = new GridBagConstraints();
 												gbc_txtTenXe.fill = GridBagConstraints.BOTH;
 												gbc_txtTenXe.insets = new Insets(0, 0, 5, 0);
@@ -216,13 +234,15 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 										gbc_lblLoaiXe.gridy = 1;
 										panelInfoXe.add(lblLoaiXe, gbc_lblLoaiXe);
 						
-								cbLoaiXe = new JComboBox();
-								GridBagConstraints gbc_cbLoaiXe = new GridBagConstraints();
-								gbc_cbLoaiXe.fill = GridBagConstraints.BOTH;
-								gbc_cbLoaiXe.insets = new Insets(0, 0, 5, 0);
-								gbc_cbLoaiXe.gridx = 1;
-								gbc_cbLoaiXe.gridy = 1;
-								panelInfoXe.add(cbLoaiXe, gbc_cbLoaiXe);
+						txtLoaiXe = new JTextField();
+						txtLoaiXe.setEnabled(false);
+						GridBagConstraints gbc_txtLoaiXe = new GridBagConstraints();
+						gbc_txtLoaiXe.insets = new Insets(0, 0, 5, 0);
+						gbc_txtLoaiXe.fill = GridBagConstraints.HORIZONTAL;
+						gbc_txtLoaiXe.gridx = 1;
+						gbc_txtLoaiXe.gridy = 1;
+						panelInfoXe.add(txtLoaiXe, gbc_txtLoaiXe);
+						txtLoaiXe.setColumns(10);
 				
 						JLabel lblMauXe = new JLabel("Màu xe");
 						lblMauXe.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -232,14 +252,16 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 						gbc_lblMauXe.gridx = 0;
 						gbc_lblMauXe.gridy = 2;
 						panelInfoXe.add(lblMauXe, gbc_lblMauXe);
-		
-				cbMauXe = new JComboBox();
-				GridBagConstraints gbc_cbMauXe = new GridBagConstraints();
-				gbc_cbMauXe.fill = GridBagConstraints.BOTH;
-				gbc_cbMauXe.insets = new Insets(0, 0, 5, 0);
-				gbc_cbMauXe.gridx = 1;
-				gbc_cbMauXe.gridy = 2;
-				panelInfoXe.add(cbMauXe, gbc_cbMauXe);
+						
+						txtMauXe = new JTextField();
+						txtMauXe.setEnabled(false);
+						GridBagConstraints gbc_txtMauXe = new GridBagConstraints();
+						gbc_txtMauXe.insets = new Insets(0, 0, 5, 0);
+						gbc_txtMauXe.fill = GridBagConstraints.HORIZONTAL;
+						gbc_txtMauXe.gridx = 1;
+						gbc_txtMauXe.gridy = 2;
+						panelInfoXe.add(txtMauXe, gbc_txtMauXe);
+						txtMauXe.setColumns(10);
 				
 						JLabel lblHangXe = new JLabel("Hãng xe");
 						lblHangXe.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -250,34 +272,43 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 						gbc_lblHangXe.gridy = 3;
 						panelInfoXe.add(lblHangXe, gbc_lblHangXe);
 				
-						cbHangXe = new JComboBox();
-						GridBagConstraints gbc_cbHangXe = new GridBagConstraints();
-						gbc_cbHangXe.fill = GridBagConstraints.BOTH;
-						gbc_cbHangXe.insets = new Insets(0, 0, 5, 0);
-						gbc_cbHangXe.gridx = 1;
-						gbc_cbHangXe.gridy = 3;
-						panelInfoXe.add(cbHangXe, gbc_cbHangXe);
+				txtHangXe = new JTextField();
+				txtHangXe.setEnabled(false);
+				GridBagConstraints gbc_txtHangXe = new GridBagConstraints();
+				gbc_txtHangXe.insets = new Insets(0, 0, 5, 0);
+				gbc_txtHangXe.fill = GridBagConstraints.HORIZONTAL;
+				gbc_txtHangXe.gridx = 1;
+				gbc_txtHangXe.gridy = 3;
+				panelInfoXe.add(txtHangXe, gbc_txtHangXe);
+				txtHangXe.setColumns(10);
 		
 				JLabel lblSoLuong = new JLabel("Số lượng");
 				lblSoLuong.setFont(new Font("Dialog", Font.BOLD, 12));
 				GridBagConstraints gbc_lblSoLuong = new GridBagConstraints();
 				gbc_lblSoLuong.fill = GridBagConstraints.BOTH;
-				gbc_lblSoLuong.insets = new Insets(0, 0, 0, 5);
+				gbc_lblSoLuong.insets = new Insets(0, 0, 5, 5);
 				gbc_lblSoLuong.gridx = 0;
 				gbc_lblSoLuong.gridy = 4;
 				panelInfoXe.add(lblSoLuong, gbc_lblSoLuong);
 		
 				txtSoLuong = new JTextField();
 				GridBagConstraints gbc_txtSoLuong = new GridBagConstraints();
+				gbc_txtSoLuong.insets = new Insets(0, 0, 5, 0);
 				gbc_txtSoLuong.fill = GridBagConstraints.BOTH;
 				gbc_txtSoLuong.gridx = 1;
 				gbc_txtSoLuong.gridy = 4;
 				panelInfoXe.add(txtSoLuong, gbc_txtSoLuong);
 				txtSoLuong.setColumns(10);
 
-		String headerTableXe[] = "Tên xe;Màu sắc;Số lượng".split(";");
+		String headerTableXe[] = "Tên xe;Loại xe;Màu sắc;Hãng xe;Số lượng".split(";");
 		tableModelXe = new DefaultTableModel(headerTableXe, 0);
-		JScrollPane scrollPaneXe = new JScrollPane(tableXe = new JTable(tableModelXe));
+		JScrollPane scrollPaneXe = new JScrollPane(tableXe = new JTable(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"T\u00EAn xe", "Lo\u1EA1i xe", "M\u00E0u s\u1EAFc", "H\u00E3ng xe", "\u1EA2nh"
+			}
+		)));
 		tableXe.setSelectionForeground(UIManager.getColor("Table.selectionInactiveForeground"));
 		tableXe.setSelectionBackground(UIManager.getColor("Table.selectionInactiveBackground"));
 		tableXe.getTableHeader().setFont(new Font(f.getName(), f.getStyle(), 13));
@@ -289,7 +320,7 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		panelChonXe.add(panelChonXeRight, BorderLayout.EAST);
 
 		panelChonXeRight.setLayout(new BorderLayout(0, 0));
-		JLabel lblAnhMinhHoa = new JLabel(new ImageIcon(imgXeMay));
+		lblAnhMinhHoa = new JLabel(new ImageIcon());
 		panelChonXeRight.add(lblAnhMinhHoa);
 
 		btnThemXe = new JButton("Thêm vào hóa đơn");
@@ -326,6 +357,7 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 						panelInfoHD.add(lblMaHD, gbc_lblMaHD);
 		
 				txtMaHD = new JTextField();
+				txtMaHD.setEnabled(false);
 				GridBagConstraints gbc_txtMaHD = new GridBagConstraints();
 				gbc_txtMaHD.fill = GridBagConstraints.BOTH;
 				gbc_txtMaHD.insets = new Insets(0, 0, 5, 0);
@@ -344,6 +376,7 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 						panelInfoHD.add(lblHDTenNCC, gbc_lblHDTenNCC);
 		
 				txtHDTenNCC = new JTextField();
+				txtHDTenNCC.setEnabled(false);
 				GridBagConstraints gbc_txtHDTenNCC = new GridBagConstraints();
 				gbc_txtHDTenNCC.fill = GridBagConstraints.BOTH;
 				gbc_txtHDTenNCC.insets = new Insets(0, 0, 5, 0);
@@ -362,6 +395,7 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		panelInfoHD.add(lblNgayDatHang, gbc_lblNgayDatHang);
 		
 		txtNgayDatHang = new JTextField();
+		txtNgayDatHang.setEnabled(false);
 		GridBagConstraints gbc_txtNgayDatHang = new GridBagConstraints();
 		gbc_txtNgayDatHang.fill = GridBagConstraints.BOTH;
 		gbc_txtNgayDatHang.gridx = 1;
@@ -401,22 +435,98 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		
 		ncc_dao = new NhaCungCap_DAO();
 		xe_dao = new XeMay_DAO();
-
+		loaiXe_dao = new LoaiXe_DAO();
+		
+		
 		loadDSNhaCungCap();
-		loadDSXe();
 
-		//txtMaNCC.addKeyListener(this);
+		txtMaHD.setText(generateMaHoaDon());
+    	txtNgayDatHang.setText(getCurrentDate());
+		
 		tableNCC.addMouseListener(this);
 		tableXe.addMouseListener(this);
 
+		btnChonNCC.addActionListener(this);
+		btnNhapHang.addActionListener(this);
+		btnThemXe.addActionListener(this);
 	}
+	
+
+	private String taoSoKhungXe() {
+	    String[] characters = "0123456789ABCDEFGHJKLMNPRSTUVWXYZ".split("");
+	    Random random = new Random();
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < 4; i++) {
+	        int index = random.nextInt(characters.length);
+	        sb.append(characters[index]);
+	    }
+	    sb.append("-"); 
+	    for (int i = 0; i < 12; i++) {
+	        int index = random.nextInt(characters.length);
+	        sb.append(characters[index]);
+	    }
+	    return sb.toString();
+	}
+
+	private boolean kiemTraTrungSoKhung(String soKhung) {
+		ArrayList<XeMay> dsXemay = xe_dao.getAllXeMay();
+		for (XeMay xeMay : dsXemay) {
+			if (soKhung.trim().equals(xeMay.getSoKhung())) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public String sinhSoKhungXe() {
+	    String soKhung = "";
+	    boolean trung;
+	    do {
+	        soKhung = taoSoKhungXe();
+	        trung = kiemTraTrungSoKhung(soKhung);
+	    } while (!trung);
+	    return soKhung;
+	}
+
+	
+	
+	
+	private void nhapXE() throws Exception {
+		DefaultTableModel tableModel = (DefaultTableModel) tableChiTietHD.getModel();
+	    int rowCount = tableModel.getRowCount();
+	    for (int i = 0; i < rowCount; i++) {
+	        String tenXe = tableModel.getValueAt(i, 1).toString();
+	        String maNCC = txtMaNCC.getText();
+	        XeMay xeMay = xe_dao.getXeMayTheoTen(tenXe);
+	        xeMay.setNhaCungCap(new NhaCungCap(maNCC));
+	        xeMay.setSoKhung(sinhSoKhungXe());
+	        xe_dao.themXeMay(xeMay);
+	    }
+	    JOptionPane.showMessageDialog(this, "Thêm xe thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+	    tableModel.setRowCount(0);
+	    txtMaHD.setText(generateMaHoaDon());
+	    txtHDTenNCC.setText("");
+	    txtNgayDatHang.setText(getCurrentDate());
+	    lblSoTien.setText("0 VND");
+	}
+	
 	private void loadDSXe() {
-		ArrayList<XeMay> dsXe = xe_dao.getAllXeMay();
-		xe_dao.getAllXeMay().forEach(xe -> {
-			tableModelXe.addRow(new Object[] { xe.getTenXe(), xe.getMauXe()});
-		});
+	    String maNCC = txtMaNCC.getText();
+	    DefaultTableModel tableModelXe = (DefaultTableModel) tableXe.getModel();
+	    ArrayList<XeMay> dsXe = xe_dao.getDSXeMayTheoMaNCC(maNCC);
+	    tableModelXe.setRowCount(0); 
+	    for (XeMay xe : dsXe) {
+	        String hangXe = xe.getLoaiXe().getTenHang();
+	        String loaiXe = xe.getLoaiXe().getTenLoaiXe();
+	        String mauXe = xe.getMauXe();
+	        String tenXe = xe.getTenXe();
+	        XeMay xeimg = xe_dao.getXeMayTheoTen(tenXe);
+			String anhXe = xeimg.getAnhMinhHoa();
+	        tableModelXe.addRow(new Object[] { tenXe ,loaiXe ,mauXe ,hangXe,anhXe}); 
+	    }
 	}
-	public void loadDSNhaCungCap() {
+
+	private void loadDSNhaCungCap() {
 		DefaultTableModel tableModel = (DefaultTableModel) tableNCC.getModel();
 		tableModel.setRowCount(0);
 		ArrayList<NhaCungCap> dsNCC = ncc_dao.getAllNhaCungCap();
@@ -428,6 +538,53 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 		        }
 		  }
 	}
+	
+
+    
+    private String generateMaHoaDon() {
+        String prefix = "HD";
+        String middle = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        String suffix = String.format("%03d", stt++);
+        return prefix + middle + suffix;
+    }
+    
+    private String getCurrentDate() {
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(currentDate);
+    }
+	
+    private void themXeHD() {
+    	DecimalFormat df = new DecimalFormat("#,###,###,##0.##");
+    	txtHDTenNCC.setText(txtTenNCC.getText());
+    	DefaultTableModel tableModel = (DefaultTableModel) tableChiTietHD.getModel();
+		String tenXe = txtTenXe.getText();
+		String soLuong = txtSoLuong.getText();
+		XeMay xe = xe_dao.getXeMayTheoTen(tenXe);
+		double giaXe = xe.getGia();
+		if (soLuong.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Số lượng không được rỗng!");
+	        txtSoLuong.requestFocus();
+	        return;
+	    }
+		try {
+	        int soLuongInt = Integer.parseInt(soLuong);
+	        if (soLuongInt == 0) {
+	        	JOptionPane.showMessageDialog(this, "Số lượng không được bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        txtSoLuong.requestFocus();
+		        return;
+	        }
+	        double thanhTien = soLuongInt*giaXe;
+	        tableModel.addRow(new Object[] {sttXe, tenXe, soLuongInt , df.format(giaXe),df.format(soLuongInt*giaXe)});
+	        soTien += thanhTien;
+	        sttXe++;
+	    } catch (NumberFormatException e) {
+	        JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        txtSoLuong.requestFocus();
+	    }
+		lblSoTien.setText(df.format(soTien));
+    }
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -451,10 +608,15 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
 			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
 		}
-		if (o.equals(tableNCC)) {
-			int rowSl = tableNCC.getSelectedRow();
-			txtMaNCC.setText(tableNCC.getValueAt(rowSl, 0).toString());
-			txtTenNCC.setText(tableNCC.getValueAt(rowSl, 1).toString());
+		if (o.equals(tableXe)) {
+			int rowSl = tableXe.getSelectedRow();
+			txtTenXe.setText(tableXe.getValueAt(rowSl, 0).toString());
+			txtLoaiXe.setText(tableXe.getValueAt(rowSl, 1).toString());
+			txtMauXe.setText(tableXe.getValueAt(rowSl, 2).toString());
+			txtHangXe.setText(tableXe.getValueAt(rowSl, 3).toString());
+			linkimgXeMay = "data//image//" + tableXe.getValueAt(rowSl, 4).toString();
+			ImageIcon image = new ImageIcon( new ImageIcon(linkimgXeMay).getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
+			lblAnhMinhHoa.setIcon(image);
 		}
 		
 	}
@@ -465,9 +627,9 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	
 	}
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -480,8 +642,21 @@ public class GUI_QLNhapXe extends JPanel implements ActionListener,MouseListener
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		
+		Object o = e.getSource();
+		if(o.equals(btnChonNCC)) {
+			loadDSXe();
+		}
+		if(o.equals(btnThemXe)) {
+			themXeHD();
+		}
+		if(o.equals(btnNhapHang)) {
+			try {
+				nhapXE();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 	}
 
 }
