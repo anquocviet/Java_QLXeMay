@@ -347,12 +347,12 @@ public class GUI_QLNhaCungCap extends JPanel implements ActionListener,MouseList
 	
 	private void themNCC() throws Exception{
 		boolean result =  validateNCCInput();
+		JOptionPane.showMessageDialog(this, "Mã nhà cung cấp sẽ được tự phát sinh!");
 		String maNCC = generateMaNCC();
 		String tenNCC = txtTenNCC.getText();
 		String diaChi = txtDiaChi.getText();
 		String sdt = txtSDT.getText();
 	    NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, sdt);
-	   
 	    if (result) {
 	    	ncc_dao.themNhaCungCap(ncc);
 	        JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!");

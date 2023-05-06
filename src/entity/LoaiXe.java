@@ -18,9 +18,9 @@ public class LoaiXe {
 		super();
 		this.maLoaiXe = maLoaiXe;
 	}
-	public LoaiXe(String maLoaiXe ,String tenLoaiXe) {
+	public LoaiXe(String tenNhaSanXuat ,String tenLoaiXe) {
 		super();
-		this.maLoaiXe = maLoaiXe;
+		this.tenNhaSanXuat = tenNhaSanXuat;
 		this.tenLoaiXe = tenLoaiXe;
 	}
 
