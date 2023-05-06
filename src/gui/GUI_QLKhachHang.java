@@ -165,7 +165,7 @@ public class GUI_QLKhachHang extends JPanel {
 		KhachHang_DAO khachHangDao = new KhachHang_DAO();
 		ArrayList<KhachHang> data = khachHangDao.getAllKhachHang();
 		for(KhachHang khachHang : data) {
-			Boolean val = khachHang.getCccd().getGioiTinh();
+			Boolean val = khachHang.getCccd().isGioiTinh();
 			String gioiTinh;
 			if(val == true) {
 				gioiTinh = "Nam";

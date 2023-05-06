@@ -79,7 +79,7 @@ public class CanCuocCongDan {
 			this.ten = ten;
 	}
 
-	public Boolean getGioiTinh() {
+	public Boolean isGioiTinh() {
 		return gioiTinh;
 	}
 
